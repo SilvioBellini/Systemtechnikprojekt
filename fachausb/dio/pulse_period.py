@@ -8,12 +8,12 @@ gpio = flink.FlinkGPIO()
 gpio.setDir(S10, False)
 gpio.setValue(S10, False)
 
+state = True
 laststate = False
 switches = 0
 
 while True:
     state = gpio.getValue(S10)
-    starttime = time.time()
     if state != laststate:
         if switches == 0:
             startTime = time.time()
