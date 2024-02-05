@@ -9,13 +9,12 @@ gpio.setDir(S10, False)
 gpio.setValue(S10, False)
 
 laststate = False
-starttime = 0
+starttime = time.time()
 
 while True:
     state = gpio.getValue(S10)
-    endtime = time.time()
     if state != laststate:
-        starttime = time.time()
+        endtime = time.time()
         deltatime = int((endtime - starttime))
         print(deltatime)
     laststate = state
