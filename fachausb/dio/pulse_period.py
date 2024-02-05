@@ -15,7 +15,7 @@ while True:
     starttime = time.time()
     while state == laststate:
         state = gpio.getValue(S10)
-        endtime = time.time()
-        deltatime = (endtime - starttime)
+    endtime = time.time()
+    deltatime = (endtime - starttime)
     print(deltatime)
     laststate = state
