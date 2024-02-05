@@ -20,7 +20,9 @@ gpio.setValue(LED8, False)
 
 LEDs =[LED5,LED6,LED7,LED8]
 while True:
-    if S10 == True:
+    state = gpio.getValue(S10)
+
+    if  state:
         for i in LEDs:
             gpio.setValue(i,True)
             time.sleep(0.1)
