@@ -10,17 +10,12 @@ gpio.setValue(S10, False)
 
 state = True
 laststate = False
-switches = 0
+starttime = time.time()
 
 while True:
     state = gpio.getValue(S10)
     if state != laststate:
-        if switches == 0:
-            startTime = time.time()
-            switches += 1
-        elif switches == 1: 
-            endTime = time.time()
-            deltaTime = endTime - startTime
-            switches = 0
-    
+        endtime = time.time()
+        deltatime = int((endtime - starttime))
+        print(deltatime)
     laststate = state
