@@ -11,12 +11,12 @@ pwm.setPeriod(chnL, period)
 pwm.setPeriod(chnR, period)
 
 # left full
-currHightimeL = period
-currHightimeR = 0
+# currHightimeL = period
+# currHightimeR = 0
 
 # left half
-# currHightimeL = int(period / 2)
-# currHightimeR = 0
+currHightimeL = int(period / 2)
+currHightimeR = 0
 
 # right full
 # currHightimeL = 0
