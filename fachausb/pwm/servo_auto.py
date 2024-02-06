@@ -12,8 +12,6 @@ min_highTime = (period/20)*1.2
 max_highTime = (period/20)*2.2
 
 
-count = 0
-
 while True:
     highTime=min_highTime
 
