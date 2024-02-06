@@ -22,6 +22,8 @@ while True:
         highTime += (max_highTime-min_highTime)/50
         time.sleep(5/50)
 
+    highTime = max_highTime
+
     while highTime >= min_highTime:
         pwm.setHighTime(testChannel,highTime)
         highTime -= (max_highTime-min_highTime)/50
