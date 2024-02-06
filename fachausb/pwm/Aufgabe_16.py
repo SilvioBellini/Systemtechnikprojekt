@@ -3,9 +3,11 @@ import driver
 import math
 import time
 
+# Pins
 PWM_CH0 = 0
 PWM_CH1 = 1
 FQD_1 = 0
+
 fqd =flink.FlinkFQD()
 ts = 0.01
 kp = 0.1

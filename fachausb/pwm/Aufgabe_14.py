@@ -1,8 +1,7 @@
 import flink
 import time
 
-# Beinhaltet Signal A und B (Für zwei Drehrichtungen)
-ch = 0
+ch = 0      # Beinhaltet Signal A und B (Für zwei Drehrichtungen)
 fqd = flink.FlinkFQD()
 
 while True:

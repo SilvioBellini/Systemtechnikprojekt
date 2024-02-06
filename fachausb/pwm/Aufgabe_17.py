@@ -3,13 +3,18 @@ import driver
 import math
 import time
 
+# Pins: Motor 1
 PWM_CH0 = 0
 PWM_CH1 = 1
 FQD_1 = 0
+
+# Pins: Motor 2
 PWM_CH2 = 2
 PWM_CH3 = 3
 FQD_2 = 1
-fqd =flink.FlinkFQD()
+
+# Variables
+fqd = flink.FlinkFQD()
 ts = 0.01
 kp = 0.1
 tn = 0.1
@@ -23,22 +28,24 @@ prevPosFQD2=fqd.getCount(FQD_2)
 
 m = driver.SignMagnitude(ts, PWM_CH0, PWM_CH1, FQD_1, ticksPerRotation, motorVoltage, gearRatio, kp, tn)
 # Set desired speed, full turn once per second
-m.setSpeed(2 * math.pi)
+m.setSpeed(1 * math.pi)
+
 f = driver.SignMagnitude(ts, PWM_CH2, PWM_CH3, FQD_2, ticksPerRotation, motorVoltage, gearRatio, kp, tn)
 # Set desired speed, full turn once per second
 f.setSpeed(2 * math.pi)
 
 
 while True:
-
-    actPosFQD1 = fqd.getCount(FQD_1)
-    deltaPosFQD1 = actPosFQD1 - prevPosFQD1
-    prevPosFQD1 = actPosFQD1
-    print("speed1 = ", (deltaPosFQD1 * scale/ts))
-    
-    actPosFQD2 = fqd.getCount(FQD_2)
-    deltaPosFQD2 = actPosFQD2 - prevPosFQD2
-    prevPosFQD2 = actPosFQD2
-    print("speed2 = ", (deltaPosFQD2 * scale/ts), "\n")
-
     time.sleep(3)
+
+    #actPosFQD1 = fqd.getCount(FQD_1)
+    #deltaPosFQD1 = actPosFQD1 - prevPosFQD1
+    #prevPosFQD1 = actPosFQD1
+    #print("speed1 = ", (deltaPosFQD1 * scale/ts))
+    print("Speed 1: ", m.getSpeed())    # Built-In Function of driver
+    
+    #actPosFQD2 = fqd.getCount(FQD_2)
+    #deltaPosFQD2 = actPosFQD2 - prevPosFQD2
+    #prevPosFQD2 = actPosFQD2
+    #print("speed2 = ", (deltaPosFQD2 * scale/ts), "\n")
+    print("Speed 2: ", f.getSpeed())    # Built-In Function from driver
