@@ -8,10 +8,10 @@ period=int(pwm.getBaseClock()/pwmFreq)
 pwm.setPeriod(chn,period)
 
 #leftfull
-currHightime=period
+#currHightimeL=period
 
 #lefthalf
-#currHightimeL=int(3 * period/4)
+currHightimeL=int(3 * period/4)
 
 #rightfull
 #currHightimeL=0
@@ -22,4 +22,4 @@ currHightime=period
 #stop
 #currHightimeL=int(period/2)
 
-pwm.setHighTime(chn,currHightime)
+pwm.setHighTime(chn,currHightimeL)
