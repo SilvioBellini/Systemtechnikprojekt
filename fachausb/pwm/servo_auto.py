@@ -8,10 +8,8 @@ pwm = flink.FlinkPWM()
 period = pwm.getBaseClock() / pwmFreq
 pwm.setPeriod(testChannel, int(period))
 pwm.setHighTime(testChannel, int(period * 0.2))
-min_highTime = (1.2/1000)*period
-max_highTime = (2.2/1000)*period
-
-highTime = min_highTime
+min_highTime = (period/20)*1.2
+max_highTime = (period/20)*2.2
 
 while True:
 
