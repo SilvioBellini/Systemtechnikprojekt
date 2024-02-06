@@ -26,5 +26,5 @@ while True:
     actPosCH0 = fqd.getCount(PWM_CH0)
     deltaPosCH0 = actPosCH0 - prevPosCH0
     prevPosCH0 = actPosCH0
-    print("speed=", deltaPosCH0 * scale)
+    print("speed=", (deltaPosCH0 * scale/ts))
     time.sleep(1)
