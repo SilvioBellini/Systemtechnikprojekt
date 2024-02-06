@@ -15,11 +15,9 @@ highTime = min_highTime
 
 while True:
 
-    highTime = min_highTime
-    pwm.setHighTime(testChannel,int(highTime))
+    pwm.setHighTime(testChannel,int(min_highTime))
     time.sleep (1)
-    highTime = max_highTime
-    pwm.setHighTime(testChannel,int(highTime))
+    pwm.setHighTime(testChannel,int(max_highTime))
     time.sleep(1)
 
 
