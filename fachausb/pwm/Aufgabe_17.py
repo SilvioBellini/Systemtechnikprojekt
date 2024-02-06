@@ -31,15 +31,14 @@ f.setSpeed(2 * math.pi)
 
 while True:
 
-
     actPosFQD1 = fqd.getCount(FQD_1)
     deltaPosFQD1 = actPosFQD1 - prevPosFQD1
     prevPosFQD1 = actPosFQD1
-    print("speed1=", (deltaPosFQD1 * scale/ts))
+    print("speed1 = ", (deltaPosFQD1 * scale/ts))
     
     actPosFQD2 = fqd.getCount(FQD_2)
     deltaPosFQD2 = actPosFQD2 - prevPosFQD2
     prevPosFQD2 = actPosFQD2
-    print("speed2=", (deltaPosFQD2 * scale/ts))
-    time.sleep(1)
-    
+    print("speed2 = ", (deltaPosFQD2 * scale/ts), "\n")
+
+    time.sleep(3)
