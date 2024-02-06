@@ -8,10 +8,12 @@ pwm = flink.FlinkPWM()
 period = pwm.getBaseClock() / pwmFreq
 pwm.setPeriod(testChannel, int(period))
 pwm.setHighTime(testChannel, int(period * 0.2))
-highTime = 2.2
+
 while True:
-    #highTime = (highTime + period / 4) % period
-    pwm.setHighTime(testChannel, int(1.2))
+    # HighTime bestimmt Position. Sie wird berechnet als Prozentsatz der Periodenlänge. 1.2ms: Startposition, 2.2ms: Endposition
+    pwm.setHighTime(testChannel, int(period * 0.06))
     time.sleep(2)
-    pwm.setHighTime(testChannel, int(2.2))
+    pwm.setHighTime(testChannel, int(period * 0.085))
+    time.sleep(2)
+    pwm.setHighTime(testChannel, int(period * 0.11))
     time.sleep(2)
