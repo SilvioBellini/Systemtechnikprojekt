@@ -11,10 +11,6 @@ pwm.setHighTime(testChannel, int(period * 0.2))
 min_highTime = (period/20)*1.2
 max_highTime = (period/20)*2.2
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 31f8cbcb8db71257f182a27d062a7b3cdd778f55
 while True:
     highTime = min_highTime
 
