@@ -5,6 +5,10 @@ class SharedData():
         self.glassSlot = None
     
     def setData(self, id, data):
+        """
+        Saving the data according to its identification number
+        """
+
         match id:
             case 0:
                 self.approvalKitchen = data
@@ -16,6 +20,10 @@ class SharedData():
                 print("Invalid ID!")
 
     def getData(self, id):
+        """
+        Returning the data according to its identification number
+        """
+        
         match id:
             case 0:
                 return self.approvalKitchen
