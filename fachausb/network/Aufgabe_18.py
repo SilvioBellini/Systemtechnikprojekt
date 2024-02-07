@@ -17,4 +17,4 @@ for i in range(1000):
     
     if message is not None:
         print("received:", message)
-    time.sleep(1)
+    time.sleep(1.1)
