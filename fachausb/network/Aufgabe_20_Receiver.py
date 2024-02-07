@@ -2,21 +2,26 @@ import time
 import driver
 import flink
 
-s1 = 10
-s2 = 11
-s3 = 12
-s4 = 13
+led1 = 0
+led2 = 1
+led3 = 2
+led4 = 3
 
 gpio = flink.FlinkGPIO()
-gpio.setDir(s1, False)
-gpio.setDir(s1, False)
-gpio.setDir(s1, False)
-gpio.setDir(s1, False)
+gpio.setDir(led1, True)
+gpio.setDir(led2, True)
+gpio.setDir(led3, True)
+gpio.setDir(led4, True)
 
-switches = [s1, s2, s3, s4]
+gpio.setValue(led1, False)
+gpio.setValue(led2, False)
+gpio.setValue(led3, False)
+gpio.setValue(led4, False)
+
+leds = [led1, led2, led3, led4]
 
 client = driver.MessagingClient(username="test", password="test", topic="test/team04")
-#client.connect()
+client.connect()
 
 if client.is_connected():
     print("connection established")
@@ -24,17 +29,12 @@ if client.is_connected():
 else:
     print("no connection")
 
-currentStates = []
-lastStates = []
+while True:
+    message = client.read()
 
-while KeyboardInterrupt:
-    currentStates = []
-    for i in range(0, 4):
-        currentStates.append(gpio.getValue(switches[i]))
+    if message is not None:
+        states = eval(message)
+        print(states)
 
-    if(currentStates != lastStates):
-        print(currentStates)
-        #client.send(currentStates)
-        
-    lastStates = currentStates
-    time.sleep(0.1)
+        for i in range(0,4):
+            gpio.setValue(leds[i], states[i])
