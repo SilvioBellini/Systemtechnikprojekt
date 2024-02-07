@@ -12,3 +12,4 @@ while True:
     print("Min.:" , values[0])
     print("Max.:" , values[-1])
     time.sleep(0.5)
+    pass
