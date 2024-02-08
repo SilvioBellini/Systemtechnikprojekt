@@ -1,26 +1,47 @@
-import driver
+try:
+    import driver
+except ModuleNotFoundError:
+    pass
 from sharedData import *
 
 class Network():
     """
-    Class for establishing a wireless connection and exchanging information
+    Class for establishing a wireless connection to a MQTTX-Server and exchanging information 
+
+    Parameters:
+        username: Name used for connection
+        password: Password used for connection
+        topic: Channel of connection
     """
 
-    def __init__(self):
+    def __init__(self, username, password, topic):
         # Initializing a client and establishing a connection to a specific topic
         self.sharedData = SharedData()
-        self.client = driver.MessagingClient(username="team2", password="1234", topic="roboter")
-        self.client.connect()
+        self.username = username
+        self.password = password
+        self.topic = topic
+
+        try:
+            self.client = driver.MessagingClient(username, password, topic)
+            self.client.connect()
+        except(NameError, AttributeError) as error:
+            print("Connection failed - {}".format(error))
 
         if(self.client.is_connected()):
             print("Connection established to: ", self.client.host)
-
         else:
             print("No connection can be established!")
 
     def sendMessage(self, id, data):
         """
         Sending a string consisting of an identification number and a specific information to the specified topic.
+
+        Parameters:
+            ID: Unique identification number of the transmitted information 
+                0 = Approval Kitchen
+                1 = Approval Counter
+                2 = Glass Slot
+            Data: Information that should be transmitted
         """
 
         message = [id, data]

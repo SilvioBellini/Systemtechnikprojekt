@@ -1,4 +1,8 @@
 class SharedData():
+    """
+    This class saves the data the gets sent to and received from the partner robot.
+    """
+
     def __init__(self):
         self.approvalKitchen = None
         self.approvalCounter = None
@@ -7,9 +11,13 @@ class SharedData():
     def setData(self, id, data):
         """
         Saving the data according to its identification number
-        ID: 0 = Approval Kitchen
-            1 = Approval Counter
-            2 = Glass Slot
+
+        Prameters:
+            ID: Unique identification number of the transmitted information
+                0 = Approval Kitchen
+                1 = Approval Counter
+                2 = Glass Slot
+            Data: Information that should get saved
         """
 
         match id:
@@ -25,9 +33,12 @@ class SharedData():
     def getData(self, id):
         """
         Returning the data according to its identification number
-        ID: 0 = Approval Kitchen
-            1 = Approval Counter
-            2 = Glass Slot
+
+        Paramters:
+            ID: Unique identification number of the transmitted information 
+                0 = Approval Kitchen
+                1 = Approval Counter
+                2 = Glass Slot
         """
         
         match id:
