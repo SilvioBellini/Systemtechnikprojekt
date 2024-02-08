@@ -7,6 +7,9 @@ class SharedData():
     def setData(self, id, data):
         """
         Saving the data according to its identification number
+        ID: 0 = Approval Kitchen
+            1 = Approval Counter
+            2 = Glass Slot
         """
 
         match id:
@@ -17,11 +20,14 @@ class SharedData():
             case 2: 
                 self.glassSlot = data
             case _:
-                print("Invalid ID!")
+                print("Invalid ID! Unable to set data")
 
     def getData(self, id):
         """
         Returning the data according to its identification number
+        ID: 0 = Approval Kitchen
+            1 = Approval Counter
+            2 = Glass Slot
         """
         
         match id:
@@ -32,4 +38,5 @@ class SharedData():
             case 2:
                 return self.glassSlot
             case _:
-                return ("Invalid ID!")
+                print("Invalid ID! Unable to get data")
+                return None
