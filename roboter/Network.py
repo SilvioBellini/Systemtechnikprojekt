@@ -1,5 +1,5 @@
 import driver
-import SharedData
+from sharedData import *
 
 class Network():
     """
