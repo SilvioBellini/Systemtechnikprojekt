@@ -14,9 +14,9 @@ class Network():
         topic: Channel of connection
     """
 
-    def __init__(self, username, password, topic):
+    def __init__(self, username, password, topic, sharedData):
         # Initializing a client and establishing a connection to a specific topic
-        self.sharedData = SharedData()
+        self.sharedData = sharedData
         self.username = username
         self.password = password
         self.topic = topic
@@ -28,7 +28,7 @@ class Network():
             print("Connection failed - {}".format(error))
 
         if(self.client.is_connected()):
-            print("Connection established to: ", self.client.host)
+            print("Connection established to: ", self.client.host, " with the topic ", self.topic)
         else:
             print("No connection can be established!")
 
@@ -59,7 +59,9 @@ class Network():
         if(message is not None):
             decodedMessage = eval(message)
             id = decodedMessage[0]
+            print("ID: ", id)
             data = decodedMessage[1]
+            print("Data: ", data)
             self.sharedData.setData(id, data)
             
             print("Received Message: ", message)

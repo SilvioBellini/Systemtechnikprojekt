@@ -1,7 +1,7 @@
 import time
 import driver
 
-client = driver.MessagingClient(username="test", password="test", topic="test/team1")
+client = driver.MessagingClient(username="team2", password="rHGpIGxo0o1k", topic="team2_1")
 client.connect()
 
 if client.is_connected():

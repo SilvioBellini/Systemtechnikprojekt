@@ -4,9 +4,9 @@ class SharedData():
     """
 
     def __init__(self):
-        self.approvalKitchen = None
-        self.approvalCounter = None
-        self.glassSlot = None
+        self.approvalKitchen = False
+        self.approvalCounter = False
+        self.glassSlot = 99
     
     def setData(self, id, data):
         """
@@ -23,6 +23,7 @@ class SharedData():
         match id:
             case 0:
                 self.approvalKitchen = data
+                print(self.approvalKitchen)
             case 1: 
                 self.approvalCounter = data
             case 2: 

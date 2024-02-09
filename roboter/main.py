@@ -7,12 +7,23 @@ except ModuleNotFoundError:
 from sharedData import *
 from network import *
 
-username = "team2"
-password = "1234"
-topic = "coop"
+username = "test" #Team2
+password = "test" #rHGpIGxo0o1k
+topic = "test/team2" #Coop
 
 if(__name__ == "__main__"):
     print("State: Initializing Objects")
 
-    network = Network(username, password, topic)
     sharedData = SharedData()
+    network = Network(username, password, topic, sharedData)
+    switch = False
+
+    while True:
+        #switch = not switch
+        #network.sendMessage(0, switch)
+        #time.sleep(2)
+        network.receiveMessage()
+        print(sharedData.getData(0))
+        print(sharedData.getData(1))
+        print(sharedData.getData(2), "\n")
+        time.sleep(3)
