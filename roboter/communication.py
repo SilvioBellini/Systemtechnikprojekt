@@ -2,9 +2,8 @@ try:
     import driver
 except ModuleNotFoundError:
     pass
-from sharedData import *
 
-class Network():
+class Communication():
     """
     Class for establishing a wireless connection to a MQTTX-Server and exchanging information 
 

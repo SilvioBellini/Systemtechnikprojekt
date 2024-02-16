@@ -1,0 +1,27 @@
+from datetime import datetime, timedelta
+
+class StopWatch:
+    """
+    Class for setting a stopwatch used for time-dependant functions
+    """
+
+    def __init__(self):
+        self.startTime = datetime.now()
+
+    def start(self, durationMs):
+        """
+        Starts a new stopwatch
+
+        Parameters:
+            durationMs: Specified duration in milliseconds the stopwatch should run
+        """
+
+        self.startTime = datetime.now()
+        self.duration = durationMs
+
+    def isFinished(self) -> bool:
+        """
+        Returning if the specified duration has already been exceeded
+        """
+        
+        return datetime.now() >= self.startTime + timedelta(milliseconds=self.duration)

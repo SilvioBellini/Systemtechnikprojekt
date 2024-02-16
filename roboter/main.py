@@ -5,25 +5,17 @@ try:
 except ModuleNotFoundError:
     pass
 from sharedData import *
-from network import *
+from communication import *
+from api import *
+from stopWatch import *
 
-username = "test" #Team2
+username = "test" #team2
 password = "test" #rHGpIGxo0o1k
 topic = "test/team2" #Coop
 
 if(__name__ == "__main__"):
-    print("State: Initializing Objects")
-
+    mirbot = API()
     sharedData = SharedData()
-    network = Network(username, password, topic, sharedData)
-    switch = False
-
-    while True:
-        #switch = not switch
-        #network.sendMessage(0, switch)
-        #time.sleep(2)
-        network.receiveMessage()
-        print(sharedData.getData(0))
-        print(sharedData.getData(1))
-        print(sharedData.getData(2), "\n")
-        time.sleep(3)
+    com = Communication(username, password, topic, sharedData)
+    watch = StopWatch()
+    mode = 0

@@ -1,6 +1,6 @@
 class SharedData():
     """
-    This class saves the data the gets sent to and received from the partner robot.
+    Class for saving the data the gets sent to and received from the partner robot.
     """
 
     def __init__(self):
