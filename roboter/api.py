@@ -15,7 +15,7 @@ class API:
                 + -> Forward
                 - -> Backward
         """
-        print("test")
+        
         pass
 
     def turn(self, speed, angle):
