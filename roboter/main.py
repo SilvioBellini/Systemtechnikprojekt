@@ -19,3 +19,4 @@ if(__name__ == "__main__"):
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
     mode = 0
+    
