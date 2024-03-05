@@ -24,3 +24,5 @@ if(__name__ == "__main__"):
     time.sleep(2)
     ginTronic.turn(30, 360)  
     print("Finished")
+
+    ginTronic.rotateGripper(270)  
