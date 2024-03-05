@@ -38,9 +38,7 @@ class API:
                 + -> Forward
                 - -> Backward
         """
-        self.drive_motors(speed,speed)
-
-        pass
+        self.driveMotors(speed,speed)
 
     def turn(self, speed, angle):
         """
@@ -54,16 +52,19 @@ class API:
             angle: Angle by which the robot should rotate
         """
         # Calculate the time needed for the motors to rotate to the desired angle
-        time_to_rotate = angle / speed
+        if (speed != 0):
+            time_to_rotate = angle / speed
 
         # Set the desired speed for both motors
-        self.drive_motors(speed, -speed)
+        self.driveMotors(speed, -speed)
 
         # Wait for the calculated time to rotate to the desired angle
         time.sleep(time_to_rotate)
 
         # Stop the motors after reaching the desired angle
-        self.stop()
+        #self.stop()
+        self.driveMotors(0.0, 0.0)
+        print("Stopped")
 
     def curve(self, leftSpeed, rightSpeed, angle):
         """
@@ -83,9 +84,9 @@ class API:
         """
         Stopping the robot's current movement by setting the wheels speed to 0
         """
-        self.drive_motors(0, 0)
+        self.driveMotors(0, 0)
 
-    def drive_motors(self, left_speed, right_speed):
+    def driveMotors(self, leftSpeed, rightSpeed):
         """
         Helper method to set the speed for both motors
 
@@ -94,11 +95,8 @@ class API:
             right_speed: Speed for the right motor
         """
         # Implement the code to set the speed for both motors using your driver
-        self.m1.setSpeed(left_speed)
-        self.m2.setSpeed(right_speed)
-        # Beispiel: self.m1.setSpeed(left_speed)
-        #          self.m2.setSpeed(right_speed)
-        pass
+        self.m1.setSpeed(leftSpeed)
+        self.m2.setSpeed(rightSpeed)        
 
     def getSensorValues(self):
         """
