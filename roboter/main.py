@@ -14,8 +14,10 @@ password = "test" #rHGpIGxo0o1k
 topic = "test/team2" #Coop
 
 if(__name__ == "__main__"):
-    mirbot = API()
+    ginTronic = API()
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
     mode = 0
+
+ginTronic.drive(10)

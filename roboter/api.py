@@ -11,12 +11,30 @@ class API:
         Letting both of the robots wheels move with the same speed and direction 
 
         Parameters:
-            speed: Speed with which the wheels turn
+            speed: Speed with which the wheels turn (speed in percentage)
                 + -> Forward
                 - -> Backward
         """
-        print("test")
-        pass
+        chnL = 0        # Chanel motor left
+        chnR = 1        # Chanel motor right
+
+        pwm = flink.FlinkPWM()
+        pwmFrequenz = 20000
+
+        period = int(pwm.getBaseClock() / pwmFreq)
+        pwm.setPeriod(chnL, period)
+        pwm.setPeriod(chnR, period)
+
+        if speed >= 0:
+            print("Speed : ", speed, "%")
+            currentHightime = period / (speed/100)
+
+        else:
+            print("Speed : -", speed, "%")
+            currentHightime = period / (speed/100)
+
+        pwm.setHighTime(chnL,currentHightime)
+        pwm.setHighTime(chnR,currentHightime)
 
     def turn(self, speed, angle):
         """
