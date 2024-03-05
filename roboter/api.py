@@ -8,9 +8,7 @@ class API:
     Class for basic functions of the robot (locomotion, sensors, etc.)
     """
 
-    #Servo Parameter
-    servoChannel = 8
-    pwmFreq = 50
+  
 
     # Motor-Parameter als Klassenattribute
     PWM_CH0 = 0
@@ -25,6 +23,8 @@ class API:
     ticksPerRotation = 100
     gearRatio = 16/1
     motorVoltage = 5
+    servoChannel = 8
+    pwmFreq = 50
 
     def __init__(self):
         self.sensorValues = []
@@ -120,7 +120,7 @@ class API:
             angle: Angle by which the gripper should rotate
         """
         pwm = flink.FlinkPWM()
-
+        
         # Convert the desired angle to a range suitable for the servo
         min_angle = 0  # Minimum angle the servo can handle
         max_angle = 270  # Maximum angle the servo can handle
@@ -129,13 +129,14 @@ class API:
         angle = max(min(angle, max_angle), min_angle)
 
         # Map the angle to the corresponding high time for the servo
-        period = 1/self.pwmFreq
+        period = 1 / self.pwmFreq
         min_high_time = (period / 20) * 1.2
         max_high_time = (period / 20) * 2.2
         high_time = min_high_time + (max_high_time - min_high_time) * (angle / max_angle)
 
         # Set the high time for the servo
-        pwm.setHighTime(API.servoChannel, int(high_time))
+        pwm.setPeriod(self.servoChannel, int(period))
+        pwm.setHighTime(self.servoChannel, int(high_time))
 
         # Optionally, add a delay to allow the servo to reach the desired position
         time.sleep(1)  # Adjust the delay as needed
