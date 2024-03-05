@@ -38,6 +38,8 @@ class API:
                 + -> Forward
                 - -> Backward
         """
+        self.drive_motors(speed,speed)
+
         pass
 
     def turn(self, speed, angle):
@@ -92,6 +94,8 @@ class API:
             right_speed: Speed for the right motor
         """
         # Implement the code to set the speed for both motors using your driver
+        self.m1.setSpeed(left_speed)
+        self.m2.setSpeed(right_speed)
         # Beispiel: self.m1.setSpeed(left_speed)
         #          self.m2.setSpeed(right_speed)
         pass
