@@ -20,4 +20,5 @@ if(__name__ == "__main__"):
     watch = StopWatch()
     mode = 0
 
-ginTronic.drive(10)
+# ginTronic.drive(10)
+ginTronic.turn(100, 360)
