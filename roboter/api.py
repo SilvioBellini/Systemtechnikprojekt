@@ -11,7 +11,10 @@ class API:
     # Motor-Parameter als Klassenattribute
     PWM_CH0 = 0
     PWM_CH1 = 1
+    PWM_CH2 = 2
+    PWM_CH3 = 3
     FQD_1 = 0
+    FQD_2 = 1
     ts = 0.01
     kp = 0.1
     tn = 0.1
@@ -24,7 +27,7 @@ class API:
 
         # Initialisierung der Motor-Instanzen als Klassenattribute
         self.m1 = driver.SignMagnitude(API.ts, API.PWM_CH0, API.PWM_CH1, API.FQD_1, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
-        self.m2 = driver.SignMagnitude(API.ts, API.PWM_CH0, API.PWM_CH1, API.FQD_1, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+        self.m2 = driver.SignMagnitude(API.ts, API.PWM_CH2, API.PWM_CH3, API.FQD_2, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
 
     def drive(self, speed):
         """
