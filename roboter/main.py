@@ -20,9 +20,11 @@ if(__name__ == "__main__"):
     watch = StopWatch()
     mode = 0
 
-    ginTronic.drive(30)
-    time.sleep(2)
-    ginTronic.turn(30, 360)  
-    print("Finished")
+    #ginTronic.drive(30)
+    #time.sleep(2)
+    #ginTronic.turn(30, 360)  
+    #print("Finished")
 
+    ginTronic.rotateGripper(0)
+    time.sleep(2)
     ginTronic.rotateGripper(270)  

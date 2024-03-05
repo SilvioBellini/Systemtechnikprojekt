@@ -55,23 +55,24 @@ class API:
                 - -> Backward
             angle: Angle by which the robot should rotate
         """
-        # Calculate the time needed for the motors to rotate to the desired angle
+        # Calculating the time needed for the motors to rotate for the desired angle
         if (speed != 0):
-            time_to_rotate = angle / speed
+            timeToRotate = angle / speed
 
-        # Set the desired speed for both motors
+        # Setting the desired speed for both motors
         self.driveMotors(speed, -speed)
 
-        # Wait for the calculated time to rotate to the desired angle
-        time.sleep(time_to_rotate)
+        # Waiting for the calculated time to rotate to the desired angle
+        time.sleep(timeToRotate)
 
-        # Stop the motors after reaching the desired angle
+        # Stopping the motors after reaching the desired angle
         self.stop()
 
     def stop(self):
         """
         Stopping the robot's current movement by setting the wheels speed to 0
         """
+
         self.driveMotors(0, 0)
 
     def driveMotors(self, leftSpeed, rightSpeed):
@@ -79,10 +80,10 @@ class API:
         Helper method to set the speed for both motors
 
         Parameters:
-            left_speed: Speed for the left motor
-            right_speed: Speed for the right motor
+            leftSpeed: Speed for the left motor
+            rightSpeed: Speed for the right motor
         """
-        # Implement the code to set the speed for both motors using your driver
+
         self.m1.setSpeed(leftSpeed)
         self.m2.setSpeed(rightSpeed)        
 
@@ -116,24 +117,34 @@ class API:
         Parameters:
             angle: Angle by which the gripper should rotate
         """
+        
         pwm = flink.FlinkPWM()
         
-        # Convert the desired angle to a range suitable for the servo
-        min_angle = 0  # Minimum angle the servo can handle
-        max_angle = 270  # Maximum angle the servo can handle
+        # Angle limits
+        minAngle = 0
+        maxAngle = 270 
 
         # Ensure that the angle is within the valid range
-        angle = max(min(angle, max_angle), min_angle)
+        if angle > maxAngle:
+            angle = maxAngle
+        elif angle < minAngle:
+            angle = minAngle
 
-        # Map the angle to the corresponding high time for the servo
-        period = 1 / self.pwmFreq
-        min_high_time = (period / 20) * 1.2
-        max_high_time = (period / 20) * 2.2
-        high_time = min_high_time + (max_high_time - min_high_time) * (angle / max_angle)
+        # Calculating hightimte limits
+        period = pwm.getBaseClock() / API.pwmFreq
+        minHighTime = (period * 0.06)           # 1.2 ms -> 0.5ms auf Datenblatt?
+        maxHighTime = (period * 0.11)           # 2.2 ms -> 2.5ms auf Datenblatt?
 
-        # Set the high time for the servo
-        pwm.setPeriod(self.servoChannel, int(period))
-        pwm.setHighTime(self.servoChannel, int(high_time))
+        # Calculating highTime according to angle and converting it into a factor of 0-1 
+        highTime = (angle / maxAngle) + (minHighTime / 100000)
+        factor = (highTime * API.pwmFreq) / 1000
+        print(factor)
 
-        # Optionally, add a delay to allow the servo to reach the desired position
-        time.sleep(1)  # Adjust the delay as needed
+        # Setting the high time according to the calculated factor
+        pwm.setPeriod(API.servoChannel, int(period))
+        pwm.setHighTime(API.servoChannel, int(period * factor))
+
+        # Delay to reach desired angle before continuing
+        time.sleep(2)
+
+        print("fertig")
