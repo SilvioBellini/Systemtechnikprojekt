@@ -18,4 +18,14 @@ if(__name__ == "__main__"):
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    mode = 0  
+    mode = 0
+
+    # Test
+    ginTronic.drive(20)
+    time.sleep(5)
+    ginTronic.turn(20, 360)
+    time.sleep(5)
+    ginTronic.rotateGripper(270)
+    time.sleep(2)
+    ginTronic.rotateGripper(0)
+    print("Done")

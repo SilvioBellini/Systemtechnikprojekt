@@ -7,28 +7,39 @@ class API:
     """
     Class for basic functions of the robot (locomotion, sensors, etc.)
     """
+    #region Classattributes
 
-    # Motorparameters as Classattributes
-    PWM_CH0 = 0
-    PWM_CH1 = 1
-    PWM_CH2 = 2
-    PWM_CH3 = 3
-    FQD_1 = 0
-    FQD_2 = 1
+    # PWM Channels
+    pwmChLeftA = 0
+    pwmChLeftB = 2
+    pwmChRightA = 4
+    pwmChRightB = 6
+    pwmChFill = 10
+    pwmChGrip = 12
+
+    # FQD Channels
+    fqdLeft = 1
+    fqdRight = 0
+
+    # GPIO Channels
+
+
+    # Configuration motors
     ts = 0.01
     kp = 0.1
     tn = 0.1
     ticksPerRotation = 100
     gearRatio = 16/1
     motorVoltage = 5
-    servoChannel = 8
     pwmFreq = 50
 
+    #endregion
+
     def __init__(self):
-        # Initializing instances as Classattributes
+        # Initializing instances
         self.sensorValues = []
-        self.m1 = driver.SignMagnitude(API.ts, API.PWM_CH0, API.PWM_CH1, API.FQD_1, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
-        self.m2 = driver.SignMagnitude(API.ts, API.PWM_CH2, API.PWM_CH3, API.FQD_2, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+        self.m1 = driver.SignMagnitude(API.ts, API.pwmChLeftA, API.pwmChLeftB, API.fqdLeft, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+        self.m2 = driver.SignMagnitude(API.ts, API.pwmChRightA, API.pwmChRightB, API.fqdRight, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
 
     def drive(self, speed):
         """
@@ -135,8 +146,8 @@ class API:
         highTimeFactor = (highTimeMs * API.pwmFreq) / 1000
 
         # Setting period and highTime according to the calculated factor
-        pwm.setPeriod(API.servoChannel, int(period))
-        pwm.setHighTime(API.servoChannel, int(period * highTimeFactor))
+        pwm.setPeriod(API.pwmChFill, int(period))
+        pwm.setHighTime(API.pwmChFill, int(period * highTimeFactor))
 
         # Delay to reach desired angle before continuing
         time.sleep(2)
