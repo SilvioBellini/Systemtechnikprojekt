@@ -8,9 +8,7 @@ class API:
     Class for basic functions of the robot (locomotion, sensors, etc.)
     """
 
-  
-
-    # Motor-Parameter als Klassenattribute
+    # Motorparameters as Classattributes
     PWM_CH0 = 0
     PWM_CH1 = 1
     PWM_CH2 = 2
@@ -27,9 +25,8 @@ class API:
     pwmFreq = 50
 
     def __init__(self):
+        # Initializing instances as Classattributes
         self.sensorValues = []
-
-        # Initialisierung der Motor-Instanzen als Klassenattribute
         self.m1 = driver.SignMagnitude(API.ts, API.PWM_CH0, API.PWM_CH1, API.FQD_1, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
         self.m2 = driver.SignMagnitude(API.ts, API.PWM_CH2, API.PWM_CH3, API.FQD_2, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
 
@@ -42,6 +39,7 @@ class API:
                 + -> Forward
                 - -> Backward
         """
+        
         self.driveMotors(speed,speed)
 
     def turn(self, speed, angle):
@@ -119,32 +117,26 @@ class API:
         """
         
         pwm = flink.FlinkPWM()
+        period = pwm.getBaseClock() / API.pwmFreq
         
         # Angle limits
         minAngle = 0
         maxAngle = 270 
 
-        # Ensure that the angle is within the valid range
-        if angle > maxAngle:
-            angle = maxAngle
-        elif angle < minAngle:
-            angle = minAngle
+        # Ensuring that the angle is within the valid range
+        angle = max(min(angle, maxAngle), minAngle)
 
-        # Calculating hightimte limits
-        period = pwm.getBaseClock() / API.pwmFreq
-        minHighTime = (period * 0.06)           # 1.2 ms -> 0.5ms auf Datenblatt?
-        maxHighTime = (period * 0.11)           # 2.2 ms -> 2.5ms auf Datenblatt?
+        # Hightime limits in milliseconds
+        minHighTimeMs = 0.5
+        maxHighTimeMs = 2.5
 
-        # Calculating highTime according to angle and converting it into a factor of 0-1 
-        highTime = (angle / maxAngle) + (minHighTime / 100000)
-        factor = (highTime * API.pwmFreq) / 1000
-        print(factor)
+        # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
+        highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
+        highTimeFactor = (highTimeMs * API.pwmFreq) / 1000
 
-        # Setting the high time according to the calculated factor
+        # Setting period and highTime according to the calculated factor
         pwm.setPeriod(API.servoChannel, int(period))
-        pwm.setHighTime(API.servoChannel, int(period * factor))
+        pwm.setHighTime(API.servoChannel, int(period * highTimeFactor))
 
         # Delay to reach desired angle before continuing
         time.sleep(2)
-
-        print("fertig")

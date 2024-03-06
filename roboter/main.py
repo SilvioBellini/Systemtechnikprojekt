@@ -16,15 +16,6 @@ topic = "test/team2" #Coop
 if(__name__ == "__main__"):
     ginTronic = API()
     sharedData = SharedData()
-    #com = Communication(username, password, topic, sharedData)
+    com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    mode = 0
-
-    #ginTronic.drive(30)
-    #time.sleep(2)
-    #ginTronic.turn(30, 360)  
-    #print("Finished")
-
-    ginTronic.rotateGripper(0)
-    time.sleep(2)
-    ginTronic.rotateGripper(270)  
+    mode = 0  
