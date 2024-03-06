@@ -1,14 +1,38 @@
+import driver
+import flink        
+import math
+import time
+
 class API:
     """
-    Class for basic functions of the robot (locomotion, sensors etc.)
+    Class for basic functions of the robot (locomotion, sensors, etc.)
     """
 
+    # Motorparameters as Classattributes
+    PWM_CH0 = 0
+    PWM_CH1 = 1
+    PWM_CH2 = 2
+    PWM_CH3 = 3
+    FQD_1 = 0
+    FQD_2 = 1
+    ts = 0.01
+    kp = 0.1
+    tn = 0.1
+    ticksPerRotation = 100
+    gearRatio = 16/1
+    motorVoltage = 5
+    servoChannel = 8
+    pwmFreq = 50
+
     def __init__(self):
+        # Initializing instances as Classattributes
         self.sensorValues = []
-    
+        self.m1 = driver.SignMagnitude(API.ts, API.PWM_CH0, API.PWM_CH1, API.FQD_1, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+        self.m2 = driver.SignMagnitude(API.ts, API.PWM_CH2, API.PWM_CH3, API.FQD_2, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+
     def drive(self, speed):
         """
-        Letting both of the robots wheels move with the same speed and direction 
+        Letting both of the robot's wheels move with the same speed and direction 
 
         Parameters:
             speed: Speed with which the wheels turn
@@ -16,11 +40,11 @@ class API:
                 - -> Backward
         """
         
-        pass
+        self.driveMotors(speed,speed)
 
     def turn(self, speed, angle):
         """
-        Letting both of the robots wheels move with the same speed but with opposite direction of rotation
+        Letting both of the robot's wheels move with the same speed but with opposite direction of rotation
         resulting in a rotation of the robot for a specified angle
 
         Parameters:
@@ -29,37 +53,43 @@ class API:
                 - -> Backward
             angle: Angle by which the robot should rotate
         """
+        # Calculating the time needed for the motors to rotate for the desired angle
+        if (speed != 0):
+            timeToRotate = angle / speed
 
-        pass
+        # Setting the desired speed for both motors
+        self.driveMotors(speed, -speed)
 
-    def curve(self, leftSpeed, rightSpeed, angle):
-        """
-        Letting both of the robots wheels move with a different speed and any direction of rotation
-        resulting in driving a curve for a specified angle
+        # Waiting for the calculated time to rotate to the desired angle
+        time.sleep(timeToRotate)
 
-        Parameters:
-            leftSpeed: Rotation speed of the left wheel of the robots perspective
-            rightSpeed: Rotation speed of the right wheel of the robots perspective
-                + -> Forward
-                - -> Backward
-            angle: Angle by which the robot should have turned after the curve
-        """
-
-        pass
+        # Stopping the motors after reaching the desired angle
+        self.stop()
 
     def stop(self):
         """
-        Stopping the robots current movement by setting the wheels speed to 0
+        Stopping the robot's current movement by setting the wheels speed to 0
         """
 
-        pass
+        self.driveMotors(0, 0)
+
+    def driveMotors(self, leftSpeed, rightSpeed):
+        """
+        Helper method to set the speed for both motors
+
+        Parameters:
+            leftSpeed: Speed for the left motor
+            rightSpeed: Speed for the right motor
+        """
+
+        self.m1.setSpeed(leftSpeed)
+        self.m2.setSpeed(rightSpeed)        
 
     def getSensorValues(self):
         """
-        Getting every sensors current value and saving it to a list
+        Getting every sensor's current value and saving it to a list
         Should be called before using readSensorValue()
         """
-
         pass
 
     def readSensorValue(self, index) -> int:
@@ -68,24 +98,45 @@ class API:
         Should only be called after using getSensorValues()
 
         Parameters:
-            index: Specified index of the targetted sensor (Documentation)
+            index: Specified index of the targeted sensor (Documentation)
         """
-
         return None
 
     def align(self):
         """
         Aligning the robot to the marks on the floor
         """
-
         pass
 
     def rotateGripper(self, angle):
         """
-        Rotating the gripper for a specified angle
+        Rotating the gripper for a specified angle using a servo
 
         Parameters:
             angle: Angle by which the gripper should rotate
         """
         
-        pass
+        pwm = flink.FlinkPWM()
+        period = pwm.getBaseClock() / API.pwmFreq
+        
+        # Angle limits
+        minAngle = 0
+        maxAngle = 270 
+
+        # Ensuring that the angle is within the valid range
+        angle = max(min(angle, maxAngle), minAngle)
+
+        # Hightime limits in milliseconds
+        minHighTimeMs = 0.5
+        maxHighTimeMs = 2.5
+
+        # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
+        highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
+        highTimeFactor = (highTimeMs * API.pwmFreq) / 1000
+
+        # Setting period and highTime according to the calculated factor
+        pwm.setPeriod(API.servoChannel, int(period))
+        pwm.setHighTime(API.servoChannel, int(period * highTimeFactor))
+
+        # Delay to reach desired angle before continuing
+        time.sleep(2)
