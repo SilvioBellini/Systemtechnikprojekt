@@ -36,11 +36,11 @@ class Communication():
         Sending a string consisting of an identification number and a specific information to the specified topic.
 
         Parameters:
-            ID: Unique identification number of the transmitted information 
+            id: Unique identification number of the transmitted information 
                 0 = Approval Kitchen
                 1 = Approval Counter
                 2 = Glass Slot
-            Data: Information that should be transmitted
+            data: Information that should be transmitted
         """
 
         message = [id, data]

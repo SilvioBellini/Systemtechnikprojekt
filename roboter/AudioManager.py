@@ -1,11 +1,13 @@
 
 
 class AudioManager:
+    """
+    Class for controlling audio output
+    """
 
     def __init__(self):
         """
-        Initialize the Audiomanager
-        
+        Initialize the Audiomanager        
         """
 
     def playAudioClip (self, index):
@@ -13,15 +15,13 @@ class AudioManager:
         Plays an audio clip with specified index.
 
         Parameter: 
-        Index: Index of the audion clip to be played.
+            index: Index of the audion clip to be played.
         """
 
     def pause(self):
         """
         Pause the currently playing Audio.
-
-        If no Audio playing, doesnt do anything.
-
+        If no audio is playing, doesn't do anything.
         """
 
     def setVolume(self, volume):
@@ -29,6 +29,6 @@ class AudioManager:
         Sets the volume of the audio.
 
         Parameter:
-        Volume: The desired volume level (0 to 100)
+            volume: The desired volume level (0 to 100)
         
         """

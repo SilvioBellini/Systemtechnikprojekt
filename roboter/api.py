@@ -23,7 +23,6 @@ class API:
 
     # GPIO Channels
 
-
     # Configuration motors
     ts = 0.01
     kp = 0.1
@@ -64,6 +63,7 @@ class API:
                 - -> Backward
             angle: Angle by which the robot should rotate
         """
+        
         # Calculating the time needed for the motors to rotate for the desired angle
         if (speed != 0):
             timeToRotate = angle / speed

@@ -3,19 +3,30 @@ import time
 #import neopixel
 
 class StatusDisplay:
-    #ledCount = 48
-    #ledPin = 0
-    #pixels = neopixel.NeoPixel(ledPin, ledCount)
+    """
+    Class for displaying different status with a RGB-LED
+    """
+    #region Classattributes
+
     pwmChRed = 18
     pwmChGreen = 20
     pwmChBlue = 22
     pwmFreq = 10000
 
+    #endregion
+
     def __init__(self):
         pass
 
     def setColor(self, red, green, blue):
-        #StatusDisplay.pixels.fill(color)
+        """
+        Setting the color of the LED with 3 values, getting converdted into a factor from 0-1
+
+        Parameters:
+            red: Red color value (0-255)
+            green: Green color value (0-255)
+            blue: Blue color value (0-255)
+        """
 
         # Creating a pwm for each color channel
         pwmRed = flink.FlinkPWM()
@@ -37,6 +48,3 @@ class StatusDisplay:
         pwmRed.setHighTime(StatusDisplay.pwmChRed, int(period * redHighTime))
         pwmGreen.setHighTime(StatusDisplay.pwmChGreen, int(period * greenHighTime))
         pwmBlue.setHighTime(StatusDisplay.pwmChBlue, int(period * blueHighTime))
-
-
-        

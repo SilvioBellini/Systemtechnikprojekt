@@ -13,11 +13,11 @@ class SharedData():
         Saving the data according to its identification number
 
         Prameters:
-            ID: Unique identification number of the transmitted information
+            id: Unique identification number of the transmitted information
                 0 = Approval Kitchen
                 1 = Approval Counter
                 2 = Glass Slot
-            Data: Information that should get saved
+            data: Information that should get saved
         """
 
         match id:
@@ -36,7 +36,7 @@ class SharedData():
         Returning the data according to its identification number
 
         Paramters:
-            ID: Unique identification number of the transmitted information 
+            id: Unique identification number of the transmitted information 
                 0 = Approval Kitchen
                 1 = Approval Counter
                 2 = Glass Slot

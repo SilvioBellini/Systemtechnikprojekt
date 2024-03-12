@@ -27,8 +27,8 @@ if(__name__ == "__main__"):
     #time.sleep(5)
     #ginTronic.turn(20, 360)
     #time.sleep(5)
-    #ginTronic.rotateGripper(270)
-    #time.sleep(2)
+    ginTronic.rotateGripper(270)
+    time.sleep(2)
     #ginTronic.rotateGripper(0)
     #print("Done")
 

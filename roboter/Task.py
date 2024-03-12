@@ -3,47 +3,55 @@ class Task:
         """
         Initializes the Task object with default values.
         """
+        pass
 
     def findObject(self, mode):
         """
-        Finds an object using the specified mode.
+        Finding either the glass or bottle specified with the mode
 
         Parameters:
-            mode: The mode used for object detection.
+            mode: Specifying what object should be found
         """
+        pass
 
     def grabObject(self):
         """
-        Grabs the currently detected object.
+        Grabbing the currently detected object.
         """
+        pass
 
     def moveToCounter(self, glassSlot):
         """
-        drives to specific slot at the counter.
+        Driving to the specific slot at the counter
 
         Parameters:
-            glassSlot: the slot where the glass is located.
+            glassSlot: The slot where the glass is located
         """
+        pass
 
     def switchSlot(self):
         """
-        switches slot if there is an obstacle.
+        Switching the slot if an obstacle is detected
         """
+        pass
 
     def place(self):
         """
-        Places either glass or bottle onto the counter.
+        Placing either glass or bottle onto the counter
         """
+        pass
 
     def fill(self):
         """
-        fills the glass with the bottle.
+        Filling the glass with the bottle by tipping it over its head
         """
+        pass
 
     def moveToEndPos(self, mode):
         """
-        Moves the robot to the end position based on the specified mode.
+        Moving the robot to the end position based on the specified mode
 
         Parameters:
-            mode: The mode used for determining the end position.
+            mode: Specifying the endposition based on what object got handled
         """
+        pass
