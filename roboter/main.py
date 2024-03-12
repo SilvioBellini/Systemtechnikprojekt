@@ -4,46 +4,38 @@ try:
     import time
 except ModuleNotFoundError:
     pass
+
+from api import *
 from sharedData import *
 from communication import *
-from api import *
 from stopWatch import *
+from audioManager import *
 from statusDisplay import *
+from task import *
+
+#region Classattributes
 
 username = "test" #team2
 password = "test" #rHGpIGxo0o1k
 topic = "test/team2" #Coop
+mode = None
+
+#endregion
 
 if(__name__ == "__main__"):
+    # Initializing Objects
     ginTronic = API()
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    mode = 0
+    audio = AudioManager()
     statusLED = StatusDisplay()
+    task = Task()
 
-    # Test
-    #ginTronic.drive(20)
-    #time.sleep(5)
-    #ginTronic.turn(20, 360)
-    #time.sleep(5)
-    ginTronic.rotateGripper(270)
-    time.sleep(2)
-    #ginTronic.rotateGripper(0)
-    #print("Done")
-
-    while True:
-        statusLED.setColor(255, 0, 0)           # Red
-        time.sleep(2)
-        statusLED.setColor(0, 255, 0)           # Green
-        time.sleep(2)
-        statusLED.setColor(0, 0, 255)           # Blue
-        time.sleep(2)
-        statusLED.setColor(255, 255, 0)         # Yellow
-        time.sleep(2)
-        statusLED.setColor(0, 255, 255)         # Cyan
-        time.sleep(2)
-        statusLED.setColor(255, 0, 255)         # Magenta
-        time.sleep(2)
-        statusLED.setColor(255, 255, 255)       # White
-        time.sleep(2)
+    try:
+        # Running main python code in here
+        pass
+    except Exception as error:
+        # Setting the statusLed to red and displaying an error message
+        statusLED.setColor(255, 0, 0)
+        print("An error has occured: ", repr(error))

@@ -20,7 +20,7 @@ class StatusDisplay:
 
     def setColor(self, red, green, blue):
         """
-        Setting the color of the LED with 3 values, getting converdted into a factor from 0-1
+        Setting the color of the LED with 3 values, getting converted into a factor from 0-1
 
         Parameters:
             red: Red color value (0-255)

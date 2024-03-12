@@ -1,9 +1,14 @@
 class Task:
-    def __init__(self):
+    def __init__(self, mode, api, sharedData, communication, audio, statusLed):
         """
         Initializes the Task object with default values.
         """
-        pass
+        self.mode = mode
+        self.api = api
+        self.sharedData = sharedData
+        self.com = communication
+        self.audio = audio
+        self.statusLed = statusLed
 
     def findObject(self, mode):
         """
