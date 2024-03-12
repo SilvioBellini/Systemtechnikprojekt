@@ -29,13 +29,13 @@ if(__name__ == "__main__"):
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
     audio = AudioManager()
-    statusLED = StatusDisplay()
-    task = Task()
+    statusLed = StatusDisplay()
+    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
 
     try:
         # Running main python code in here
         pass
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
-        statusLED.setColor(255, 0, 0)
+        statusLed.setColor(255, 0, 0)
         print("An error has occured: ", repr(error))
