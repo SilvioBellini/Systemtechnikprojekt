@@ -18,14 +18,19 @@ class StatusDisplay:
     def __init__(self):
         pass
 
-    def setColor(self, red, green, blue):
+    def setColor(self, red : int, green : int, blue : int) -> None:
         """
         Setting the color of the LED with 3 values, getting converted into a factor from 0-1
 
-        Parameters:
-            red: Red color value (0-255)
-            green: Green color value (0-255)
-            blue: Blue color value (0-255)
+        Parameters
+        ----------
+        red: Red color value (0-255)
+        green: Green color value (0-255)
+        blue: Blue color value (0-255)
+
+        Returns
+        ----------
+        None
         """
 
         # Creating a pwm for each color channel

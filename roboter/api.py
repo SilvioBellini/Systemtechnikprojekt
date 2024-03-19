@@ -22,6 +22,10 @@ class API:
     fqdRight = 0
 
     # GPIO Channels
+    modeCh1 = 4
+    modeCh2 = 6
+    modeCh4 = 8
+    modeCh8 = 10
 
     # Configuration motors
     ts = 0.01
@@ -40,28 +44,56 @@ class API:
         self.m1 = driver.SignMagnitude(API.ts, API.pwmChLeftA, API.pwmChLeftB, API.fqdLeft, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
         self.m2 = driver.SignMagnitude(API.ts, API.pwmChRightA, API.pwmChRightB, API.fqdRight, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
 
-    def drive(self, speed):
+    def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
-        Letting both of the robot's wheels move with the same speed and direction 
+        Helper method to set the speed for both motors individually.
 
-        Parameters:
-            speed: Speed with which the wheels turn
-                + -> Forward
-                - -> Backward
+        Parameters
+        ----------
+        leftSpeed: Speed for the left motor
+        rightSpeed: Speed for the right motor
+
+        Returns
+        ----------
+        None
+        """
+
+        self.m1.setSpeed(leftSpeed)
+        self.m2.setSpeed(rightSpeed)        
+
+    def drive(self, speed : float) -> None:
+        """
+        Letting both of the robot's wheels move with the same speed and direction by setting to opposite speeds
+        because the motors face opposite ways.
+
+        Parameters
+        ----------
+        speed: Speed with which the wheels turn 
+            > 0: Forward
+            < 0: Backward
+        
+        Returns
+        ----------
+        None
         """
         
-        self.driveMotors(speed,speed)
+        self.setMotorSpeeds(speed,-speed)
 
-    def turn(self, speed, angle):
+    def turn(self, speed : float, angle : float) -> None:
         """
-        Letting both of the robot's wheels move with the same speed but with opposite direction of rotation
-        resulting in a rotation of the robot for a specified angle
+        Letting both of the robot's wheels move with the same speed but with opposite direction by setting to the same
+        speeds becasue the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
 
-        Parameters:
-            speed: Speed with which the wheels turn
-                + -> Forward
-                - -> Backward
-            angle: Angle by which the robot should rotate
+        Parameters
+        ----------
+        speed: Speed with which the wheels turn 
+            > 0: Forward
+            < 0: Backward
+        angle: Angle by which the robot should rotate
+        
+        Returns
+        ----------
+        None
         """
         
         # Calculating the time needed for the motors to rotate for the desired angle
@@ -69,7 +101,7 @@ class API:
             timeToRotate = angle / speed
 
         # Setting the desired speed for both motors
-        self.driveMotors(speed, -speed)
+        self.setMotorSpeeds(speed, speed)
 
         # Waiting for the calculated time to rotate to the desired angle
         time.sleep(timeToRotate)
@@ -77,54 +109,64 @@ class API:
         # Stopping the motors after reaching the desired angle
         self.stop()
 
-    def stop(self):
+    def stop(self) -> None:
         """
-        Stopping the robot's current movement by setting the wheels speed to 0
-        """
+        Stopping the robot's current movement by setting the wheels speed to 0.
 
-        self.driveMotors(0, 0)
-
-    def driveMotors(self, leftSpeed, rightSpeed):
-        """
-        Helper method to set the speed for both motors
-
-        Parameters:
-            leftSpeed: Speed for the left motor
-            rightSpeed: Speed for the right motor
+        Returns
+        ----------
+        None
         """
 
-        self.m1.setSpeed(leftSpeed)
-        self.m2.setSpeed(rightSpeed)        
+        self.setMotorSpeeds(0, 0)
 
-    def getSensorValues(self):
+    def getSensorValues(self) -> None:
         """
-        Getting every sensor's current value and saving it to a list
-        Should be called before using readSensorValue()
+        Getting every sensor's current value and saving it to a list.
+        Should be called before using readSensorValue().
+
+        Returns
+        ----------
+        None
         """
         pass
 
-    def readSensorValue(self, index) -> int:
+    def readSensorValue(self, index : int) -> int:
         """
-        Getting the last saved value of a specific sensor
-        Should only be called after using getSensorValues()
+        Getting the last saved value of a specific sensor.
+        Should only be called after using getSensorValues().
 
-        Parameters:
-            index: Specified index of the targeted sensor (Documentation)
+        Parameters
+        ----------
+        index: Specified index of the targeted sensor (Documentation)
+
+        Returns
+        ----------
+        int
         """
         return None
 
-    def align(self):
+    def align(self) -> None:
         """
         Aligning the robot to the marks on the floor
+
+        Returns
+        ----------
+        None
         """
         pass
 
-    def rotateGripper(self, angle):
+    def rotateGripper(self, angle : float) -> None:
         """
         Rotating the gripper for a specified angle using a servo
 
-        Parameters:
-            angle: Angle by which the gripper should rotate
+        Parameters
+        ----------
+        angle: Angle by which the gripper should rotate
+
+        Returns
+        ----------
+        None
         """
         
         pwm = flink.FlinkPWM()
@@ -151,3 +193,31 @@ class API:
 
         # Delay to reach desired angle before continuing
         time.sleep(2)
+
+    def getMode(self) -> int:
+        """
+        Getting and returning the mode that specifies what object has to be handeled as an integer (0-15)
+        0:  Glass
+        1:  Bottle
+
+        Returns:
+        ----------
+        int
+        """
+
+        # Initializing
+        gpio = flink.FlinkGPIO()
+        gpio.setDir(self.modeCh1, False)   
+        gpio.setDir(self.modeCh2, False)  
+        gpio.setDir(self.modeCh4, False)   
+        gpio.setDir(self.modeCh8, False)
+
+        # Reading each input signal and converting it to an integer from 0-15
+        inputValues = [gpio.getValue(self.modeCh1), gpio.getValue(self.modeCh2), gpio.getValue(self.modeCh4), gpio.getValue(self.modeCh8)]
+        mode = 0
+
+        for i in range(inputValues.__len__()):
+            if inputValues[i]:
+                mode += 2 ** i
+        
+        return mode

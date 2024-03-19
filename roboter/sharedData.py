@@ -1,4 +1,4 @@
-class SharedData():
+class SharedData:
     """
     Class for saving the data the gets sent to and received from the partner robot.
     """
@@ -8,16 +8,21 @@ class SharedData():
         self.approvalCounter = False
         self.glassSlot = 99
     
-    def setData(self, id, data):
+    def setData(self, id : int, data) -> None:
         """
-        Saving the data according to its identification number
+        Saving the data according to its identification number.
 
-        Prameters:
-            id: Unique identification number of the transmitted information
-                0 = Approval Kitchen
-                1 = Approval Counter
-                2 = Glass Slot
-            data: Information that should get saved
+        Prameters
+        ----------
+        id: Unique identification number of the transmitted information
+            0 = Approval Kitchen \n
+            1 = Approval Counter \n
+            2 = Glass Slot 
+        data: Information that should get saved
+
+        Returns
+        ----------
+        None
         """
 
         match id:
@@ -31,15 +36,20 @@ class SharedData():
             case _:
                 print("Invalid ID! Unable to set data")
 
-    def getData(self, id):
+    def getData(self, id : int) -> any:
         """
-        Returning the data according to its identification number
+        Returning the data according to its identification number.
 
-        Paramters:
-            id: Unique identification number of the transmitted information 
-                0 = Approval Kitchen
-                1 = Approval Counter
-                2 = Glass Slot
+        Paramters
+        ----------
+        id: Unique identification number of the transmitted information 
+            0 = Approval Kitchen \n
+            1 = Approval Counter \n
+            2 = Glass Slot
+
+        Returns
+        ----------
+        any
         """
         
         match id:

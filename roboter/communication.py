@@ -3,17 +3,18 @@ try:
 except ModuleNotFoundError:
     pass
 
-class Communication():
+class Communication:
     """
-    Class for establishing a wireless connection to a MQTTX-Server and exchanging information 
+    Class for establishing a wireless connection to a MQTTX-Server and exchanging information.
 
-    Parameters:
-        username: Name used for connection
-        password: Password used for connection
-        topic: Channel of connection
+    Parameters
+    ----------
+    username: Name used for connection
+    password: Password used for connection
+    topic: Channel of connection
     """
 
-    def __init__(self, username, password, topic, sharedData):
+    def __init__(self, username : str, password : str, topic : str, sharedData):
         # Initializing a client and establishing a connection to a specific topic
         self.sharedData = sharedData
         self.username = username
@@ -31,16 +32,21 @@ class Communication():
         else:
             print("No connection can be established!")
 
-    def sendMessage(self, id, data):
+    def sendMessage(self, id : int, data) -> None:
         """
         Sending a string consisting of an identification number and a specific information to the specified topic.
 
-        Parameters:
-            id: Unique identification number of the transmitted information 
-                0 = Approval Kitchen
-                1 = Approval Counter
-                2 = Glass Slot
-            data: Information that should be transmitted
+        Parameters
+        ----------
+        id: Unique identification number of the transmitted information 
+            0 = Approval Kitchen \n
+            1 = Approval Counter \n
+            2 = Glass Slot
+        data: Information that should be transmitted
+
+        Returns
+        ----------
+        None
         """
 
         message = [id, data]
@@ -48,9 +54,13 @@ class Communication():
         
         print("Sent Message: ", message)
 
-    def receiveMessage(self):
+    def receiveMessage(self) -> None:
         """
         Searching for an unread message on the specified topic. Saving received information in the SharedData Class.
+
+        Returns
+        ----------
+        None
         """
 
         message = self.client.read()

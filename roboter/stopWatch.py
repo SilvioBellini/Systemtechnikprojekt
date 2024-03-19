@@ -8,12 +8,17 @@ class StopWatch:
     def __init__(self):
         self.startTime = datetime.now()
 
-    def start(self, durationMs):
+    def start(self, durationMs : int) -> None:
         """
         Starts a new stopwatch
 
-        Parameters:
-            durationMs: Specified duration in milliseconds the stopwatch should run
+        Parameters
+        ----------
+        durationMs: Specified duration in milliseconds the stopwatch should run
+
+        Returns
+        ----------
+        None
         """
 
         self.startTime = datetime.now()
@@ -22,6 +27,10 @@ class StopWatch:
     def isFinished(self) -> bool:
         """
         Returning if the specified duration has already been exceeded
+
+        Returns
+        ----------
+        bool
         """
         
         return datetime.now() >= self.startTime + timedelta(milliseconds=self.duration)
