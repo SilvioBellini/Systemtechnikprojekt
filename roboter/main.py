@@ -1,3 +1,5 @@
+# region Imports
+
 try:
     import driver
     import flink
@@ -5,13 +7,15 @@ try:
 except ModuleNotFoundError:
     pass
 
-from api import *
-from sharedData import *
-from communication import *
-from stopWatch import *
-from audioManager import *
-from statusDisplay import *
-from task import *
+from api import API
+from sharedData import SharedData
+from communication import Communication
+from stopWatch import StopWatch
+from audioManager import AudioManager
+from statusDisplay import StatusDisplay
+from task import Task
+
+#endregion
 
 #region Classattributes
 

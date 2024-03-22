@@ -1,5 +1,15 @@
+#region Imports
+
+from api import API
+from sharedData import SharedData
+from communication import Communication
+from audioManager import AudioManager
+from statusDisplay import StatusDisplay
+
+#endregion
+
 class Task:
-    def __init__(self, mode : int, api, sharedData, communication, audio, statusLed):
+    def __init__(self, mode : int, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay):
         """
         Initializes the Task object with default values.
         """
@@ -34,7 +44,7 @@ class Task:
         """
         pass
 
-    def moveToCounter(self, glassSlot) -> None:
+    def moveToCounter(self, glassSlot : int) -> None:
         """
         Driving to the specific slot at the counter.
 
