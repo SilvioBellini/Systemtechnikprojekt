@@ -124,27 +124,52 @@ class API:
         """
         Getting every sensor's current value and saving it to a list.
         Should be called before using readSensorValue().
-
+ 
         Returns
         ----------
         None
         """
-        pass
 
+        sensor = flink.FlinkReflectiveSensor()
+
+        amountOfSensors = 4
+        values = []
+
+        for i in range(amountOfSensors):
+            values.append(sensor.getValue(i))
+        
+        return values
+ 
     def readSensorValue(self, index : int) -> int:
         """
         Getting the last saved value of a specific sensor.
         Should only be called after using getSensorValues().
-
+ 
         Parameters
         ----------
         index: Specified index of the targeted sensor (Documentation)
-
+ 
         Returns
         ----------
         int
         """
-        return None
+
+        """if self.values:
+                # make sure Index is valid
+                if 0 <= index < len(self.sensor_values):
+                    # last saved index
+                    return self.sensor_values[index]
+                else:
+                    print("Invalid sensor index.")
+        else:
+            print("Sensor values have not been fetched yet. Call getSensorValues() first.")
+            
+        # if sensorvalues not available return none
+        return None"""
+
+        values = self.getSensorValues()
+        
+        return values[index]
 
     def align(self) -> None:
         """
@@ -219,5 +244,7 @@ class API:
         for i in range(inputValues.__len__()):
             if inputValues[i]:
                 mode += 2 ** i
-        
+
         return mode
+    
+        

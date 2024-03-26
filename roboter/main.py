@@ -11,9 +11,9 @@ from api import API
 from sharedData import SharedData
 from communication import Communication
 from stopWatch import StopWatch
-from audioManager import AudioManager
+#from audioManager import AudioManager
 from statusDisplay import StatusDisplay
-from task import Task
+#from task import Task
 
 #endregion
 
@@ -32,9 +32,9 @@ if(__name__ == "__main__"):
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    audio = AudioManager()
+    #audio = AudioManager()
     statusLed = StatusDisplay()
-    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
+    #task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
 
     try:
         # Running main python code in here
@@ -43,3 +43,26 @@ if(__name__ == "__main__"):
         # Setting the statusLed to red and displaying an error message
         statusLed.setColor(255, 0, 0)
         print("An error has occured: ", repr(error))
+    
+
+    """ ---> Testlauf für Hexa-Schalter
+    watch.start(60000)
+
+    while not watch.isFinished():
+        print(ginTronic.getMode())
+        time.sleep(3)
+    """
+        
+    """ ---> Testlauf für readSensorValue
+    
+    watch.start(60000)
+
+    while not watch.isFinished():
+        print(ginTronic.readSensorValue(0))
+        time.sleep(3)
+        print(ginTronic.readSensorValue(1))
+        time.sleep(3)
+        print(ginTronic.readSensorValue(2))
+        time.sleep(3)
+        print(ginTronic.readSensorValue(3))
+        time.sleep(3)"""
