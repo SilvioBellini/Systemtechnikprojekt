@@ -11,9 +11,9 @@ from api import API
 from sharedData import SharedData
 from communication import Communication
 from stopWatch import StopWatch
-#from audioManager import AudioManager
+from audioManager import AudioManager
 from statusDisplay import StatusDisplay
-#from task import Task
+from task import Task
 
 #endregion
 
@@ -32,9 +32,9 @@ if(__name__ == "__main__"):
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    #audio = AudioManager()
+    audio = AudioManager()
     statusLed = StatusDisplay()
-    #task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
+    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
 
     try:
         # Running main python code in here
