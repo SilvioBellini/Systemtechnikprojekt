@@ -22,7 +22,8 @@ class AudioManager:
         ----------
         None
         """
-        pass
+        
+        message = "7E 04 41 00 {} EF".format(index)
 
     def pause(self) -> None:
         """

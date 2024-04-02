@@ -22,6 +22,8 @@ class API:
     fqdRight = 0
 
     # GPIO Channels
+    sensorChBottle = 21
+    sensorChGlas = 23
     modeCh1 = 4
     modeCh2 = 6
     modeCh4 = 8
@@ -40,9 +42,21 @@ class API:
 
     def __init__(self):
         # Initializing instances
+        self.m1 = driver.SignMagnitude(self.ts, self.pwmChLeftA, self.pwmChLeftB, self.fqdLeft, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
+        self.m2 = driver.SignMagnitude(self.ts, self.pwmChRightA, self.pwmChRightB, self.fqdRight, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
+        
+        self.irSensors = flink.FlinkReflectiveSensor()
+        self.gpio = flink.FlinkGPIO()
+        self.pwm = flink.FlinkPWM()
+
         self.sensorValues = []
-        self.m1 = driver.SignMagnitude(API.ts, API.pwmChLeftA, API.pwmChLeftB, API.fqdLeft, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
-        self.m2 = driver.SignMagnitude(API.ts, API.pwmChRightA, API.pwmChRightB, API.fqdRight, API.ticksPerRotation, API.motorVoltage, API.gearRatio, API.kp, API.tn)
+        self.gpio.setDir(self.sensorChBottle, False)
+        self.gpio.setDir(self.sensorChGlas, False)
+
+        self.gpio.setDir(self.modeCh1, False)
+        self.gpio.setDir(self.modeCh2, False)
+        self.gpio.setDir(self.modeCh4, False)
+        self.gpio.setDir(self.modeCh8, False)
 
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
@@ -129,16 +143,14 @@ class API:
         ----------
         None
         """
-
-        sensor = flink.FlinkReflectiveSensor()
-
-        amountOfSensors = 4
-        values = []
+        self.sensorValues = []     
+        amountOfSensors = 7
 
         for i in range(amountOfSensors):
-            values.append(sensor.getValue(i))
-        
-        return values
+            self.sensorValues.append(self.irSensors.getValue(i))
+
+        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
+        self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
  
     def readSensorValue(self, index : int) -> int:
         """
@@ -167,9 +179,9 @@ class API:
         # if sensorvalues not available return none
         return None"""
 
-        values = self.getSensorValues()
+        self.getSensorValues()
         
-        return values[index]
+        return self.sensorValues[index]
 
     def align(self) -> None:
         """
@@ -181,12 +193,13 @@ class API:
         """
         pass
 
-    def rotateGripper(self, angle : float) -> None:
+    def rotateGripper(self, channel, angle : float) -> None:
         """
         Rotating the gripper for a specified angle using a servo
 
         Parameters
         ----------
+        channel: Channel of the motor that should rotate
         angle: Angle by which the gripper should rotate
 
         Returns
@@ -194,8 +207,7 @@ class API:
         None
         """
         
-        pwm = flink.FlinkPWM()
-        period = pwm.getBaseClock() / API.pwmFreq
+        period = self.pwm.getBaseClock() / self.pwmFreq
         
         # Angle limits
         minAngle = 0
@@ -210,11 +222,11 @@ class API:
 
         # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
-        highTimeFactor = (highTimeMs * API.pwmFreq) / 1000
+        highTimeFactor = (highTimeMs * self.pwmFreq) / 1000
 
         # Setting period and highTime according to the calculated factor
-        pwm.setPeriod(API.pwmChFill, int(period))
-        pwm.setHighTime(API.pwmChFill, int(period * highTimeFactor))
+        self.pwm.setPeriod(channel, int(period))
+        self.pwm.setHighTime(channel, int(period * highTimeFactor))
 
         # Delay to reach desired angle before continuing
         time.sleep(2)
@@ -229,16 +241,9 @@ class API:
         ----------
         int
         """
-
-        # Initializing
-        gpio = flink.FlinkGPIO()
-        gpio.setDir(self.modeCh1, False)   
-        gpio.setDir(self.modeCh2, False)  
-        gpio.setDir(self.modeCh4, False)   
-        gpio.setDir(self.modeCh8, False)
-
+        
         # Reading each input signal and converting it to an integer from 0-15
-        inputValues = [gpio.getValue(self.modeCh1), gpio.getValue(self.modeCh2), gpio.getValue(self.modeCh4), gpio.getValue(self.modeCh8)]
+        inputValues = [self.gpio.getValue(self.modeCh1), self.gpio.getValue(self.modeCh2), self.gpio.getValue(self.modeCh4), self.gpio.getValue(self.modeCh8)]
         mode = 0
 
         for i in range(inputValues.__len__()):
