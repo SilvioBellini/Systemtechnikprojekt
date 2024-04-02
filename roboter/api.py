@@ -181,7 +181,7 @@ class API:
         """
         pass
 
-    def rotateGripper(self, angle : float) -> None:
+    def rotateGripper(self, channel, steps, angle : float) -> None:
         """
         Rotating the gripper for a specified angle using a servo
 
@@ -212,10 +212,20 @@ class API:
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
         highTimeFactor = (highTimeMs * API.pwmFreq) / 1000
 
-        # Setting period and highTime according to the calculated factor
+        """# Setting period and highTime according to the calculated factor
         pwm.setPeriod(API.pwmChFill, int(period))
-        pwm.setHighTime(API.pwmChFill, int(period * highTimeFactor))
+        pwm.setHighTime(API.pwmChFill, int(period * highTimeFactor))"""
+        
+        summe = 0
+        step = 0
 
+        while summe < angle:
+            step += 1
+            highTimeFactor2 = highTimeFactor * (step / steps)
+            pwm.setPeriod(channel, int(period))
+            pwm.setHighTime(channel, int(period * highTimeFactor2))
+            summe += angle / steps
+            time.sleep(0.3)
         # Delay to reach desired angle before continuing
         time.sleep(2)
 

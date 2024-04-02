@@ -45,24 +45,3 @@ if(__name__ == "__main__"):
         print("An error has occured: ", repr(error))
     
 
-    """ ---> Testlauf für Hexa-Schalter
-    watch.start(60000)
-
-    while not watch.isFinished():
-        print(ginTronic.getMode())
-        time.sleep(3)
-    """
-        
-    """ ---> Testlauf für readSensorValue
-    
-    watch.start(60000)
-
-    while not watch.isFinished():
-        print(ginTronic.readSensorValue(0))
-        time.sleep(3)
-        print(ginTronic.readSensorValue(1))
-        time.sleep(3)
-        print(ginTronic.readSensorValue(2))
-        time.sleep(3)
-        print(ginTronic.readSensorValue(3))
-        time.sleep(3)"""
