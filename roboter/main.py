@@ -19,9 +19,9 @@ from task import Task
 
 #region Classattributes
 
-username = "test" #team2
-password = "test" #rHGpIGxo0o1k
-topic = "test/team2" #Coop
+username = "team2"
+password = "rHGpIGxo0o1k"
+topic = "team2/test"
 mode = None
 
 #endregion
@@ -34,11 +34,20 @@ if(__name__ == "__main__"):
     watch = StopWatch()
     audio = AudioManager()
     statusLed = StatusDisplay()
+    mode = ginTronic.getMode()
     task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
 
     try:
         # Running main python code in here
+        #print("Playing audio")
+        #audio.selectDevice()
+        #audio.setVolume(10)
+        #audio.playAudioClip(0)
+        #time.sleep(20)
+        #print("Time over")
         pass
+        
+
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
         statusLed.setColor(255, 0, 0)
