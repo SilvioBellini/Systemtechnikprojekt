@@ -1,4 +1,5 @@
 import flink
+import time
 
 class AudioManager:
     """
@@ -26,11 +27,12 @@ class AudioManager:
         ----------
         None
         """
+
         for byte in byteMessage:
             if(self.uart.write(byte) == 0):
                 raise Exception("Byte could not get sent")
-            else:
-                print("Message sent: {}".format(byte))
+
+        time.sleep(0.1)
 
     def selectDevice(self) -> None:
         """
@@ -46,23 +48,22 @@ class AudioManager:
 
         self.sendByte(byteMessage)
 
-    def playAudioClip (self, index : int) -> None:
+    def playAudioClip(self, folder : int, number : int) -> None:
         """
         Plays an audio clip with specified index.
 
         Parameter
         ----------
-        index: Index of the audion clip to be played
+        folder: Number of the folder the audio clip is in (Starting with 1)
+        index: Number of the audio clip that should get played (Starting with 1)
         
         Returns
         ----------
         None
         """
 
-        # Converting index to a hexadecimal number with capital letters and then to a byte
-        # message = "7E 04 41 00 {:0>2X} EF".format(index)
-
-        command = "7E 04 42 01 01 EF"
+        # Converting folder and number to a hexadecimal number with capital letters and then to a byte
+        command = "7E 04 42 {:0>2X} {:0>2X} EF".format(folder, number)
         byteMessage = bytes.fromhex(command)
 
         self.sendByte(byteMessage)
@@ -78,7 +79,7 @@ class AudioManager:
         """
         
         command = "7E 02 02 EF"
-        byteMessage = bytes(command, "utf-8")
+        byteMessage = bytes.fromhex(command)
 
         self.sendByte(byteMessage)   
         
@@ -93,27 +94,26 @@ class AudioManager:
         """
 
         command = "7E 02 01 EF"
-        byteMessage = bytes(command, "utf-8")
+        byteMessage = bytes.fromhex(command)
 
         self.sendByte(byteMessage)
 
-    def setVolume(self, volume : float) -> None:
+    def setVolume(self, volume : int) -> None:
         """
         Sets the volume of the audio.
 
         Parameters
         ----------
-        volume: The desired volume level (0-100)
+        volume: The desired volume level (0-30)
         
         Returns
         ----------
         None
         """
 
-        # Clamping the volume from 0-100 and converting it to a hexadecimal number with capital letters and then to a byte
-        volume = max(min(volume, 100), 0)
-        # message = "7E 03 31 {:0>X} EF".format(volume)
-        command = "7E 03 31 32 EF"
+        # Clamping the volume from 0-30 and converting it to a hexadecimal number with capital letters and then to a byte
+        volume = max(min(volume, 30), 0)
+        command = "7E 03 31 {:0>2X} EF".format(volume)
         byteMessage = bytes.fromhex(command)
         
         self.sendByte(byteMessage)
