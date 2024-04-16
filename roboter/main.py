@@ -28,17 +28,19 @@ mode = None
 
 if(__name__ == "__main__"):
     # Initializing Objects
-    #ginTronic = API()
-    #sharedData = SharedData()
-    #com = Communication(username, password, topic, sharedData)
-    #watch = StopWatch()
+    ginTronic = API()
+    sharedData = SharedData()
+    com = Communication(username, password, topic, sharedData)
+    watch = StopWatch()
     audio = AudioManager()
-    #statusLed = StatusDisplay()
-    #mode = ginTronic.getMode()
-    #task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
+    statusLed = StatusDisplay()
+    mode = ginTronic.getMode()
+    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
 
     try:
         # Running main python code in here
+
+        # Test Audio
         audio.selectDevice()
         audio.setVolume(10)
         audio.playAudioClip(1, 3)
@@ -47,8 +49,8 @@ if(__name__ == "__main__"):
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
-        #statusLed.setColor(255, 0, 0)
-        #print("An error has occured: ", repr(error))
+        statusLed.setColor(255, 0, 0)
+        print("An error has occured: ", repr(error))
         pass
     
 
