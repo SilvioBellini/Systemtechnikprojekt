@@ -14,7 +14,7 @@ class StopWatch:
 
         Parameters
         ----------
-        durationMs: Specified duration in milliseconds the stopwatch should run
+        durationMs: Specified duration in seconds the stopwatch should run
 
         Returns
         ----------
@@ -22,7 +22,7 @@ class StopWatch:
         """
 
         self.startTime = datetime.now()
-        self.duration = durationMs
+        self.duration = durationMs / 1000
 
     def isFinished(self) -> bool:
         """
