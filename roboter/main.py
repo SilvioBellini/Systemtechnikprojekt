@@ -54,6 +54,3 @@ if(__name__ == "__main__"):
         # Setting the statusLed to red and displaying an error message
         statusLed.setColor(255, 0, 0)
         print("An error has occured: ", repr(error))
-        pass
-    
-
