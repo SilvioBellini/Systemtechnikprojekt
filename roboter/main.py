@@ -16,7 +16,6 @@ from statusDisplay import StatusDisplay
 from task import Task
 from testClass import TestClass
 
-
 #endregion
 
 #region Classattributes
