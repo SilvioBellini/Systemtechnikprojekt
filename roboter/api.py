@@ -85,7 +85,7 @@ class API:
 
         Parameters
         ----------
-        speed: Speed with which the wheels turn 
+        speed: Speed with which the wheels turn in m/s
             > 0: Forward
             < 0: Backward
         
@@ -103,7 +103,7 @@ class API:
 
         Parameters
         ----------
-        speed: Speed with which the wheels turn 
+        speed: Speed with which the wheels turn in m/s
             > 0: Forward
             < 0: Backward
         angle: Angle by which the robot should rotate
@@ -183,7 +183,7 @@ class API:
         """
         pass
 
-    def rotateGripper(self, channel : int, stepCount : int, angle : float) -> None:
+    def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """
         Rotating the gripper for a specified angle using a servo
 
