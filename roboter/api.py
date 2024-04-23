@@ -62,19 +62,21 @@ class API:
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
         Helper method to set the speed for both motors individually.
+        Turns the input from m/s in rad/s. w = v / r
 
         Parameters
         ----------
-        leftSpeed: Speed for the left motor
-        rightSpeed: Speed for the right motor
+        leftSpeed: Speed for the left motor in m/s
+        rightSpeed: Speed for the right motor in m/s
 
         Returns
         ----------
         None
         """
 
-        self.m1.setSpeed(leftSpeed)
-        self.m2.setSpeed(rightSpeed)        
+        wheelRadius = 0.03265 # meters
+        self.m1.setSpeed(leftSpeed / wheelRadius)
+        self.m2.setSpeed(rightSpeed / wheelRadius)        
 
     def drive(self, speed : float) -> None:
         """
@@ -97,7 +99,7 @@ class API:
     def turn(self, speed : float, angle : float) -> None:
         """
         Letting both of the robot's wheels move with the same speed but with opposite direction by setting to the same
-        speeds becasue the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
+        speeds because the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
 
         Parameters
         ----------
@@ -166,19 +168,6 @@ class API:
         ----------
         int
         """
-
-        """if self.values:
-                # make sure Index is valid
-                if 0 <= index < len(self.sensor_values):
-                    # last saved index
-                    return self.sensor_values[index]
-                else:
-                    print("Invalid sensor index.")
-        else:
-            print("Sensor values have not been fetched yet. Call getSensorValues() first.")
-            
-        # if sensorvalues not available return none
-        return None"""
 
         self.getSensorValues()
         
