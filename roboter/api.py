@@ -22,6 +22,7 @@ class API:
     fqdRight = 0
 
     # GPIO Channels
+    enableServo = 18
     sensorChBottle = 21
     sensorChGlas = 23
     modeCh1 = 4

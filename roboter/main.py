@@ -14,6 +14,8 @@ from stopWatch import StopWatch
 from audioManager import AudioManager
 from statusDisplay import StatusDisplay
 from task import Task
+from test import Test
+
 
 #endregion
 
@@ -36,6 +38,7 @@ if(__name__ == "__main__"):
     statusLed = StatusDisplay()
     mode = ginTronic.getMode()
     task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
+    test = 
 
     try:
         # Running main python code in here
