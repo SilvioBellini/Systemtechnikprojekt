@@ -1,4 +1,7 @@
-class Test:
+import flink
+import driver
+
+class TestClass:
     
     def testAudio(self):
         audio.selectDevice()
