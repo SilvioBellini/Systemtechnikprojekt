@@ -62,19 +62,21 @@ class API:
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
         Helper method to set the speed for both motors individually.
+        Turns the input from m/s in rad/s. w = v / r
 
         Parameters
         ----------
-        leftSpeed: Speed for the left motor
-        rightSpeed: Speed for the right motor
+        leftSpeed: Speed for the left motor in m/s
+        rightSpeed: Speed for the right motor in m/s
 
         Returns
         ----------
         None
         """
 
-        self.m1.setSpeed(leftSpeed)
-        self.m2.setSpeed(rightSpeed)        
+        wheelRadius = 0.03265 # meters
+        self.m1.setSpeed(leftSpeed / wheelRadius)
+        self.m2.setSpeed(rightSpeed / wheelRadius)        
 
     def drive(self, speed : float) -> None:
         """
