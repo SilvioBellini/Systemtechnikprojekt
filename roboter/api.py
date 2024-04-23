@@ -97,7 +97,7 @@ class API:
     def turn(self, speed : float, angle : float) -> None:
         """
         Letting both of the robot's wheels move with the same speed but with opposite direction by setting to the same
-        speeds becasue the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
+        speeds because the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
 
         Parameters
         ----------
@@ -166,19 +166,6 @@ class API:
         ----------
         int
         """
-
-        """if self.values:
-                # make sure Index is valid
-                if 0 <= index < len(self.sensor_values):
-                    # last saved index
-                    return self.sensor_values[index]
-                else:
-                    print("Invalid sensor index.")
-        else:
-            print("Sensor values have not been fetched yet. Call getSensorValues() first.")
-            
-        # if sensorvalues not available return none
-        return None"""
 
         self.getSensorValues()
         
