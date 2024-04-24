@@ -22,7 +22,7 @@ class StopWatch:
         """
 
         self.startTime = datetime.now()
-        self.duration = durationS / 1000
+        self.duration = durationS * 1000
 
     def isFinished(self) -> bool:
         """
