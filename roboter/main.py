@@ -36,14 +36,14 @@ if(__name__ == "__main__"):
     audio = AudioManager()
     statusLed = StatusDisplay()
     mode = ginTronic.getMode()
-    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
+    task = Task(mode, ginTronic, sharedData, com, audio, statusLed, watch)
     test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
         # Running main python code in here
 
         # Test Audio
-        test.testAudio()
+        test.testGetMode()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

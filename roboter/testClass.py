@@ -33,27 +33,37 @@ class TestClass:
     def testDrive(self) -> None:
         """
         Testing the functionality of the drive motors. Driving forward, backward and turning with increasing speeds.
+        Tested (30.04.2024) with Board-Motors, own motors DONT WORK! 
 
         Returns
         ----------
         None
         """
+        print("Starting to drive")
         speedMultiplicator = 0.1
         for i in range(4):
             self.api.drive(i * speedMultiplicator)
             time.sleep(2)
 
+        print("Stopping 1")
         self.api.stop()
-        time.sleep(2)
+        time.sleep(3)
 
+        print("Driving backwards")
         for i in range(4):
             self.api.drive(i * -speedMultiplicator)
             time.sleep(2)
 
+        print("Stopping 2")
+        self.api.stop()
+        time.sleep(3)
+
+        print("Turning")
         for i in range(4):   
-            self.api.turn(i * speedMultiplicator)
+            self.api.turn(i * speedMultiplicator, 3600)
             time.sleep(2)
 
+        print("Finished")
         self.api.stop()
 
     def testReadSensorValues(self) -> None:
@@ -72,6 +82,13 @@ class TestClass:
     def testGripServo(self) -> None:
         """
         Testing the functionality of the servomotor that grips the object. Opening and closing the gripper.
+        Tested (30.04.2024)
+
+        Wiring
+        ----------
+        Orange: PWM (Y17)
+        Red:    +5V
+        Black:  GND
 
         Returns
         ----------
@@ -86,6 +103,13 @@ class TestClass:
     def testFillServo(self) -> None:
         """
         Testing the functionality of the servomotor that rotates the gripper to fill the glas. Rotating for different angles.
+        Tested (30.04.2024)
+
+        Wiring
+        ----------
+        Orange: PWM (Y16)
+        Red:    +5V
+        Black:  GND
 
         Returns
         ----------
@@ -101,6 +125,15 @@ class TestClass:
     def testGetMode(self) -> None:
         """
         Testing the functionality of the Hex-Switch to set the mode.
+        Tested (30.04.2024)
+        
+        Wiring
+        ----------
+        1:  Ch1 (L16)
+        2:  Ch2 (L17)
+        4:  Ch4 (H16)
+        8:  Ch8 (H17)
+        C:  +3.3V
 
         Returns
         ----------
@@ -108,6 +141,7 @@ class TestClass:
         """
         for i in range(5):
             print(self.api.getMode())
+            time.sleep(3)
     
     #endregion
 
@@ -135,6 +169,19 @@ class TestClass:
     def testLed(self):
         """
         Testing the functionality of the status LED. Setting to different colors (white -> red -> green -> blue)
+        Tested (30.04.2024)
+
+        Wiring
+        ----------
+        Red:    PWM Red (U12)
+        Green:  PWM Green (V12)
+        Orange: PWM Blue (W13)
+        Black:  GND
+
+
+        Returns
+        ----------
+        None
         """
         self.statusLed.setColor(255, 255, 255)
         time.sleep(2)
@@ -148,6 +195,13 @@ class TestClass:
         """
         Testing the functionality of the soundboard. Playing an Audioclip for 15 seconds, then pausing.
         Tested (23.04.2024)
+
+        Wiring
+        ----------
+        RX:     TX (V18)
+        TX:     RX (W19)
+        VCC:    +5V
+        GND:    GND
 
         Returns
         ----------
