@@ -79,7 +79,27 @@ class Task:
         ----------
         None
         """
-        pass
+        
+        #Rotate arm to initial position (0degrees)
+        self.api.rotateServo(channel=10, stepCount=0, angle=0)
+
+        #Open the gripper (move to 270 degrees)
+        self.api.rotateServo(channel=12, stepCount=0, angle=270)
+
+        #Drive forward for a specified duration before closing the gripper
+        
+        self.watch.start(10)
+        while not self.watch.isFinished():
+            self.api.drive (0.1)
+        self.api.stop
+        
+        #Close the gripper (return to 0 degrees)
+        self.api.rotateServo(channel=12, stepCount=0, angle=0)
+
+        #Lift the object off the table by rotating the arm to 5 degrees)
+        self.api.rotateServo(channel=10, tepCount=0 angle=5)
+
+
 
     def moveToCounter(self, glassSlot : int) -> None:
         """
