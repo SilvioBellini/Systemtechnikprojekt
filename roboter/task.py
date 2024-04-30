@@ -5,11 +5,12 @@ from sharedData import SharedData
 from communication import Communication
 from audioManager import AudioManager
 from statusDisplay import StatusDisplay
+from stopWatch import StopWatch
 
 #endregion
 
 class Task:
-    def __init__(self, mode : int, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay):
+    def __init__(self, mode : int, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
         """
         Initializes the Task object with default values.
         """
@@ -19,6 +20,7 @@ class Task:
         self.com = communication
         self.audio = audio
         self.statusLed = statusLed
+        self.watch = watch
 
     def findObject(self, mode : int) -> None:
         """
@@ -32,7 +34,42 @@ class Task:
         ----------
         None
         """
-        pass
+        mode = self.api.getMode()
+
+        self.watch.start(1000)                  # move forward from Startposition
+        while not self.watch.isFinished():
+            self.api.drive(0.03)
+        self.api.stop()                         # stop after Time finished
+
+        self.api.turn(0.03, -90)                # turn to Counter 
+        
+        while self.api.readSensorValue(0) > 0:  # Find the FIRST white line
+            self.api.drive(0.03)
+            self.api.readSensorValue(0)
+        
+        slot = 5
+
+        while True:
+            if mode == 0:
+                while True:
+                    if self.api.readSensorValue(7) < 0 and self.api.readSensorValue(8) > 0:     # Sensor 1 active and Sensor 2 inactive
+                        self.api.stop()
+                        break
+
+                while self.api.readSensorValue(0) > 0:  # Find the white line
+                    self.api.drive(0.03)
+                    self.api.readSensorValue(0)
+
+            elif mode == 1:
+                while True:
+                    if self.api.readSensorValue(7) < 0 and self.api.readSensorValue(8) < 0:     # Sensor 1 active and Sensor 2 active
+                        self.api.stop()
+                        break
+            break
+
+        self.api.turn(0.03, 90)
+        self.grabObject()
+
 
     def grabObject(self) -> None:
         """
@@ -56,7 +93,7 @@ class Task:
         ----------
         None
         """
-        pass
+
 
     def switchSlot(self) -> None:
         """
@@ -65,7 +102,7 @@ class Task:
         Returns
         ----------
         None
-        """
+        """        
         pass
 
     def place(self) -> None:
