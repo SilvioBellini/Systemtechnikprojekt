@@ -67,7 +67,6 @@ class Task:
                         break
             break
 
-        self.api.turn(0.03, 90)
         self.grabObject()
 
 
@@ -80,7 +79,18 @@ class Task:
         None
         """
         
-        #recognize the line
+        #Turn 90 degrees and recognize the line
+
+        self.api.turn(speed=0.02, angle=0) # Starts rotating at a slow speed, angle=0 is handled as turning indefinitely
+
+        #keep rotating until both sensors 3 and 5 are over the line
+        while True:
+            sensor3 = self.api.readSensorValue(3)
+            sensor5 = self.api.readSensorValue(5)
+            if sensor3 > 0.5 and sensor5 > 0.5 #Adjust Threshold for line detection
+                self.api.stop()
+                break
+
 
         #Rotate arm to initial position (0degrees)
         self.api.rotateServo(channel=10, stepCount=0, angle=0)
@@ -89,8 +99,15 @@ class Task:
         self.api.rotateServo(channel=12, stepCount=0, angle=270)
 
         #Drive forward until limit switch turns on
+        limitswitchsensoren????
+        while True:
+            self.api.drive(0.03)
+            limitSwitchTriggered = limitswitchslot()
+            if limitSwitchTriggered > 1:
+                self.api.stop()
+                break
+        ??????????????????????????????
 
-        
         
         #Close the gripper (return to 0 degrees)
         self.api.rotateServo(channel=12, stepCount=0, angle=0)
