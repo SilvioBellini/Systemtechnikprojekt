@@ -89,7 +89,7 @@ class Task:
         
         #Turn 90 degrees and recognize the line
 
-        self.api.turn(speed=0.02, angle=0) # Starts rotating at a slow speed, angle=0 is handled as turning indefinitely
+        self.api.turn(speed=0.02) # Starts rotating at a slow speed
 
         #keep rotating until both sensors 3 and 5 are over the line
         while True:
@@ -136,10 +136,9 @@ class Task:
         sensor2 = self.api.readSensorValue(2)
 
         if Task.slotCounter > 3:
-
             #Turn 90 degrees and recognize the line
 
-            self.api.turn(speed=0.02, angle=-0) # Starts rotating at a slow speed, angle=0 is handled as turning indefinitely
+            self.api.turn(speed=0.03) # Starts rotating at a slow speed
 
             #keep rotating until both sensors 4 and 5 are over the line
             while True:
@@ -147,48 +146,81 @@ class Task:
                     self.api.stop()
                     break
 
-            #update state of sensors
-            if sensor0 > 0.5:
-                sensor0DetectedLine = True
-            if sensor2 > 0.5:
-                sensor2DetectedLine = True
+            if Task.slotCounter == 3:
+                StopWatch.start(1)
+                while not StopWatch.isFinished():
+                    self.api.turn(-0.03)
+                while True:
+                    self.api.turn(-0.03)
+                    sensor1 = self.api.readSensorValue(1)
+                    sensor3 = self.api.readSensorValue(3)
+                    if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
+                        self.api.stop()
+                        break
+                    break
+                
+            while Task.slotCounter != 3:
+                self.api.drive(0.03)
+                #update state of sensors
+                if sensor0 > 0.5:
+                    sensor0DetectedLine = True
+                if sensor2 > 0.5:
+                    sensor2DetectedLine = True
 
-            # Detect if crossing a line
-            if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
-                Task.slotCounter -= 1  # Decrement the slot counter on line cross
-                lastDetectedLine = True  # Set flag when a line is detected
-                sensor0DetectedLine = False  # Reset detection states
-                sensor2DetectedLine = False
-            elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
-                lastDetectedLine = False  # Reset the flag when no line is detected
+                # Detect if crossing a line
+                if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
+                    Task.slotCounter -= 1  # Decrement the slot counter on line cross
+                    lastDetectedLine = True  # Set flag when a line is detected
+                    sensor0DetectedLine = False  # Reset detection states
+                    sensor2DetectedLine = False
+                elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
+                    lastDetectedLine = False  # Reset the flag when no line is detected
+
+            self.api.turn(0.03)
+            while True:
+                sensor1 = self.api.readSensorValue(1)
+                sensor3 = self.api.readSensorValue(3)
+                if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
+                    self.api.stop()
+                    break
 
         if Task.slotCounter < 3:
             #Turn 90 degrees and recognize the line
 
-            self.api.turn(speed=0.02, angle=0) # Starts rotating at a slow speed, angle=0 is handled as turning indefinitely
+            self.api.turn(speed=-0.03) # Starts rotating at a slow speed
 
             #keep rotating until both sensors 4 and 5 are over the line
             while True:
-                sensor0 = self.api.readSensorValue(4)
-                sensor2 = self.api.readSensorValue(5)
+                sensor0 = self.api.readSensorValue(0)
+                sensor2 = self.api.readSensorValue(2)
                 if sensor0 > 0.5 and sensor2 > 0.5: # Adjust Threshold for line detection
                     self.api.stop()
                     break
 
-            #update state of sensors
-            if sensor0 > 0.5:
-                sensor0DetectedLine = True
-            if sensor2 > 0.5:
-                sensor2DetectedLine = True
+            while Task.slotCounter != 3:
+    
+                #update state of sensors
+                if sensor0 > 0.5:
+                    sensor0DetectedLine = True
+                if sensor2 > 0.5:
+                    sensor2DetectedLine = True
 
-            # Detect if crossing a line
-            if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
-                Task.slotCounter += 1  # Decrement the slot counter on line cross
-                lastDetectedLine = True  # Set flag when a line is detected
-                sensor0DetectedLine = False  # Reset detection states
-                sensor2DetectedLine = False
-            elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
-                lastDetectedLine = False  # Reset the flag when no line is detected
+                # Detect if crossing a line
+                if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
+                    Task.slotCounter += 1  # Decrement the slot counter on line cross
+                    lastDetectedLine = True  # Set flag when a line is detected
+                    sensor0DetectedLine = False  # Reset detection states
+                    sensor2DetectedLine = False
+                elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
+                    lastDetectedLine = False  # Reset the flag when no line is detected
+
+            self.api.turn(-0.03)
+            while True:
+                sensor1 = self.api.readSensorValue(1)
+                sensor3 = self.api.readSensorValue(3)
+                if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
+                    self.api.stop()
+                    break
 
 
 

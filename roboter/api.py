@@ -109,7 +109,8 @@ class API:
             > 0: Forward
             < 0: Backward
         angle: Angle by which the robot should rotate
-        
+            +angle: clockwise
+            -angle: anti-clockwise
         Returns
         ----------
         None
