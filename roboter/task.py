@@ -34,7 +34,6 @@ class Task:
         ----------
         None
         """
-        mode = self.api.getMode()
 
         self.watch.start(1000)                  # move forward from Startposition
         while not self.watch.isFinished():
@@ -46,6 +45,7 @@ class Task:
         while self.api.readSensorValue(0) > 0:  # Find the FIRST white line
             self.api.drive(0.03)
             self.api.readSensorValue(0)
+        self.api.stop()
         
         slot = 5
 
@@ -68,8 +68,7 @@ class Task:
             break
 
         self.api.turn(0.03, 90)
-        self.grabObject()
-
+        
 
     def grabObject(self) -> None:
         """
