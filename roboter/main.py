@@ -42,8 +42,9 @@ if(__name__ == "__main__"):
     try:
         # Running main python code in here
 
-        # Test fill Servo
-        test.testFillServo()         
+        # Test testDrive
+        test.testDrive()
+                
         
         
     except Exception as error:

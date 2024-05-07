@@ -36,8 +36,8 @@ class API:
     ts = 0.01
     kp = 0.1
     tn = 0.1
-    ticksPerRotation = 256 # 100
-    gearRatio = 152/1 # 16/1
+    ticksPerRotation = 256   #100
+    gearRatio = 152/1   #16/1
     motorVoltage = 5
     pwmFreq = 50
 
@@ -137,7 +137,7 @@ class API:
         None
         """
 
-        self.setMotorSpeeds(0, 0)
+        self.setMotorSpeeds(0.0, 0.0)
 
     def getSensorValues(self) -> None:
         """

@@ -40,7 +40,7 @@ class TestClass:
         None
         """
         print("Starting to drive")
-        speedMultiplicator = 0.1
+        speedMultiplicator = 0.5
         for i in range(4):
             self.api.drive(i * speedMultiplicator)
             time.sleep(2)
