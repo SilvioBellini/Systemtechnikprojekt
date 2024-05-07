@@ -99,10 +99,12 @@ class Task:
         self.api.rotateServo(channel=12, stepCount=0, angle=270)
 
         #Drive forward until limit switch turns on
+        #
         while True:
             self.api.drive(0.03)
-            limitSwitchTriggered = limitswitchslot()
-            if limitSwitchTriggered > 1:
+            #reading the GPIO pin 13 "Endschalter Küche"
+            limitSwitchState = self.api.gpio.getValue(13)
+            if limitSwitchState == 1: #1 means limitswitch pressed (assuming)
                 self.api.stop()
                 break
 
