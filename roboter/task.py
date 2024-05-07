@@ -35,40 +35,46 @@ class Task:
         None
         """
 
-        self.watch.start(1000)                  # move forward from Startposition
-        while not self.watch.isFinished():
-            self.api.drive(0.03)
-        self.api.stop()                         # stop after Time finished
+        slotCounter = 6 #start at slot number 5, adjust if start is different
+        lastDetectedLine = False #Flag for counting lines on the ground (so that if sensor on the line it doesnt count multiple times)
+        objectFound = False
 
-        self.api.turn(0.03, -90)                # turn to Counter 
-        
-        while self.api.readSensorValue(0) > 0:  # Find the FIRST white line
-            self.api.drive(0.03)
-            self.api.readSensorValue(0)
-        self.api.stop()
-        
-        slot = 5
+        while not objectFound:
+            #read sensors for line detection
+            sensor3 = self.api.readSensorValue(3)
+            sensor5 = self.api.readSensorValue(5)
 
-        while True:
-            if mode == 0:
-                while True:
-                    if self.api.readSensorValue(7) < 0 and self.api.readSensorValue(8) > 0:     # Sensor 1 active and Sensor 2 inactive
-                        self.api.stop()
-                        break
+            #update state of sensors
+            if sensor3 > 0.5:
+                sensor3DetectedLine = True
+            if sensor5 > 0.5:
+                sensor5DetectedLine = True
 
-                while self.api.readSensorValue(0) > 0:  # Find the white line
-                    self.api.drive(0.03)
-                    self.api.readSensorValue(0)
+            # Detect if crossing a line
+            if (sensor3DetectedLine or sensor5DetectedLine) and not lastDetectedLine:
+                slotCounter -= 1  # Decrement the slot counter on line cross
+                lastDetectedLine = True  # Set flag when a line is detected
+                sensor3DetectedLine = False  # Reset detection states
+                sensor5DetectedLine = False
+            elif sensor3 < 0.5 and sensor5 < 0.5 and lastDetectedLine:
+                lastDetectedLine = False  # Reset the flag when no line is detected
 
-            elif mode == 1:
-                while True:
-                    if self.api.readSensorValue(7) < 0 and self.api.readSensorValue(8) < 0:     # Sensor 1 active and Sensor 2 active
-                        self.api.stop()
-                        break
-            break
+            # Sensor values for object detection
+            sensor7 = self.api.readSensorValue(7)
+            sensor8 = self.api.readSensorValue(8)
 
+            # Object detection logic based on mode
+            if mode == 0:  # Looking for glass
+                if sensor7 < 0 and sensor8 > 0:
+                    objectFound = True
+                    self.api.stop()
+            elif mode == 1:  # Looking for bottle
+                if sensor7 < 0 and sensor8 < 0:
+                    objectFound = True
+                    self.api.stop()
+                
         self.api.turn(0.03, 90)
-        
+            
 
     def grabObject(self) -> None:
         """
