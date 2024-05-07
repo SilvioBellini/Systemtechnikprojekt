@@ -67,13 +67,8 @@ class Task:
                         break
             break
 
-<<<<<<< HEAD
         self.api.turn(0.03, 90)
         
-=======
-        self.grabObject()
-
->>>>>>> 1cbbc77205c5c3b205ce6f3edeb5c3444cc7ef7f
 
     def grabObject(self) -> None:
         """
@@ -104,14 +99,12 @@ class Task:
         self.api.rotateServo(channel=12, stepCount=0, angle=270)
 
         #Drive forward until limit switch turns on
-        limitswitchsensoren????
         while True:
             self.api.drive(0.03)
             limitSwitchTriggered = limitswitchslot()
             if limitSwitchTriggered > 1:
                 self.api.stop()
                 break
-        ??????????????????????????????
 
         
         #Close the gripper (return to 0 degrees)
