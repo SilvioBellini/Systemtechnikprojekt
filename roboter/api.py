@@ -29,6 +29,8 @@ class API:
     modeCh2 = 6
     modeCh4 = 8
     modeCh8 = 10
+    limitswitchKitchen = 13
+    limitswitchBar = 15
 
     # Configuration motors
     ts = 0.01
