@@ -40,7 +40,7 @@ class TestClass:
         None
         """
         print("Starting to drive")
-        speedMultiplicator = 0.5
+        speedMultiplicator = 0.01
         for i in range(4):
             self.api.drive(i * speedMultiplicator)
             time.sleep(2)
@@ -63,8 +63,8 @@ class TestClass:
             self.api.turn(i * speedMultiplicator, 3600)
             time.sleep(2)
 
-        print("Finished")
         self.api.stop()
+        print("Finished")
 
     def testReadSensorValues(self) -> None:
         """
