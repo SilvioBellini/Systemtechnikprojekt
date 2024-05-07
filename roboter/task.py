@@ -87,7 +87,7 @@ class Task:
         while True:
             sensor3 = self.api.readSensorValue(3)
             sensor5 = self.api.readSensorValue(5)
-            if sensor3 > 0.5 and sensor5 > 0.5 #Adjust Threshold for line detection
+            if sensor3 > 0.5 and sensor5 > 0.5: # Adjust Threshold for line detection
                 self.api.stop()
                 break
 
@@ -111,7 +111,7 @@ class Task:
         self.api.rotateServo(channel=12, stepCount=0, angle=0)
 
         #Lift the object off the table by rotating the arm to 5 degrees)
-        self.api.rotateServo(channel=10, tepCount=0 angle=5)
+        self.api.rotateServo(channel=10, stepCount=0 ,angle=5)
 
         #Drive backwards for a specified duration
         self.watch.start(11)
