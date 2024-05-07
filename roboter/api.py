@@ -1,3 +1,4 @@
+from enum import Enum
 import driver
 import flink        
 import math
@@ -29,8 +30,8 @@ class API:
     modeCh2 = 6
     modeCh4 = 8
     modeCh8 = 10
-    limitswitchKitchen = 13
-    limitswitchBar = 15
+    limitSwitchKitchen = 13
+    limitSwitchBar = 15
 
     # Configuration motors
     ts = 0.01
@@ -40,6 +41,11 @@ class API:
     gearRatio = 152/1   #16/1
     motorVoltage = 5
     pwmFreq = 50
+    
+    valueWhite = 1000
+    valueGrey = 600
+    Directions = Enum("Directions", ["Perpendicular", "Parallel"])
+    defaultSpeed = 0.03
 
     #endregion
 
@@ -106,11 +112,10 @@ class API:
         Parameters
         ----------
         speed: Speed with which the wheels turn in m/s
-            > 0: Forward
-            < 0: Backward
+            > 0: Clockwise
+            < 0: Counterclockwise
         angle: Angle by which the robot should rotate
-            +angle: clockwise
-            -angle: anti-clockwise
+
         Returns
         ----------
         None
@@ -176,15 +181,45 @@ class API:
         
         return self.sensorValues[index]
 
-    def align(self) -> None:
+    def align(self, direction : Directions) -> None:
         """
-        Aligning the robot to the marks on the floor
+        Aligning the robot to the marks on the floor depending on the direction the robot is currently moving
+
+        Parameters
+        ----------
+        direction: Direction in which the robot is moving using an enumerator
+            Parallel:       Aligning parallel to the marks on the floor
+            Perpendicular:  Aligning perpendicular to the marks on the floor
 
         Returns
         ----------
         None
         """
-        pass
+        while True:
+            match direction:
+                case self.Directions.Perpendicular:
+                    # Updating Sensor Values
+                    sensor0Value = self.readSensorValue(0)
+                    sensor2Value = self.readSensorValue(2)
+                    
+                    # Checking if both sensors are on the mark, correcting if not
+                    if(sensor0Value > self.valueWhite and sensor2Value > self.valueWhite):
+                        self.stop()
+                        break
+                    if(sensor0Value > self.valueWhite):
+                        self.setMotorSpeeds(0, -0.005)
+                    elif(sensor2Value > self.valueWhite):
+                        self.setMotorSpeeds(0.005, 0)
+
+                case self.Directions.Parallel:
+                    sensor1Value = self.readSensorValue(1)
+                    sensor3Value = self.readSensorValue(3)
+
+                    # Stopping if both sensors are on the marks
+                    # Might need to get reworked if sensor 1 gets off the mark while rotating
+                    if(sensor1Value > self.valueWhite and sensor3Value > self.valueWhite):
+                        self.stop()
+                        break
 
     def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """
@@ -227,13 +262,13 @@ class API:
         # Setting first Step
         currentStep = 1
 
-        # Setting highTimeFact at Startposition
+        # Setting highTimeFactor at Startposition
         highTimeFactorZeroPosition = 0.025
 
         # Rotate servo in steps
         while currentStep <= stepCount:          
             highTimeFactorStep = highTimeFactor * (currentStep / stepCount)
-            if highTimeFactorStep < highTimeFactorZeroPosition:
+            if(highTimeFactorStep < highTimeFactorZeroPosition):
                 #print(currentStep, "Unter 0°")
                 currentStep += 1
             else:
@@ -263,7 +298,7 @@ class API:
         mode = 0
 
         for i in range(inputValues.__len__()):
-            if inputValues[i]:
+            if(inputValues[i]):
                 mode += 2 ** i
 
         return mode
