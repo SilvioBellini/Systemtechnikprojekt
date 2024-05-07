@@ -8,9 +8,9 @@ class StatusDisplay:
     """
     #region Classattributes
 
-    pwmChRed = 18
-    pwmChGreen = 20
-    pwmChBlue = 22
+    pwmChRed = 1
+    pwmChGreen = 3
+    pwmChBlue = 5
     pwmFreq = 10000
 
     #endregion

@@ -34,8 +34,8 @@ class API:
     ts = 0.01
     kp = 0.1
     tn = 0.1
-    ticksPerRotation = 100
-    gearRatio = 16/1
+    ticksPerRotation = 256 # 100
+    gearRatio = 152/1 # 16/1
     motorVoltage = 5
     pwmFreq = 50
 
@@ -94,7 +94,7 @@ class API:
         None
         """
         
-        self.setMotorSpeeds(speed,-speed)
+        self.setMotorSpeeds(speed, -speed)
 
     def turn(self, speed : float, angle : float) -> None:
         """
@@ -114,17 +114,17 @@ class API:
         """
         
         # Calculating the time needed for the motors to rotate for the desired angle
-        if (speed != 0):
-            timeToRotate = angle / speed
+        #if (speed != 0):
+        #    timeToRotate = angle / speed
 
         # Setting the desired speed for both motors
         self.setMotorSpeeds(speed, speed)
 
         # Waiting for the calculated time to rotate to the desired angle
-        time.sleep(timeToRotate)
+        #time.sleep(timeToRotate)
 
         # Stopping the motors after reaching the desired angle
-        self.stop()
+        #self.stop()
 
     def stop(self) -> None:
         """
@@ -152,8 +152,8 @@ class API:
         for i in range(amountOfSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
 
-        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
         self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
+        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
  
     def readSensorValue(self, index : int) -> int:
         """
@@ -191,6 +191,8 @@ class API:
         ----------
         channel: Channel of the motor that should rotate
         angle: Angle by which the gripper should rotate
+                    Grip: 0° = Closed
+                    Fill: 0° = Horizontal front
 
         Returns
         ----------
@@ -223,9 +225,9 @@ class API:
 
         while currentStep < stepCount:
             currentStep += 1
-            highTimeFactor2 = highTimeFactor * (currentStep / stepCount)
+            highTimeFactorStep = highTimeFactor * (currentStep / stepCount)
             self.pwm.setPeriod(channel, int(period))
-            self.pwm.setHighTime(channel, int(period * highTimeFactor2))
+            self.pwm.setHighTime(channel, int(period * highTimeFactorStep))
             time.sleep(0.3)
         """
 
