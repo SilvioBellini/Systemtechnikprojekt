@@ -115,12 +115,12 @@ class TestClass:
         ----------
         None
         """
-        angleMultiplicator = 20         # Rotating in steps of 20°
-        for i in range(5):
-            self.api.rotateServo(self.api.pwmChFill, 0, i * angleMultiplicator)
-            time.sleep(2)
+        self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
 
-        self.api.rotateServo(self.api.pwmChFill, 0, 0)
+        angleMultiplicator = 20         # Rotating in steps of 20°
+        for i in range(10):
+            self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
+            self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
 
     def testGetMode(self) -> None:
         """

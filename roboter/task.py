@@ -34,7 +34,6 @@ class Task:
         ----------
         None
         """
-        mode = self.api.getMode()
 
         self.watch.start(1000)                  # move forward from Startposition
         while not self.watch.isFinished():
@@ -46,6 +45,7 @@ class Task:
         while self.api.readSensorValue(0) > 0:  # Find the FIRST white line
             self.api.drive(0.03)
             self.api.readSensorValue(0)
+        self.api.stop()
         
         slot = 5
 
@@ -67,8 +67,8 @@ class Task:
                         break
             break
 
-        self.grabObject()
-
+        self.api.turn(0.03, 90)
+        
 
     def grabObject(self) -> None:
         """
@@ -87,7 +87,7 @@ class Task:
         while True:
             sensor3 = self.api.readSensorValue(3)
             sensor5 = self.api.readSensorValue(5)
-            if sensor3 > 0.5 and sensor5 > 0.5 #Adjust Threshold for line detection
+            if sensor3 > 0.5 and sensor5 > 0.5: # Adjust Threshold for line detection
                 self.api.stop()
                 break
 
@@ -99,21 +99,19 @@ class Task:
         self.api.rotateServo(channel=12, stepCount=0, angle=270)
 
         #Drive forward until limit switch turns on
-        limitswitchsensoren????
         while True:
             self.api.drive(0.03)
             limitSwitchTriggered = limitswitchslot()
             if limitSwitchTriggered > 1:
                 self.api.stop()
                 break
-        ??????????????????????????????
 
         
         #Close the gripper (return to 0 degrees)
         self.api.rotateServo(channel=12, stepCount=0, angle=0)
 
         #Lift the object off the table by rotating the arm to 5 degrees)
-        self.api.rotateServo(channel=10, tepCount=0 angle=5)
+        self.api.rotateServo(channel=10, stepCount=0 ,angle=5)
 
         #Drive backwards for a specified duration
         self.watch.start(11)

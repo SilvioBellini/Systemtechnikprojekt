@@ -42,9 +42,10 @@ if(__name__ == "__main__"):
     try:
         # Running main python code in here
 
-        # Test Audio
-        test.testGetMode()
-
+        # Test fill Servo
+        test.testFillServo()         
+        
+        
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
         statusLed.setColor(255, 0, 0)

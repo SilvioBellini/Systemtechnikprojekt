@@ -190,6 +190,7 @@ class API:
         Parameters
         ----------
         channel: Channel of the motor that should rotate
+        stepCount: Number of steps to reach final Angle
         angle: Angle by which the gripper should rotate
                     Grip: 0° = Closed
                     Fill: 0° = Horizontal front
@@ -216,20 +217,29 @@ class API:
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
         highTimeFactor = (highTimeMs * self.pwmFreq) / 1000
 
-        # Setting period and highTime according to the calculated factor
+        """# Setting period and highTime according to the calculated factor
         self.pwm.setPeriod(channel, int(period))
-        self.pwm.setHighTime(channel, int(period * highTimeFactor))
-        
-        """        
-        currentStep = 0
+        self.pwm.setHighTime(channel, int(period * highTimeFactor))"""
+   
+        # Setting first Step
+        currentStep = 1
 
-        while currentStep < stepCount:
-            currentStep += 1
+        # Setting highTimeFact at Startposition
+        highTimeFactorZeroPosition = 0.025
+
+        # Rotate servo in steps
+        while currentStep <= stepCount:          
             highTimeFactorStep = highTimeFactor * (currentStep / stepCount)
-            self.pwm.setPeriod(channel, int(period))
-            self.pwm.setHighTime(channel, int(period * highTimeFactorStep))
-            time.sleep(0.3)
-        """
+            if highTimeFactorStep < highTimeFactorZeroPosition:
+                #print(currentStep, "Unter 0°")
+                currentStep += 1
+            else:
+                self.pwm.setPeriod(channel, int(period))
+                self.pwm.setHighTime(channel, int(period * highTimeFactorStep))
+                time.sleep(0.3)
+                #print(currentStep, highTimeFactorStep, highTimeFactor)
+                currentStep += 1
+            
 
         # Delay to reach desired angle before continuing
         time.sleep(2)
