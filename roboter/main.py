@@ -16,7 +16,6 @@ from statusDisplay import StatusDisplay
 from task import Task
 from testClass import TestClass
 
-
 #endregion
 
 #region Classattributes
@@ -37,18 +36,14 @@ if(__name__ == "__main__"):
     audio = AudioManager()
     statusLed = StatusDisplay()
     mode = ginTronic.getMode()
-    task = Task(mode, ginTronic, sharedData, com, audio, statusLed)
-    test = TestClass()
+    task = Task(mode, ginTronic, sharedData, com, audio, statusLed, watch)
+    test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
         # Running main python code in here
 
         # Test Audio
-        audio.selectDevice()
-        audio.setVolume(10)
-        audio.playAudioClip(1, 3)
-        time.sleep(15)
-        audio.pause()
+        test.testGetMode()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

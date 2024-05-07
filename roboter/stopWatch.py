@@ -8,7 +8,7 @@ class StopWatch:
     def __init__(self):
         self.startTime = datetime.now()
 
-    def start(self, durationMs : int) -> None:
+    def start(self, durationS : int) -> None:
         """
         Starts a new stopwatch
 
@@ -22,7 +22,7 @@ class StopWatch:
         """
 
         self.startTime = datetime.now()
-        self.duration = durationMs / 1000
+        self.duration = durationS * 1000
 
     def isFinished(self) -> bool:
         """

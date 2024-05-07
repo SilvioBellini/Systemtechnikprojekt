@@ -34,8 +34,8 @@ class API:
     ts = 0.01
     kp = 0.1
     tn = 0.1
-    ticksPerRotation = 100
-    gearRatio = 16/1
+    ticksPerRotation = 256 # 100
+    gearRatio = 152/1 # 16/1
     motorVoltage = 5
     pwmFreq = 50
 
@@ -85,7 +85,7 @@ class API:
 
         Parameters
         ----------
-        speed: Speed with which the wheels turn 
+        speed: Speed with which the wheels turn in m/s
             > 0: Forward
             < 0: Backward
         
@@ -94,16 +94,16 @@ class API:
         None
         """
         
-        self.setMotorSpeeds(speed,-speed)
+        self.setMotorSpeeds(speed, -speed)
 
     def turn(self, speed : float, angle : float) -> None:
         """
         Letting both of the robot's wheels move with the same speed but with opposite direction by setting to the same
-        speeds becasue the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
+        speeds because the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
 
         Parameters
         ----------
-        speed: Speed with which the wheels turn 
+        speed: Speed with which the wheels turn in m/s
             > 0: Forward
             < 0: Backward
         angle: Angle by which the robot should rotate
@@ -114,17 +114,17 @@ class API:
         """
         
         # Calculating the time needed for the motors to rotate for the desired angle
-        if (speed != 0):
-            timeToRotate = angle / speed
+        #if (speed != 0):
+        #    timeToRotate = angle / speed
 
         # Setting the desired speed for both motors
         self.setMotorSpeeds(speed, speed)
 
         # Waiting for the calculated time to rotate to the desired angle
-        time.sleep(timeToRotate)
+        #time.sleep(timeToRotate)
 
         # Stopping the motors after reaching the desired angle
-        self.stop()
+        #self.stop()
 
     def stop(self) -> None:
         """
@@ -152,8 +152,8 @@ class API:
         for i in range(amountOfSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
 
-        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
         self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
+        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
  
     def readSensorValue(self, index : int) -> int:
         """
@@ -169,19 +169,6 @@ class API:
         int
         """
 
-        """if self.values:
-                # make sure Index is valid
-                if 0 <= index < len(self.sensor_values):
-                    # last saved index
-                    return self.sensor_values[index]
-                else:
-                    print("Invalid sensor index.")
-        else:
-            print("Sensor values have not been fetched yet. Call getSensorValues() first.")
-            
-        # if sensorvalues not available return none
-        return None"""
-
         self.getSensorValues()
         
         return self.sensorValues[index]
@@ -196,7 +183,7 @@ class API:
         """
         pass
 
-    def rotateGripper(self, channel : int, stepCount : int, angle : float) -> None:
+    def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """
         Rotating the gripper for a specified angle using a servo
 
@@ -204,6 +191,8 @@ class API:
         ----------
         channel: Channel of the motor that should rotate
         angle: Angle by which the gripper should rotate
+                    Grip: 0° = Closed
+                    Fill: 0° = Horizontal front
 
         Returns
         ----------
@@ -236,9 +225,9 @@ class API:
 
         while currentStep < stepCount:
             currentStep += 1
-            highTimeFactor2 = highTimeFactor * (currentStep / stepCount)
+            highTimeFactorStep = highTimeFactor * (currentStep / stepCount)
             self.pwm.setPeriod(channel, int(period))
-            self.pwm.setHighTime(channel, int(period * highTimeFactor2))
+            self.pwm.setHighTime(channel, int(period * highTimeFactorStep))
             time.sleep(0.3)
         """
 
