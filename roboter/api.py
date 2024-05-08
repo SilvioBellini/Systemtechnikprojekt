@@ -198,7 +198,7 @@ class API:
         while True:
             match direction:
                 case self.Directions.Perpendicular:
-                    # Updating Sensor Values
+                    # Updating sensor values
                     sensor0Value = self.readSensorValue(0)
                     sensor2Value = self.readSensorValue(2)
                     
@@ -212,12 +212,14 @@ class API:
                         self.setMotorSpeeds(0.005, 0)
 
                 case self.Directions.Parallel:
+                    # Updating sensor values
                     sensor1Value = self.readSensorValue(1)
                     sensor3Value = self.readSensorValue(3)
 
-                    # Stopping if both sensors are on the marks
+                    # Stopping if both sensors are on the marks after moving a little futher
                     # Might need to get reworked if sensor 1 gets off the mark while rotating
                     if(sensor1Value > self.valueWhite and sensor3Value > self.valueWhite):
+                        time.sleep(0.05)
                         self.stop()
                         break
 

@@ -14,6 +14,7 @@ import time
 class Task:
 
     slotCounter = 6
+    lineDetected = False    # Flag to save that both sensors are one the mark
 
     def __init__(self, mode : int, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
         """
@@ -27,6 +28,33 @@ class Task:
         self.statusLed = statusLed
         self.watch = watch
 
+    def movePerpendicular(self, modeFactor : int) -> None:
+        """
+        Helpermethod for changing slots by moving perpendicular to the marks on the floor.
+
+        Parameters
+        ----------
+        modeFactor: Factor used to differentiate rotating and driving directions
+
+        Returns
+        ----------
+        None
+        """
+        # Updating sensor values
+        sensor0Value = self.api.readSensorValue(0)
+        sensor2Value = self.api.readSensorValue(2)
+
+        # Resetting flag if both sensors are off the mark
+        if(sensor0Value < self.api.valueWhite and sensor2Value < self.api.valueWhite):
+            self.lineDetected = False
+
+        # Aligning if one sensor is on the mark, setting the flag
+        if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not self.lineDetected):
+            self.api.align(self.api.Directions.Perpendicular)
+            self.slotCounter -= modeFactor * 1
+            self.lineDetected = True
+            self.api.drive(self.api.defaultSpeed)
+
     def findObject(self, mode : int) -> None:
         """
         Finding either the glass or bottle specified with the mode.
@@ -39,43 +67,36 @@ class Task:
         ----------
         None
         """
-        lineDetected = False    # Flag to save that both sensors are one the mark
+        self.lineDetected = False  
         objectFound = False
         self.api.drive(self.api.defaultSpeed)
+        modeFactor = 1
 
         while not objectFound:
-            # Update Sensor Values
-            sensor0Value = self.api.readSensorValue(0)
-            sensor2Value = self.api.readSensorValue(2)
-
-            # Resetting flag
-            if(sensor0Value < self.api.valueWhite or sensor2Value < self.api.valueWhite):
-                lineDetected = False
-
-            # Aligning if one sensor is on the mark, setting the flag
-            if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not lineDetected):
-                self.api.align(self.api.Directions.Perpendicular)
-                self.slotCounter -= 1
-                lineDetected = True
-                self.api.drive(self.api.defaultSpeed)
-                time.sleep(0.5)     # Ensure that both sensors get off the mark before resetting flag
+            self.movePerpendicular(modeFactor)
 
             # Object detection based on mode
+            sensor0Value = self.api.readSensorValue(0)
+            sensor2Value = self.api.readSensorValue(2)
             sensor7Value = self.api.getSensorValues(7)
             sensor8Value = self.api.getSensorValues(8)
 
-            match mode:
-                case 0:     # Glass
-                    if(sensor7Value and not sensor8Value):
-                        objectFound = True
-                        self.api.stop()
+            # Ensuring the robot is on the mark when stopping
+            if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
+                match mode:
+                    # Glass
+                    case 0:
+                        if(sensor7Value and not sensor8Value):
+                            self.api.stop()
+                            objectFound = True
 
-                case 1:     # Bottle
-                    if(sensor7Value and sensor8Value):
-                        objectFound = True
-                        self.api.stop()
-            
-            time.sleep(0.05)
+                    # Bottle
+                    case 1:
+                        if(sensor7Value and sensor8Value):
+                            self.api.stop()
+                            objectFound = True
+
+            time.sleep(0.1)
 
             """
             #update state of sensors
@@ -118,7 +139,7 @@ class Task:
         ----------
         None
         """
-        # Turning 90° and alining
+        # Turning 90° and aligning
         self.api.turn(-0.02)
         self.api.align(self.api.Directions.Parallel)
 
@@ -133,7 +154,7 @@ class Task:
         """
 
         # Rotating and opening the gripper
-        self.api.rotateServo(self.api.pwmChFill, 1, 0)
+        self.api.rotateServo(self.api.pwmChFill, 10, 0)
         self.api.rotateServo(self.api.pwmChGrip, 10, 45)
 
         self.api.drive(self.api.defaultSpeed)
@@ -153,10 +174,10 @@ class Task:
         self.api.rotateServo(self.api.pwmChGrip, 10, 0)
         self.api.rotateServo(self.api.pwmChFill, 10, 5)
 
-        self.api.drive (-self.api.defaultSpeed)
-
         # Driving backwards for a specified duration
+        self.api.drive(-self.api.defaultSpeed)
         self.watch.start(3)
+        
         while True:
             if(self.watch.isFinished()):
                 self.api.stop()
@@ -164,9 +185,21 @@ class Task:
             
             time.sleep(0.1)
 
-    def moveToMid(self):
-        
-        #read sensors for line detection
+    def moveToMid(self):        
+        match self.slotCounter:
+            # Already in mid
+            case 3:
+                # Turning for 180°
+                self.api.turn(-self.api.defaultSpeed)
+                time.sleep(1)       # Ensure the mark doesn't instantly get recongnized again
+                self.api.align(self.api.Directions.Parallel)
+
+            # Not in mid
+            case _:
+                self.switchSlot(3)
+
+        """
+        # Updating sensor values
         sensor0 = self.api.readSensorValue(0)
         sensor2 = self.api.readSensorValue(2)
 
@@ -256,10 +289,7 @@ class Task:
                 if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
                     self.api.stop()
                     break
-
-
-
-
+        """
 
     def moveToCounter(self, glassSlot : int) -> None:
         """
@@ -275,15 +305,54 @@ class Task:
         """
         pass
 
-    def switchSlot(self) -> None:
+    def switchSlot(self, targetSlot) -> None:
         """
-        Switching the slot if an obstacle is detected
+        Switching a slot and turning back to the original direction
+    
+        Parameters
+        ----------
+        targetSlot: Slot the robot should move to
 
         Returns
         ----------
         None
-        """        
-        pass
+        """ 
+
+        if(self.slotCounter != targetSlot):
+            modeFactor = 0
+
+            # Setting the multiplicator for coming calculations
+            if(self.slotCounter < targetSlot):
+                modeFactor = -1
+            else:
+                modeFactor = 1
+
+            # Turning CW or CCW according to multiplicator
+            self.api.turn(modeFactor * self.api.defaultSpeed)
+            time.sleep(1)
+
+            # Turning until one sensor detects the mark and rotating a little further
+            while True:
+                sensor0Value = self.api.readSensorValue(0)
+                sensor2Value = self.api.readSensorValue(2)
+
+                if(sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite):
+                    time.sleep(0.05)
+                    self.api.stop()
+                    break
+
+            self.api.drive(self.api.defaultSpeed)
+            time.sleep(0.5)
+            
+            while self.slotCounter != targetSlot:            
+                self.movePerpendicular(modeFactor)
+
+            # Turning back to previous direction
+            self.api.stop()
+            time.sleep(0.5)
+            self.api.turn(-modeFactor * self.api.defaultSpeed)
+            time.sleep(1)
+            self.api.align(self.api.Directions.Parallel)
 
     def place(self) -> None:
         """
