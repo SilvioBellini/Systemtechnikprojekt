@@ -1,4 +1,6 @@
 from enum import Enum
+from typing import List
+
 import driver
 import flink        
 import math
@@ -54,11 +56,10 @@ class API:
         self.m1 = driver.SignMagnitude(self.ts, self.pwmChLeftA, self.pwmChLeftB, self.fqdLeft, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
         self.m2 = driver.SignMagnitude(self.ts, self.pwmChRightA, self.pwmChRightB, self.fqdRight, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
         
-        self.irSensors = flink.FlinkReflectiveSensor()
         self.gpio = flink.FlinkGPIO()
         self.pwm = flink.FlinkPWM()
 
-        self.sensorValues = []
+        self.sensorValues : List[int] = []
         self.gpio.setDir(self.sensorChBottle, False)
         self.gpio.setDir(self.sensorChGlas, False)
 
@@ -153,15 +154,21 @@ class API:
         Returns
         ----------
         None
-        """
         self.sensorValues = []     
-        amountOfSensors = 7
+        
 
+        print("im get Sensor values")
         for i in range(amountOfSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
+            print(f"got sensor Value {i}")
 
-        self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
-        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
+        """
+        amountOfSensors = 4 # at the moment 4 sensors, will change to 7 sensors
+        self.irSensors = flink.FlinkReflectiveSensor()
+        self.sensorValues = [self.irSensors.getValue(i) for i in range(amountOfSensors)]
+
+        # self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
+        # self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
  
     def readSensorValue(self, index : int) -> int:
         """

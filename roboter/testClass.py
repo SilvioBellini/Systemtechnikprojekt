@@ -108,10 +108,17 @@ class TestClass:
         ----------
         None
         """
+        """
         for i in range(3):
-            for sensor in range(7):
+            for sensor in range(4): # at the moment 4 sensors, will change to 7 sensors
                 print("Sensor {}: {} ".format(sensor, self.api.readSensorValue(sensor)))
             time.sleep(2)
+        """
+        timer = StopWatch()
+        timer.start(20)
+        while not timer.isFinished():
+            print(self.api.readSensorValue(0))
+            time.sleep(0.5)
 
     def testGripServo(self) -> None:
         """

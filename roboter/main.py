@@ -43,7 +43,7 @@ if(__name__ == "__main__"):
         # Running main python code in here
 
         # Test testDrive
-        test.testDrive()
+        test.testReadSensorValues()
                 
         
         
