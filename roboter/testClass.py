@@ -85,6 +85,7 @@ class TestClass:
     def testReadSensorValues(self) -> None:
         """
         Testing the functionality of the sensors. Reading and printing each value multiple times.
+        (Tested 10.05.2024)
 
         Wiring
         ----------
