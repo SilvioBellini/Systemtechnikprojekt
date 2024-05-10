@@ -51,30 +51,11 @@ class TestClass:
         ----------
         None
         """
-
-        while True:
-            print("Starting to drive")
-            speedMultiplicator = 0.1
-
-            for i in range(4):
-                print("Driving with: ", i*speedMultiplicator)
-                self.api.drive(i * speedMultiplicator)
-                time.sleep(5)
-            
-            print("Stopping")
-            self.api.stop()
-            time.sleep(10)
-            
-            print("Driving backwards")
-            for i in range(4):
-                print("Driving with: ", i*-speedMultiplicator)
-                self.api.drive(i * -speedMultiplicator)
-                time.sleep(5)
         
-        """
         print("Starting to drive")
-        speedMultiplicator = 0.01
+        speedMultiplicator = 0.05
         for i in range(4):
+            print("Driving with: ", i * speedMultiplicator)
             self.api.drive(i * speedMultiplicator)
             time.sleep(2)
 
@@ -84,6 +65,7 @@ class TestClass:
 
         print("Driving backwards")
         for i in range(4):
+            print("Driving with: ", i * -speedMultiplicator)
             self.api.drive(i * -speedMultiplicator)
             time.sleep(2)
 
@@ -92,33 +74,37 @@ class TestClass:
         time.sleep(3)
 
         print("Turning")
-        for i in range(4):   
+        for i in range(4):
+            print("Turning with: ", i * speedMultiplicator) 
             self.api.turn(i * speedMultiplicator, 3600)
             time.sleep(2)
 
         self.api.stop()
         print("Finished")
-        """
 
     def testReadSensorValues(self) -> None:
         """
         Testing the functionality of the sensors. Reading and printing each value multiple times.
 
+        Wiring
+        ----------
+        Trig:       L14
+        A0:         N16
+        A1:         L15
+        Out:        ADC7476
+
         Returns
         ----------
         None
         """
-        """
-        for i in range(3):
-            for sensor in range(4): # at the moment 4 sensors, will change to 7 sensors
-                print("Sensor {}: {} ".format(sensor, self.api.readSensorValue(sensor)))
-            time.sleep(2)
-        """
-        timer = StopWatch()
-        timer.start(20)
-        while not timer.isFinished():
-            print(self.api.readSensorValue(0))
-            time.sleep(0.5)
+
+        self.watch.start(20)
+        while not self.watch.isFinished():
+            for sensor in range(self.api.amountOfSensors):
+                print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
+            
+            print("")
+            time.sleep(1)
 
     def testGripServo(self) -> None:
         """

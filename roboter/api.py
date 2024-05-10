@@ -43,11 +43,17 @@ class API:
     gearRatio = 152/1            # 152/1   # 16/1
     motorVoltage = 5
     pwmFreq = 50
+
+    # Globally used values
     
+    defaultSpeed = 0.03
+    Directions = Enum("Directions", ["Perpendicular", "Parallel"])
+    amountOfSensors = 4 # 7
+
     valueWhite = 1000
     valueGrey = 600
-    Directions = Enum("Directions", ["Perpendicular", "Parallel"])
-    defaultSpeed = 0.03
+
+
 
     #endregion
 
@@ -154,21 +160,13 @@ class API:
         Returns
         ----------
         None
-        self.sensorValues = []     
-        
-
-        print("im get Sensor values")
-        for i in range(amountOfSensors):
-            self.sensorValues.append(self.irSensors.getValue(i))
-            print(f"got sensor Value {i}")
-
         """
-        amountOfSensors = 4 # at the moment 4 sensors, will change to 7 sensors
-        self.irSensors = flink.FlinkReflectiveSensor()
-        self.sensorValues = [self.irSensors.getValue(i) for i in range(amountOfSensors)]
 
-        # self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
-        # self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
+        self.irSensors = flink.FlinkReflectiveSensor()
+        self.sensorValues = [self.irSensors.getValue(i) for i in range(self.amountOfSensors)]
+
+        self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
+        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
  
     def readSensorValue(self, index : int) -> int:
         """
