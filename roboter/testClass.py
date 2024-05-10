@@ -33,11 +33,44 @@ class TestClass:
     def testDrive(self) -> None:
         """
         Testing the functionality of the drive motors. Driving forward, backward and turning with increasing speeds.
-        Tested (30.04.2024) with Board-Motors, own motors DONT WORK! 
+        Tested (10.05.2024)
+
+        Wiring
+        ----------
+        PWM_A_Left:     U13
+        PWM_B_Left:     T10
+        ENC_A_Left:     P19
+        ENC_B_Left:     P20
+
+        PWM_A_Right:    T14
+        PWM_B_Right:    V13
+        ENC_A_Right:    T20
+        ENC_B_Right:    V20
 
         Returns
         ----------
         None
+        """
+
+        while True:
+            print("Starting to drive")
+            speedMultiplicator = 0.1
+
+            for i in range(4):
+                print("Driving with: ", i*speedMultiplicator)
+                self.api.drive(i * speedMultiplicator)
+                time.sleep(5)
+            
+            print("Stopping")
+            self.api.stop()
+            time.sleep(10)
+            
+            print("Driving backwards")
+            for i in range(4):
+                print("Driving with: ", i*-speedMultiplicator)
+                self.api.drive(i * -speedMultiplicator)
+                time.sleep(5)
+        
         """
         print("Starting to drive")
         speedMultiplicator = 0.01
@@ -65,6 +98,7 @@ class TestClass:
 
         self.api.stop()
         print("Finished")
+        """
 
     def testReadSensorValues(self) -> None:
         """
