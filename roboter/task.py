@@ -303,7 +303,21 @@ class Task:
         ----------
         None
         """
-        pass
+        # Step 1: drive backwards
+        self.api.drive(-self.api.defaultSpeed)
+
+        # Step 1.1: check if there is an obsticle on the slot
+        if(self.api.readSensorValue(6) > self.api.valueWhite):
+            self.api.stop()
+            self.switchSlot(2)
+        
+        # Step 1.2: drive backwards
+        self.api.drive(-self.api.defaultSpeed)
+
+        # Step 2: detect end Line
+        if(self.api.readSensorValue(0) > self.api.valueWhite and self.api.readSensorValue(2) > self.api.valueWhite):
+            self.api.stop
+
 
     def switchSlot(self, targetSlot) -> None:
         """
@@ -363,23 +377,22 @@ class Task:
         None
         """
 
-        """ 
+        
         #step 1: Transmit the current slot to the partner robot
         #step 2: rotate 180ish degrees
         self.api.turn(self.api.defaultSpeed, 180)
+        time.sleep(5)
 
         #step 3: Align with the line
         while True:
-            self.api.getSensorValues()
-            if sensor > self.api.valueWhite and sensor > self.api.valueWhite:
+            self.api.getSensorValues() 
+            if self.api.readSensorValue(1) > self.api.valueWhite and self.api.readSensorValue(3) > self.api.valueWhite:
                 self.api.stop()
                 break
-            else:
-                self.api.turn(self.api.defaultSpeed,5)
 
         #step 4: Drive forward until limit switch triggered
         while self.api.readSensorValue(self.api.limitSwitchBar) == 0:
-            self.api.drive(self.api.defaultSpeed)
+            self.api.drive(-self.api.defaultSpeed)
 
         self.api.stop()
 
@@ -389,7 +402,7 @@ class Task:
         self.api.rotateServo(self.api.pwmChGrip, 10, 0)
         
         #moveToEndPos()
-        """
+        
 
     def fill(self) -> None:
         """
