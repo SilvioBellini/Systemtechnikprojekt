@@ -362,7 +362,7 @@ class Task:
         ----------
         None
         """
-        
+
         """ 
         #step 1: Transmit the current slot to the partner robot
         #step 2: rotate 180ish degrees
@@ -436,4 +436,58 @@ class Task:
         ----------
         None
         """
-        pass
+        
+
+        """
+        if mode == 0:
+            #Drive backwards and check for line
+            while True:
+                self.api.drive(-self.api.defaultSpeed) #drive backwards
+                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
+                    self.api.stop()
+                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
+                    break
+
+            #Drive forward and check for slots
+            SLOTCOUNT = ?
+            while SLOTCOUNT < 4: #going towards 0 or 4?
+                self.api.drive(self.api.defaultSpeed)
+                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: 
+                    SLOTCOUNT += 1
+                    if SLOTCOUNT == 4:
+                        #drive a bit more then stop and give green light for other robot
+                        time.sleep(2)
+                        self.api.stop()
+                        TRANSMITSIGNAL #placeholder for signaling
+        elif mode == 1:
+            #Drive forwards and check for line
+            while True:
+                self.api.drive(self.api.defaultSpeed) #drive forwards
+                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
+                    self.api.stop()
+                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
+                    break
+
+            #Drive forward to next line and turn left again.
+            while True:
+                self.api.drive(self.api.defaultSpeed) #drive forward
+                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
+                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
+                    break
+
+            #Drive forward until limit switch goes off
+            while not self.api.readSensorValue(self.api.limitswitch): #which limit switch?
+                self.api.drive(self.api.defaultSpeed)
+            self.api.stop()
+
+            #Lower and open gripper
+
+            self.api.rotateServo(self.api.pwmChGrip, 10, 90)
+            self.api.rotateServo(self.api.pwmChGrip, 10, 0)
+
+            #drive backwards for a couple seconds
+            self.api.drive(-self.api.defaultSpeed)
+            time.sleep(2)
+            self.api.stop()
+
+            """
