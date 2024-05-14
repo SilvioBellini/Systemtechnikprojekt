@@ -303,7 +303,21 @@ class Task:
         ----------
         None
         """
-        pass
+        # Step 1: drive backwards
+        self.api.drive(-self.api.defaultSpeed)
+
+        # Step 1.1: check if there is an obsticle on the slot
+        if(self.api.readSensorValue(6) > self.api.valueWhite):
+            self.api.stop()
+            self.switchSlot(2)
+        
+        # Step 1.2: drive backwards
+        self.api.drive(-self.api.defaultSpeed)
+
+        # Step 2: detect end Line
+        if(self.api.readSensorValue(0) > self.api.valueWhite and self.api.readSensorValue(2) > self.api.valueWhite):
+            self.api.stop
+
 
     def switchSlot(self, targetSlot) -> None:
         """
@@ -363,6 +377,7 @@ class Task:
         None
         """
 
+        
         
         #step 1: Transmit the current slot to the partner robot
         self.com.sendMessage(2, self.slotCounter)
