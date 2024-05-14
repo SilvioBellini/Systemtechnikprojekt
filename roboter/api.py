@@ -227,6 +227,8 @@ class API:
                         time.sleep(0.05)
                         self.stop()
                         break
+            
+            time.sleep(0.1)
 
     def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """
@@ -284,10 +286,6 @@ class API:
                 time.sleep(0.3)
                 #print(currentStep, highTimeFactorStep, highTimeFactor)
                 currentStep += 1
-            
-
-        # Delay to reach desired angle before continuing
-        time.sleep(2)
 
     def getMode(self) -> int:
         """

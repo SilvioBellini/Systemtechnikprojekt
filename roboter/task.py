@@ -28,13 +28,15 @@ class Task:
         self.statusLed = statusLed
         self.watch = watch
 
-    def movePerpendicular(self, modeFactor : int) -> None:
+    def movePerpendicular(self, calcFactor : int) -> None:
         """
         Helpermethod for changing slots by moving perpendicular to the marks on the floor.
 
         Parameters
         ----------
-        modeFactor: Factor used to differentiate rotating and driving directions
+        calcFactor: Factor used to calculate slots properly
+            = 1  -> Current slot > target slot\n
+            = -1 -> Current slot < target slot
 
         Returns
         ----------
@@ -51,7 +53,7 @@ class Task:
         # Aligning if one sensor is on the mark, setting the flag
         if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not self.lineDetected):
             self.api.align(self.api.Directions.Perpendicular)
-            self.slotCounter -= modeFactor * 1
+            self.slotCounter -= calcFactor * 1
             self.lineDetected = True
             self.api.drive(self.api.defaultSpeed)
 
@@ -67,69 +69,36 @@ class Task:
         ----------
         None
         """
+        # Variables
         self.lineDetected = False  
         objectFound = False
+        calcFactor = 1
+
         self.api.drive(self.api.defaultSpeed)
-        modeFactor = 1
 
         while not objectFound:
-            self.movePerpendicular(modeFactor)
+            self.movePerpendicular(calcFactor)
 
             # Object detection based on mode
             sensor0Value = self.api.readSensorValue(0)
             sensor2Value = self.api.readSensorValue(2)
-            sensor7Value = self.api.getSensorValues(7)
-            sensor8Value = self.api.getSensorValues(8)
+            sensor7Value = self.api.readSensorValue(7)
+            sensor8Value = self.api.readSensorValue(8)
 
             # Ensuring the robot is on the mark when stopping
             if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
                 match mode:
-                    # Glass
-                    case 0:
+                    case 0: # Glass
                         if(sensor7Value and not sensor8Value):
                             self.api.stop()
                             objectFound = True
 
-                    # Bottle
-                    case 1:
+                    case 1: # Bottle
                         if(sensor7Value and sensor8Value):
                             self.api.stop()
                             objectFound = True
 
             time.sleep(0.1)
-
-            """
-            #update state of sensors
-            if sensor0Value > 0.5:
-                sensor0DetectedLine = True
-            if sensor2Value > 0.5:
-                sensor2DetectedLine = True
-
-            # Detect if crossing a line
-            if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
-                Task.slotCounter -= 1  # Decrement the slot counter on line cross
-                lastDetectedLine = True  # Set flag when a line is detected
-                sensor0DetectedLine = False  # Reset detection states
-                sensor2DetectedLine = False
-            elif sensor0Value < 0.5 and sensor2Value < 0.5 and lastDetectedLine:
-                lastDetectedLine = False  # Reset the flag when no line is detected
-
-            # Sensor values for object detection
-            sensor7 = self.api.readSensorValue(7)
-            sensor8 = self.api.readSensorValue(8)
-
-            # Object detection logic based on mode
-            if mode == 0:  # Looking for glass
-                if sensor7 < 0 and sensor8 > 0:
-                    objectFound = True
-                    self.api.stop()
-            elif mode == 1:  # Looking for bottle
-                if sensor7 < 0 and sensor8 < 0:
-                    objectFound = True
-                    self.api.stop()
-                
-        self.api.turn(0.03, 90)
-        """    
 
     def grabObject(self) -> None:
         """
@@ -139,21 +108,11 @@ class Task:
         ----------
         None
         """
-        # Turning 90° and aligning
+        # Turning 90° CCW and aligning
         self.api.turn(-0.02)
         self.api.align(self.api.Directions.Parallel)
 
-        """
-        #keep rotating until both sensors 0 and 3 are over the line
-        while True:
-            sensor0 = self.api.readSensorValue(0)
-            sensor2 = self.api.readSensorValue(2)
-            if sensor0 > 0.5 and sensor2 > 0.5: # Adjust Threshold for line detection
-                self.api.stop()
-                break
-        """
-
-        # Rotating and opening the gripper
+        # Lowering and opening the gripper
         self.api.rotateServo(self.api.pwmChFill, 10, 0)
         self.api.rotateServo(self.api.pwmChGrip, 10, 45)
 
@@ -185,180 +144,94 @@ class Task:
             
             time.sleep(0.1)
 
-    def moveToMid(self):        
-        match self.slotCounter:
-            # Already in mid
-            case 3:
-                # Turning for 180°
-                self.api.turn(-self.api.defaultSpeed)
-                time.sleep(1)       # Ensure the mark doesn't instantly get recongnized again
-                self.api.align(self.api.Directions.Parallel)
+    def moveToMid(self) -> None:
+            """
+            Moving to the middle slot, doing nothing if already in mid
+            
+            Returns
+            ----------
+            None
+            """
+            # Current slot > mid slot
+            if(self.slotCounter > 3):
+                turnFactor = 1
+                self.switchSlot(3, turnFactor)
 
-            # Not in mid
-            case _:
-                self.switchSlot(3)
+            # Current slot < mid slot
+            else:
+                turnFactor = -1
+                self.switchSlot(3, turnFactor)
 
+            self.api.turn(-turnFactor)
+            time.sleep(1)
+            self.api.align(self.api.Directions.Parallel)
+
+    def moveToCounter(self) -> None:
         """
-        # Updating sensor values
-        sensor0 = self.api.readSensorValue(0)
-        sensor2 = self.api.readSensorValue(2)
-
-        if Task.slotCounter == 3:
-                self.api.turn(-0.03)
-                self.watch.start(1)
-
-                while True:
-                    sensor1 = self.api.readSensorValue(1)
-                    sensor3 = self.api.readSensorValue(3)
-                    
-                    if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
-                        self.api.stop()
-                        break
-                    break
-
-        if Task.slotCounter > 3:
-            #Turn 90 degrees and recognize the line
-
-            self.api.turn(speed=0.03) # Starts rotating at a slow speed
-
-            #keep rotating until both sensors 4 and 5 are over the line
-            while True:
-                if sensor0 > 0.5 and sensor2 > 0.5: # Adjust Threshold for line detection
-                    self.api.stop()
-                    break
-   
-            while Task.slotCounter != 3:
-                self.api.drive(0.03)
-                #update state of sensors
-                if sensor0 > 0.5:
-                    sensor0DetectedLine = True
-                if sensor2 > 0.5:
-                    sensor2DetectedLine = True
-
-                # Detect if crossing a line
-                if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
-                    Task.slotCounter -= 1  # Decrement the slot counter on line cross
-                    lastDetectedLine = True  # Set flag when a line is detected
-                    sensor0DetectedLine = False  # Reset detection states
-                    sensor2DetectedLine = False
-                elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
-                    lastDetectedLine = False  # Reset the flag when no line is detected
-
-            self.api.turn(0.03)
-            while True:
-                sensor1 = self.api.readSensorValue(1)
-                sensor3 = self.api.readSensorValue(3)
-                if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
-                    self.api.stop()
-                    break
-
-        if Task.slotCounter < 3:
-            #Turn 90 degrees and recognize the line
-
-            self.api.turn(speed=-0.03) # Starts rotating at a slow speed
-
-            #keep rotating until both sensors 4 and 5 are over the line
-            while True:
-                sensor0 = self.api.readSensorValue(0)
-                sensor2 = self.api.readSensorValue(2)
-                if sensor0 > 0.5 and sensor2 > 0.5: # Adjust Threshold for line detection
-                    self.api.stop()
-                    break
-
-            while Task.slotCounter != 3:
-    
-                #update state of sensors
-                if sensor0 > 0.5:
-                    sensor0DetectedLine = True
-                if sensor2 > 0.5:
-                    sensor2DetectedLine = True
-
-                # Detect if crossing a line
-                if (sensor0DetectedLine or sensor2DetectedLine) and not lastDetectedLine:
-                    Task.slotCounter += 1  # Decrement the slot counter on line cross
-                    lastDetectedLine = True  # Set flag when a line is detected
-                    sensor0DetectedLine = False  # Reset detection states
-                    sensor2DetectedLine = False
-                elif sensor0 < 0.5 and sensor2 < 0.5 and lastDetectedLine:
-                    lastDetectedLine = False  # Reset the flag when no line is detected
-
-            self.api.turn(-0.03)
-            while True:
-                sensor1 = self.api.readSensorValue(1)
-                sensor3 = self.api.readSensorValue(3)
-                if sensor3 > 0.5 and sensor1 > 0.5: # Adjust Threshold for line detection
-                    self.api.stop()
-                    break
-        """
-
-    def moveToCounter(self, glassSlot : int) -> None:
-        """
-        Driving to the specific slot at the counter.
-
-        Parameters
-        ----------
-        glassSlot: The slot where the glass is located
+        Driving to the counter, switching slot if an obstacle is in the way.
 
         Returns
         ----------
         None
         """
-        # Step 1: drive backwards
+        # Drive backwards
         self.api.drive(-self.api.defaultSpeed)
 
-        # Step 2: drive to end Line
+        # Drive to end Line
         while True:
             sensor6Value = self.api.readSensorValue(6)
             sensor0Value = self.api.readSensorValue(0)
             sensor2Value = self.api.readSensorValue(2)
 
-            if (sensor6Value > self.api.valueWhite): # switch Slot
+            # Switch Slot
+            if (sensor6Value > self.api.valueWhite): 
+                turnFactor = 1
                 self.api.stop()
-                self.switchSlot(2)
-                
-                while True:
-                    sensor0Value = self.api.readSensorValue(0)
-                    sensor2Value = self.api.readSensorValue(2)
-                    
-                    self.api.drive(-self.api.defaultSpeed)
-                    if (sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite): # drive to end Line
-                        self.api.stop
-                        break
-                    time.sleep(0.1)    
-                break    
-            
+                self.switchSlot(2, turnFactor)
 
-            elif (sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite): # drive to end Line
-                self.api.stop
+                # Turning to original orientation
+                self.api.turn(-turnFactor)
+                time.sleep(1)
+                self.api.align(self.api.Directions.Parallel)
+
+                self.api.drive(-self.api.defaultSpeed)  
+            
+            # Drive to end Line and align
+            if (sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite): 
+                self.api.stop()
+                self.api.align(self.api.Directions.Perpendicular)
                 break
             
             time.sleep(0.1)
         
-
-    def switchSlot(self, targetSlot) -> None:
+    def switchSlot(self, targetSlot : int, turnFactor : int) -> None:
         """
-        Switching a slot and turning back to the original direction
+        Switching a slot, always drives forward (gripper direction). Not turning back to original orientation.
     
         Parameters
         ----------
         targetSlot: Slot the robot should move to
+        turnFactor: Factor used to differentiate rotating directions
+            = 1  -> Rotate CW\n
+            = -1 -> Rotate CCW
 
         Returns
         ----------
         None
         """ 
 
+        # Doing nothing if the current slot already is the target slot
         if(self.slotCounter != targetSlot):
-            modeFactor = 0
+            calcFactor = 0
 
-            # Setting the multiplicator for coming calculations
+            # Setting the multiplicator for coming calculations in movePerpendicular()
             if(self.slotCounter < targetSlot):
-                modeFactor = -1
+                calcFactor = -1
             else:
-                modeFactor = 1
+                calcFactor = 1
 
             # Turning CW or CCW according to multiplicator
-            self.api.turn(modeFactor * self.api.defaultSpeed)
+            self.api.turn(turnFactor * self.api.defaultSpeed)
             time.sleep(1)
 
             # Turning until one sensor detects the mark and rotating a little further
@@ -370,19 +243,13 @@ class Task:
                     time.sleep(0.05)
                     self.api.stop()
                     break
-
+            
+            # Changing slot
             self.api.drive(self.api.defaultSpeed)
             time.sleep(0.5)
             
             while self.slotCounter != targetSlot:            
-                self.movePerpendicular(modeFactor)
-
-            # Turning back to previous direction
-            self.api.stop()
-            time.sleep(0.5)
-            self.api.turn(-modeFactor * self.api.defaultSpeed)
-            time.sleep(1)
-            self.api.align(self.api.Directions.Parallel)
+                self.movePerpendicular(calcFactor)
 
     def place(self) -> None:
         """
@@ -393,31 +260,31 @@ class Task:
         None
         """
 
-        
-        
-        #step 1: Transmit the current slot to the partner robot
+        # Transmitting the current slot to the partner robot
         self.com.sendMessage(2, self.slotCounter)
 
-        #step 2: rotate 180ish degrees
-        
+        # Rotating for 180°        
         self.api.turn(self.api.defaultSpeed)
         time.sleep(1)
         self.api.align(self.api.Directions.Parallel)
 
-        #step 3: Drive forward if limit switch not triggered
-        while self.api.readSensorValue(self.api.limitSwitchGripper) == 0:
-            self.api.drive(self.api.defaultSpeed)
+        self.api.drive(self.api.defaultSpeed)
 
-        self.api.stop()
+        # Driving forward until limit switch turns on
+        while True:
+            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
 
-        #step 4: lower and open gripper
+            if(limitSwitchState):
+                time.sleep(2)
+                self.api.stop()
+                break
+
+            time.sleep(0.1)
+
+        # Lowering and opening the gripper
         self.api.rotateServo(self.api.pwmChGrip, 10, 90)
-
         self.api.rotateServo(self.api.pwmChGrip, 10, 0)
         
-        self.moveToEndPos()
-        
-
     def fill(self) -> None:
         """
         Filling the glass with the bottle by tipping it over its head.
@@ -427,27 +294,25 @@ class Task:
         None
         """
 
-        #step 1: drive backwards until limit switch goes off
-        while self.api.readSensorValue(self.api.limitSwitchHopper) == 0:
-            self.api.drive(-self.api.defaultSpeed)
-        self.api.stop()
+        self.api.drive(-self.api.defaultSpeed)
 
-        #step 2: lift the gripper
-        self. api.rotateServo(self.api.pwmChGrip, 10, 90) # 10 steps to 90 degrees
+        # Driving backward until limit switch turns on
+        while True:
+            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchHopper)
 
-        #step 3: wait until upper switch goes off
-        while self.api.readSensorValue(self.api.limitSwitchGlass) == 0:
-            time.sleep(0.)
-            pass # waiting for loop being true
+            if(limitSwitchState):
+                time.sleep(2)
+                self.api.stop()
+                break
 
-        #step 4: wait for a defined time
-        time.sleep(1)
+            time.sleep(0.1)
 
-        #step 5: lower the gripper
-        self.api.rotateServo(self.api.pwmChGrip, 10, 0) #10 steps back to 0 degrees
+        # Lifting the gripper and waiting for the water to drain
+        self. api.rotateServo(self.api.pwmChFill, 10, 85)
+        time.sleep(3)
 
-        #step 6: moveToEndPos
-        self.moveToEndPos()
+        # Lowering the gripper
+        self.api.rotateServo(self.api.pwmChFill, 10, 5)
 
     def moveToEndPos(self, mode : int) -> None:
         """
@@ -456,60 +321,76 @@ class Task:
         Parameters
         ----------
         mode: Specifying the endposition based on what object got handled
-        mode 0 = Glass
-        mode 1 = Bottle
+            0 = Glass\n
+            1 = Bottle
 
         Returns
         ----------
         None
         """
+        # Setting a factor to define movement direction of robot based on mode
+        match mode:
+            case 0:
+                modeFactor = -1
+            case 1:
+                modeFactor = 1
         
+        # Driving backward and check for line
+        self.api.drive(modeFactor * self.api.defaultSpeed)
 
-        
-        if self.mode == 0:
-            #Drive backwards and check for line
-            while True:
-                self.api.drive(-self.api.defaultSpeed) #drive backwards
-                if self.api.readSensorValue(0) and self.api.readSensorValue(2) > self.api.valueWhite: #both sensors detecting line
-                    self.api.stop()
-                    time.sleep(0.1)
-                    break
-                    
-            #Drive forward and check for slots
-            self.switchSlot(1)
-            self.api.align(self.api.Directions.Parallel)
-        
-            #drive a bit more then stop and give green light for other robot
-            self.api.drive(self.api.defaultSpeed)
-            time.sleep(2)
-            self.api.stop()
-            self.com.sendMessage(1 ,True) #placeholder for signaling
-
-        elif self.mode == 1:
-            #Drive forwards and check for line
-            while True:
-                self.api.drive(self.api.defaultSpeed) #drive forwards
-                if self.api.readSensorValue(0) and self.api.readSensorValue(2) > self.api.valueWhite: #both sensors detecting line
-                    self.api.stop()
-                    self.switchSlot(4)
-                    break
-                    
-            #Turn 180 degrees
-            self.api.turn(self.api.defaultSpeed)
-            time.sleep(1)
-            self.api.align(self.api.Directions.Parallel)
+        while True:
+            # Updating sensor values
+            sensor0Value = self.api.readSensorValue(0)
+            sensor2Value = self.api.readSensorValue(2)
             
-            #Drive forward until limit switch goes off
-            while not self.api.readSensorValue(self.api.limitSwitchGripper):
+            # Checking if both sensors are on the mark, correcting if not
+            if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
+                self.api.stop()
+                break
+            if(sensor0Value > self.api.valueWhite):
+                self.api.setMotorSpeeds(0, -modeFactor * 0.005)
+            elif(sensor2Value > self.api.valueWhite):
+                self.api.setMotorSpeeds(modeFactor * 0.005, 0)
+
+        match mode:
+            case 0:
+                # Switching slot
+                self.switchSlot(1, -1)
+            
+                # Driving a little further, then stopping and giving permission to partner robot
                 self.api.drive(self.api.defaultSpeed)
-            self.api.stop()
+                time.sleep(2)
+                self.api.stop()
+                self.com.sendMessage(1, True)
 
-            #Lower and open gripper
+            case 1:
+                # Switching slot
+                self.switchSlot(4, 1)
 
-            self.api.rotateServo(self.api.pwmChGrip, 10, 90)
-            self.api.rotateServo(self.api.pwmChGrip, 10, 0)
+                # Turning 90°
+                self.api.turn(-self.api.defaultSpeed)
+                time.sleep(1)
+                self.api.align(self.api.Directions.Parallel)
+                
+                # Driving forward until limit switch turns on
+                while True:
+                    limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
 
-            #drive backwards for a couple seconds
-            self.api.drive(-self.api.defaultSpeed)
-            time.sleep(2)
-            self.api.stop()
+                    if(limitSwitchState):
+                        time.sleep(2)
+                        self.api.stop()
+                        break
+
+                time.sleep(0.1)
+
+                # Lowering and opening gripper
+                self.api.rotateServo(self.api.pwmChFill, 10, 0)
+                self.api.rotateServo(self.api.pwmChGrip, 10, 45)
+
+                # Driving backward a little
+                self.api.drive(-self.api.defaultSpeed)
+                time.sleep(2)
+                self.api.stop()
+            
+            case _:
+                print("Unknown mode!")
