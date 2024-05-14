@@ -362,7 +362,34 @@ class Task:
         ----------
         None
         """
-        pass
+        
+        """ 
+        #step 1: Transmit the current slot to the partner robot
+        #step 2: rotate 180ish degrees
+        self.api.turn(self.api.defaultSpeed, 180)
+
+        #step 3: Align with the line
+        while True:
+            self.api.getSensorValues()
+            if sensor > self.api.valueWhite and sensor > self.api.valueWhite:
+                self.api.stop()
+                break
+            else:
+                self.api.turn(self.api.defaultSpeed,5)
+
+        #step 4: Drive forward until limit switch triggered
+        while self.api.readSensorValue(self.api.limitSwitchBar) == 0:
+            self.api.drive(self.api.defaultSpeed)
+
+        self.api.stop()
+
+        #step 5: lower and open gripper
+        self.api.rotateServo(self.api.pwmChGrip, 10, 90)
+
+        self.api.rotateServo(self.api.pwmChGrip, 10, 0)
+        
+        #moveToEndPos()
+        """
 
     def fill(self) -> None:
         """
@@ -372,7 +399,28 @@ class Task:
         ----------
         None
         """
-        pass
+
+        """
+        #step 1: drive backwards until limit switch goes off
+        while self.api.readSensorValue(self.api.limitSwitchBar) == 0:
+            self.api.drive(-self.api.defaultSpeed)
+        self.api.stop()
+
+        #step 2: lift the gripper
+        self. api.rotateServo(self.api.pwmChGrip, 10, 90) # 10 steps to 90 degrees
+
+        #step 3: wait until upper switch goes off
+        while self.api.readSensorValue(self.api.limitSwitchKitchen) == 0:
+            pass # waiting for loop being true
+
+        #step 4: wait for a defined time
+        time.sleep(5)
+
+        #step 5: lower the gripper
+        self.api.rotateServo(self.api.pwmChGrip, 10, 0) #10 steps back to 0 degrees
+        #step 6: moveToEndPos
+        """
+        
 
     def moveToEndPos(self, mode : int) -> None:
         """
@@ -381,6 +429,8 @@ class Task:
         Parameters
         ----------
         mode: Specifying the endposition based on what object got handled
+        mode 0 = Glass
+        mode 1 = Bottle
 
         Returns
         ----------
