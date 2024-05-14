@@ -161,7 +161,7 @@ class Task:
 
         # Driving forward until limit switch turns on
         while True:
-            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchKitchen)
+            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
 
             if(limitSwitchState):
                 time.sleep(2)
@@ -394,30 +394,28 @@ class Task:
         """
 
         
+        
         #step 1: Transmit the current slot to the partner robot
+        self.com.sendMessage(2, self.slotCounter)
+
         #step 2: rotate 180ish degrees
-        self.api.turn(self.api.defaultSpeed, 180)
-        time.sleep(5)
+        
+        self.api.turn(self.api.defaultSpeed)
+        time.sleep(1)
+        self.api.align(self.api.Directions.Parallel)
 
-        #step 3: Align with the line
-        while True:
-            self.api.getSensorValues() 
-            if self.api.readSensorValue(1) > self.api.valueWhite and self.api.readSensorValue(3) > self.api.valueWhite:
-                self.api.stop()
-                break
-
-        #step 4: Drive forward until limit switch triggered
-        while self.api.readSensorValue(self.api.limitSwitchBar) == 0:
-            self.api.drive(-self.api.defaultSpeed)
+        #step 3: Drive forward if limit switch not triggered
+        while self.api.readSensorValue(self.api.limitSwitchGripper) == 0:
+            self.api.drive(self.api.defaultSpeed)
 
         self.api.stop()
 
-        #step 5: lower and open gripper
+        #step 4: lower and open gripper
         self.api.rotateServo(self.api.pwmChGrip, 10, 90)
 
         self.api.rotateServo(self.api.pwmChGrip, 10, 0)
         
-        #moveToEndPos()
+        self.moveToEndPos()
         
 
     def fill(self) -> None:
@@ -429,9 +427,8 @@ class Task:
         None
         """
 
-        """
         #step 1: drive backwards until limit switch goes off
-        while self.api.readSensorValue(self.api.limitSwitchBar) == 0:
+        while self.api.readSensorValue(self.api.limitSwitchHopper) == 0:
             self.api.drive(-self.api.defaultSpeed)
         self.api.stop()
 
@@ -439,17 +436,18 @@ class Task:
         self. api.rotateServo(self.api.pwmChGrip, 10, 90) # 10 steps to 90 degrees
 
         #step 3: wait until upper switch goes off
-        while self.api.readSensorValue(self.api.limitSwitchKitchen) == 0:
+        while self.api.readSensorValue(self.api.limitSwitchGlass) == 0:
+            time.sleep(0.)
             pass # waiting for loop being true
 
         #step 4: wait for a defined time
-        time.sleep(5)
+        time.sleep(1)
 
         #step 5: lower the gripper
         self.api.rotateServo(self.api.pwmChGrip, 10, 0) #10 steps back to 0 degrees
+
         #step 6: moveToEndPos
-        """
-        
+        self.moveToEndPos()
 
     def moveToEndPos(self, mode : int) -> None:
         """
@@ -467,45 +465,42 @@ class Task:
         """
         
 
-        """
-        if mode == 0:
+        
+        if self.mode == 0:
             #Drive backwards and check for line
             while True:
                 self.api.drive(-self.api.defaultSpeed) #drive backwards
-                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
+                if self.api.readSensorValue(0) and self.api.readSensorValue(2) > self.api.valueWhite: #both sensors detecting line
                     self.api.stop()
-                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
+                    time.sleep(0.1)
                     break
-
+                    
             #Drive forward and check for slots
-            SLOTCOUNT = ?
-            while SLOTCOUNT < 4: #going towards 0 or 4?
-                self.api.drive(self.api.defaultSpeed)
-                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: 
-                    SLOTCOUNT += 1
-                    if SLOTCOUNT == 4:
-                        #drive a bit more then stop and give green light for other robot
-                        time.sleep(2)
-                        self.api.stop()
-                        TRANSMITSIGNAL #placeholder for signaling
-        elif mode == 1:
+            self.switchSlot(1)
+            self.api.align(self.api.Directions.Parallel)
+        
+            #drive a bit more then stop and give green light for other robot
+            self.api.drive(self.api.defaultSpeed)
+            time.sleep(2)
+            self.api.stop()
+            self.com.sendMessage(1 ,True) #placeholder for signaling
+
+        elif self.mode == 1:
             #Drive forwards and check for line
             while True:
                 self.api.drive(self.api.defaultSpeed) #drive forwards
-                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
+                if self.api.readSensorValue(0) and self.api.readSensorValue(2) > self.api.valueWhite: #both sensors detecting line
                     self.api.stop()
-                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
+                    self.switchSlot(4)
                     break
-
-            #Drive forward to next line and turn left again.
-            while True:
-                self.api.drive(self.api.defaultSpeed) #drive forward
-                if self.api.readSensorValue() and self.api.readSensorValue() > self.api.valueWhite: #both sensors detecting line
-                    self.api.turn(self.api.defaultSpeed, -90)  #Turn 90 degrees left
-                    break
-
+                    
+            #Turn 180 degrees
+            self.api.turn(self.api.defaultSpeed)
+            time.sleep(1)
+            self.api.align(self.api.Directions.Parallel)
+            
             #Drive forward until limit switch goes off
-            while not self.api.readSensorValue(self.api.limitswitch): #which limit switch?
+            while not self.api.readSensorValue(self.api.limitSwitchGripper):
                 self.api.drive(self.api.defaultSpeed)
             self.api.stop()
 
@@ -518,5 +513,3 @@ class Task:
             self.api.drive(-self.api.defaultSpeed)
             time.sleep(2)
             self.api.stop()
-
-            """
