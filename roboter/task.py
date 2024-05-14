@@ -306,18 +306,34 @@ class Task:
         # Step 1: drive backwards
         self.api.drive(-self.api.defaultSpeed)
 
-        # Step 1.1: check if there is an obsticle on the slot
-        if(self.api.readSensorValue(6) > self.api.valueWhite):
-            self.api.stop()
-            self.switchSlot(2)
+        # Step 2: drive to end Line
+        while True:
+            sensor6Value = self.api.readSensorValue(6)
+            sensor0Value = self.api.readSensorValue(0)
+            sensor2Value = self.api.readSensorValue(2)
+
+            if (sensor6Value > self.api.valueWhite): # switch Slot
+                self.api.stop()
+                self.switchSlot(2)
+                
+                while True:
+                    sensor0Value = self.api.readSensorValue(0)
+                    sensor2Value = self.api.readSensorValue(2)
+                    
+                    self.api.drive(-self.api.defaultSpeed)
+                    if (sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite): # drive to end Line
+                        self.api.stop
+                        break
+                    time.sleep(0.1)    
+                break    
+            
+
+            elif (sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite): # drive to end Line
+                self.api.stop
+                break
+            
+            time.sleep(0.1)
         
-        # Step 1.2: drive backwards
-        self.api.drive(-self.api.defaultSpeed)
-
-        # Step 2: detect end Line
-        if(self.api.readSensorValue(0) > self.api.valueWhite and self.api.readSensorValue(2) > self.api.valueWhite):
-            self.api.stop
-
 
     def switchSlot(self, targetSlot) -> None:
         """
