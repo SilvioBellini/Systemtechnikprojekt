@@ -10,7 +10,7 @@ class SharedData:
     
     def setData(self, id : int, data) -> None:
         """
-        Saving the data according to its identification number.
+        Saving the data according to its identification number. Checking for correct types and values.
 
         Prameters
         ----------
@@ -30,19 +30,22 @@ class SharedData:
                 if(isinstance(data, bool)):
                     self.approvalKitchen = data
                 else:
-                    print("Invalid data! \nIs: {} \n Should be: bool \n".format(type(data)))
+                    print("Invalid type of data! \nIs: {} \nShould be: bool \n".format(type(data)))
 
             case 1:
                 if(isinstance(data, bool)):
                     self.approvalCounter = data
                 else:
-                    print("Invalid data! \nIs: {} \n Should be: bool \n".format(type(data)))
+                    print("Invalid type of data! \nIs: {} \nShould be: bool \n".format(type(data)))
 
             case 2:
                 if(isinstance(data, int)):
-                    self.glassSlot = data
+                    if(data >= 1 and data <= 5):
+                        self.glassSlot = data
+                    else:
+                        print("Invalid value of data! \nIs: {} \nShould be: 1-5 \n".format(data))
                 else:
-                    print("Invalid data! \nIs: {} \n Should be: int \n".format(type(data)))
+                    print("Invalid type of data! \nIs: {} \nShould be: int \n".format(type(data)))
                     
             case _:
                 print("Invalid ID! Unable to set data")
