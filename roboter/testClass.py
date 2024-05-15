@@ -175,13 +175,49 @@ class TestClass:
 
     #region Communication
 
-    def testSendMessage(self):
-        for i in range(10):
-            self.com.sendMessage(0, i)
-            time.sleep(0.5)
+    def testSendMessage(self) -> None:
+        """
+        Testing the functionality of sending messages to the server for the partner team to read them
 
-    def testSaveData(self):
-        for i in range(20):
+        Wiring
+        ----------
+        None
+
+        Returns
+        ----------
+        None
+        """
+        flipFlop = False
+
+        for i in range(10):
+            self.com.sendMessage(2, (i % 5) + 1)
+            time.sleep(1)
+        
+        for i in range(5):
+            flipFlop = not flipFlop
+            self.com.sendMessage(0, flipFlop)
+            time.sleep(1)
+
+        flipFlop = False
+
+        for i in range(5):
+            flipFlop = not flipFlop
+            self.com.sendMessage(1, flipFlop)
+            time.sleep(1)
+
+    def testSaveData(self) -> None:
+        """
+        Testing the functionality of receiving messages from the partner team and saving them
+
+        Wiring
+        ----------
+        None
+
+        Returns
+        ----------
+        None
+        """
+        for i in range(30):
             self.com.receiveMessage()
             print(self.sharedData.getData(0))
             print(self.sharedData.getData(1))

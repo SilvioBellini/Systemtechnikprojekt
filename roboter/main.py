@@ -41,7 +41,8 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        test.testDrive()
+        test.testSendMessage()
+        #test.testSaveData()
                 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

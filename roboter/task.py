@@ -314,7 +314,7 @@ class Task:
         # Lowering the gripper
         self.api.rotateServo(self.api.pwmChFill, 10, 5)
 
-    def moveToEndPos(self, mode : int) -> None:
+    def moveToEndPos(self) -> None:
         """
         Moving the robot to the end position based on the specified mode
 
@@ -329,7 +329,7 @@ class Task:
         None
         """
         # Setting a factor to define movement direction of robot based on mode
-        match mode:
+        match self.mode:
             case 0:
                 modeFactor = -1
             case 1:
@@ -347,12 +347,13 @@ class Task:
             if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
                 self.api.stop()
                 break
+            # Correction depending on mode (Either gripper or hopper in driving direction)
             if(sensor0Value > self.api.valueWhite):
                 self.api.setMotorSpeeds(0, -modeFactor * 0.005)
             elif(sensor2Value > self.api.valueWhite):
                 self.api.setMotorSpeeds(modeFactor * 0.005, 0)
 
-        match mode:
+        match self.mode:
             case 0:
                 # Switching slot
                 self.switchSlot(1, -1)
