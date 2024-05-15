@@ -27,12 +27,23 @@ class SharedData:
 
         match id:
             case 0:
-                self.approvalKitchen = data
-                print(self.approvalKitchen)
-            case 1: 
-                self.approvalCounter = data
-            case 2: 
-                self.glassSlot = data
+                if(isinstance(data, bool)):
+                    self.approvalKitchen = data
+                else:
+                    print("Invalid data! \nIs: {} \n Should be: bool \n".format(type(data)))
+
+            case 1:
+                if(isinstance(data, bool)):
+                    self.approvalCounter = data
+                else:
+                    print("Invalid data! \nIs: {} \n Should be: bool \n".format(type(data)))
+
+            case 2:
+                if(isinstance(data, int)):
+                    self.glassSlot = data
+                else:
+                    print("Invalid data! \nIs: {} \n Should be: int \n".format(type(data)))
+                    
             case _:
                 print("Invalid ID! Unable to set data")
 

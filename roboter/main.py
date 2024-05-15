@@ -22,7 +22,7 @@ from testClass import TestClass
 
 username = "team2"
 password = "rHGpIGxo0o1k"
-topic = "team2/test"
+topic = "team1_2/test"
 mode = None
 
 #endregion

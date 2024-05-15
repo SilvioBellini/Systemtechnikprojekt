@@ -52,7 +52,7 @@ class Communication:
         message = [id, data]
         self.client.send(str(message))
         
-        print("Sent Message: ", message)
+        print("Sent Message: {} \n".format(message))
 
     def receiveMessage(self) -> None:
         """
@@ -65,12 +65,14 @@ class Communication:
 
         message = self.client.read()
 
-        if(message is not None):
-            decodedMessage = eval(message)
-            id = decodedMessage[0]
-            print("ID: ", id)
-            data = decodedMessage[1]
-            print("Data: ", data)
-            self.sharedData.setData(id, data)
-            
-            print("Received Message: ", message)
+        # Decoding message if possible
+        try:
+            if(message is not None):
+                decodedMessage = eval(message)
+                id = decodedMessage[0]
+                data = decodedMessage[1]
+                self.sharedData.setData(id, data)
+                
+                print("Received Message: {} \n".format(message))
+        except:
+            print("Can't evaluate message! \n")
