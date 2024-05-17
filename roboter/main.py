@@ -41,7 +41,8 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        test.testSendMessage()
+        print("alles probiert")
+        test.testFillServo()
         #test.testSaveData()
                 
     except Exception as error:
