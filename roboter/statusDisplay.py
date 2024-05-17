@@ -1,6 +1,5 @@
 import flink
 import time
-#import neopixel
 
 class StatusDisplay:
     """

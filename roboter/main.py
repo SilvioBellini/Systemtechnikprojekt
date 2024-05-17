@@ -41,8 +41,9 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        test.testSendMessage()
-        #test.testSaveData()
+        #print(ginTronic.pwm.getHighTime(ginTronic.pwmChFill))
+        ginTronic.rotateServo(ginTronic.pwmChGrip, 200, 270)
+        #test.testGripServo()
                 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
