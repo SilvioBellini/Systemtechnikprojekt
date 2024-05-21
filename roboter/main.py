@@ -41,14 +41,8 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-<<<<<<< HEAD
-        test.testDrive()
+        test.testLed()
         #test.testSaveData()
-=======
-        #print(ginTronic.pwm.getHighTime(ginTronic.pwmChFill))
-        ginTronic.rotateServo(ginTronic.pwmChGrip, 200, 270)
-        #test.testGripServo()
->>>>>>> 9de71d748db7a3b7809eadbf30fa7e0c2348e8da
                 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
