@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        test.testSendMessage()
+        test.testDrive()
         #test.testSaveData()
                 
     except Exception as error:
