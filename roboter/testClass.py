@@ -14,8 +14,19 @@ from task import Task
 
 class TestClass:
     """
-    Class for testing parts of the robot(speakers, servos, etc.)
+    Class for testing parts of the robot (speakers, servos, etc.)
+    
+    Parameters
+    ----------
+    api:            Object of the API class
+    sharedData:     Object of the SharedData class
+    communication:  Object of the Communication class
+    audio:          Object of the AudioManager class
+    statusLed:      Object of the StatusDisplay class
+    watch:          Object of the StopWatch class
+    taks:           Object of the TestClass class
     """
+
     def __init__(self, api : API, sharedData : SharedData, communication : Communication, watch : StopWatch, audio : AudioManager, statusLed : StatusDisplay, task : Task):
         """
         Initializes the Test object with default values.
@@ -122,11 +133,14 @@ class TestClass:
         ----------
         None
         """
-        self.api.rotateServo(self.api.pwmChGrip, 0, 0)
+        print("Starting")
+        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 0, 45)
+        print("Rotating to 45°")
+        self.api.rotateServo(self.api.pwmChGrip, 20, 45)
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 0, 0)
+        print("Rotating back")
+        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
 
     def testFillServo(self) -> None:
         """
@@ -148,7 +162,9 @@ class TestClass:
         angleMultiplicator = 20         # Rotating in steps of 20°
         for i in range(10):
             self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
-            self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
+            time.sleep(0.1)
+
+        self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
 
     def testGetMode(self) -> None:
         """

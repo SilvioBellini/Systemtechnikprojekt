@@ -30,7 +30,7 @@ class AudioManager:
 
         for byte in byteMessage:
             if(self.uart.write(byte) == 0):
-                raise Exception("Byte could not get sent")
+                raise Exception("Byte could not get sent: ", byte)
 
         time.sleep(0.1)
 

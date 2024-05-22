@@ -12,6 +12,19 @@ import time
 #endregion
 
 class Task:
+    """
+    Class for detailed tasks the robot should do
+
+    Parameters
+    ----------
+    mode:           Specifying what object should be handeled
+    api:            Object of the API class
+    sharedData:     Object of the SharedData class
+    communication:  Object of the Communication class
+    audio:          Object of the AudioManager class
+    statusLed:      Object of the StatusDisplay class
+    watch:          Object of the StopWatch class
+    """
 
     slotCounter = 6
     lineDetected = False    # Flag to save that both sensors are one the mark

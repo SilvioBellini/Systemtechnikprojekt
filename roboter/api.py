@@ -13,12 +13,13 @@ class API:
     #region Classattributes
 
     # PWM Channels
-    pwmChLeftA = 0
-    pwmChLeftB = 2
-    pwmChRightA = 4
-    pwmChRightB = 6
+    pwmChLeftA = 2  # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
+    pwmChLeftB = 0  # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
+    pwmChRightA = 6 # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
+    pwmChRightB = 4 # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
     pwmChFill = 10
     pwmChGrip = 12
+    activateServoCh = 18
 
     # FQD Channels
     fqdLeft = 0
@@ -44,16 +45,13 @@ class API:
     motorVoltage = 5
     pwmFreq = 50
 
-    # Globally used values
-    
+    # Globally used values    
     defaultSpeed = 0.03
     Directions = Enum("Directions", ["Perpendicular", "Parallel"])
     amountOfSensors = 4 # 7
 
     valueWhite = 1000
     valueGrey = 600
-
-
 
     #endregion
 
@@ -68,6 +66,7 @@ class API:
         self.sensorValues : List[int] = []
         self.gpio.setDir(self.sensorChBottle, False)
         self.gpio.setDir(self.sensorChGlas, False)
+        self.gpio.setDir(self.activateServoCh, True)
 
         self.gpio.setDir(self.modeCh1, False)
         self.gpio.setDir(self.modeCh2, False)
@@ -127,19 +126,9 @@ class API:
         ----------
         None
         """
-        
-        # Calculating the time needed for the motors to rotate for the desired angle
-        #if (speed != 0):
-        #    timeToRotate = angle / speed
 
         # Setting the desired speed for both motors
         self.setMotorSpeeds(speed, speed)
-
-        # Waiting for the calculated time to rotate to the desired angle
-        #time.sleep(timeToRotate)
-
-        # Stopping the motors after reaching the desired angle
-        #self.stop()
 
     def stop(self) -> None:
         """
@@ -232,7 +221,7 @@ class API:
 
     def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """
-        Rotating the gripper for a specified angle using a servo
+        Rotating the gripper/arm for a specified angle using a servo
 
         Parameters
         ----------
@@ -247,45 +236,48 @@ class API:
         None
         """
         
-        period = self.pwm.getBaseClock() / self.pwmFreq
-        
-        # Angle limits
+        # Enabling servo motors
+        self.gpio.setValue(self.activateServoCh, True)
+
+        # Limits
         minAngle = 0
         maxAngle = 270 
+        minHighTimeMs = 0.5
+        maxHighTimeMs = 2.5
 
         # Ensuring that the angle is within the valid range
         angle = max(min(angle, maxAngle), minAngle)
 
-        # Hightime limits in milliseconds
-        minHighTimeMs = 0.5
-        maxHighTimeMs = 2.5
+        # Ensuring the servo is horizontal with angle 0° (Inverting angles) for Fill-Servo
+        if(channel == self.pwmChFill):
+            angle = maxAngle - angle
 
         # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
         highTimeFactor = (highTimeMs * self.pwmFreq) / 1000
-
-        """# Setting period and highTime according to the calculated factor
-        self.pwm.setPeriod(channel, int(period))
-        self.pwm.setHighTime(channel, int(period * highTimeFactor))"""
    
-        # Setting first Step
+        # Calculating current angle/highTime
+        period = self.pwm.getBaseClock() / self.pwmFreq
+        currentHighTimeFactor = self.pwm.getHighTime(channel) / period
+
+        # Cancelling method if target angle is current angle
+        if(currentHighTimeFactor == highTimeFactor):
+            print("Already there")
+            return None
+        
+        # Rotating servo in steps
         currentStep = 1
 
-        # Setting highTimeFactor at Startposition
-        highTimeFactorZeroPosition = 0.025
-
-        # Rotate servo in steps
-        while currentStep <= stepCount:          
-            highTimeFactorStep = highTimeFactor * (currentStep / stepCount)
-            if(highTimeFactorStep < highTimeFactorZeroPosition):
-                #print(currentStep, "Unter 0°")
-                currentStep += 1
-            else:
-                self.pwm.setPeriod(channel, int(period))
-                self.pwm.setHighTime(channel, int(period * highTimeFactorStep))
-                time.sleep(0.3)
-                #print(currentStep, highTimeFactorStep, highTimeFactor)
-                currentStep += 1
+        while currentStep <= stepCount:
+            highTimeFactorStep = (highTimeFactor - currentHighTimeFactor) * (currentStep / stepCount)
+            self.pwm.setPeriod(channel, int(period))
+            self.pwm.setHighTime(channel, int(period * (currentHighTimeFactor + highTimeFactorStep)))
+            
+            currentStep += 1
+            time.sleep(0.025)
+        
+        # Disabling servo motors
+        self.gpio.setValue(self.activateServoCh, False)
 
     def getMode(self) -> int:
         """

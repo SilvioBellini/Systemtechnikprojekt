@@ -20,7 +20,7 @@ from testClass import TestClass
 
 # region Classattributes
 
-username = "team2"
+username = "team2" 
 password = "rHGpIGxo0o1k"
 topic = "team1_2/test"
 mode = None
