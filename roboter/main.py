@@ -41,7 +41,19 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        test.testLed()
+        ginTronic.rotateServo(10, 1, 0)
+        print("0 Grad")
+        time.sleep(1)
+        ginTronic.rotateServo(10, 1, 90)
+        print("90 Grad")
+        time.sleep(1)
+        ginTronic.rotateServo(10, 1, 180)
+        print("180 Grad")
+        time.sleep(1)
+        
+        
+        
+        #test.testFillServo()
         #test.testSaveData()
                 
     except Exception as error:
