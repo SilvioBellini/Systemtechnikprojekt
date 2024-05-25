@@ -133,14 +133,17 @@ class TestClass:
         ----------
         None
         """
+        angle = 25 # the angle for gripping, tested
         print("Starting")
+        time.sleep(3)
         self.api.rotateServo(self.api.pwmChGrip, 20, 0)
         time.sleep(3)
-        print("Rotating to 45°")
-        self.api.rotateServo(self.api.pwmChGrip, 20, 45)
+        print(f"Rotating to {angle}°")
+        self.api.rotateServo(self.api.pwmChGrip, 20, angle)
         time.sleep(3)
         print("Rotating back")
         self.api.rotateServo(self.api.pwmChGrip, 20, 0)
+        
 
     def testFillServo(self) -> None:
         """
@@ -158,6 +161,7 @@ class TestClass:
         None
         """
         self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
+        print("Servo on position: 0°")
 
         angleMultiplicator = 20         # Rotating in steps of 20°
         for i in range(10):
