@@ -166,9 +166,42 @@ class TestClass:
         angleMultiplicator = 20         # Rotating in steps of 20°
         for i in range(10):
             self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
-            time.sleep(0.1)
+            time.sleep(1)
 
-        self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
+        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
+
+    def testGripper(self) -> None:
+        """
+        Testing the functionality of the gripper including the fill and grip servo. 
+
+        Returns
+        ----------
+        None
+        """
+        # Moving to start position
+        self.api.rotateServo(self.api.pwmChFill, 100, 0)
+        time.sleep(1)
+
+        # Grabbing object
+        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
+        time.sleep(2)
+        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
+        time.sleep(1)
+
+        # Filling
+        self.api.rotateServo(self.api.pwmChFill, 200, 85)
+        time.sleep(5)
+        self.api.rotateServo(self.api.pwmChFill, 200, 0)
+        time.sleep(1)
+
+        # Releasing object
+        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
+        time.sleep(1)
+
+        # Returning to default position
+        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
+        time.sleep(1)
+
 
     def testGetMode(self) -> None:
         """
@@ -187,7 +220,7 @@ class TestClass:
         ----------
         None
         """
-        for i in range(5):
+        for i in range(15):
             print(self.api.getMode())
             time.sleep(3)
     
@@ -274,6 +307,8 @@ class TestClass:
         self.statusLed.setColor(0, 255, 0)
         time.sleep(2)
         self.statusLed.setColor(0, 0, 255)
+        time.sleep(2)
+        self.statusLed.setColor(0, 0, 0)
 
     def testAudio(self) -> None:
         """
@@ -291,10 +326,12 @@ class TestClass:
         ----------
         None
         """
-        self.audio.selectDevice()
-        self.audio.setVolume(10)
-        self.audio.playAudioClip(1, 3)            
-        time.sleep(15)
-        self.audio.pause()
+        #self.audio.selectDevice()
+        self.audio.setVolume(50)
+        self.audio.playAudioClip(1, 3)
+        #time.sleep(15)
+        #self.audio.pause()
+        #time.sleep(3)
+        #self.audio.playAudioClip(1, 6)
 
     #endregion

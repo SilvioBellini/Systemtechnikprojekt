@@ -248,10 +248,6 @@ class API:
         # Ensuring that the angle is within the valid range
         angle = max(min(angle, maxAngle), minAngle)
 
-        # Ensuring the servo is horizontal with angle 0° (Inverting angles) for Fill-Servo
-        if(channel == self.pwmChFill):
-            angle = maxAngle - angle
-
         # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
         highTimeFactor = (highTimeMs * self.pwmFreq) / 1000
