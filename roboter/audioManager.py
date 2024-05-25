@@ -112,7 +112,7 @@ class AudioManager:
         """
 
         # Clamping the volume from 0-30 and converting it to a hexadecimal number with capital letters and then to a byte
-        volume = max(min(volume, 30), 0)
+        volume = max(min(volume, 50), 0)
         command = "7E 03 31 {:0>2X} EF".format(volume)
         byteMessage = bytes.fromhex(command)
         

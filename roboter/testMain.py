@@ -40,24 +40,32 @@ if(__name__ == "__main__"):
     test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
-        # Running main python code in here
+        #audio.setVolume(50)
+        #audio.playAudioClip(1, 3)
+        
+        # Running different programs with hex-switch for once after each switch 
         while True:
-            mode = ginTronic.getMode()
-            time.sleep(3)
-            match mode:
-                case 0: time.sleep(1)
-                case 1: test.testDrive()
-                case 2: test.testReadSensorValues()
-                case 3: test.testGripServo()
-                case 4: test.testFillServo()
-                case 5: test.testGetMode()
-                case 6: test.testSendMessage()
-                case 7: test.testSaveData()
-                case 8: test.testLed()
-                case 9: test.testAudio()
-                case _: break
-            while mode == ginTronic.getMode():
-                time.sleep(1)
+            # Waiting for start input
+            if(ginTronic.gpio.getValue(2)):
+                mode = ginTronic.getMode()
+                time.sleep(3)
+                match mode:
+                    case 0: time.sleep(1)
+                    case 1: test.testDrive()
+                    case 2: test.testReadSensorValues()
+                    case 3: test.testGripServo()
+                    case 4: test.testFillServo()
+                    case 5: test.testGripper()
+                    case 6: test.testGetMode()
+                    case 7: test.testSendMessage()
+                    case 8: test.testSaveData()
+                    case 10: test.testLed()
+                    case 9: test.testAudio()
+                    case _: break
+                while mode == ginTronic.getMode():
+                    time.sleep(1)
+            
+            time.sleep(0.1)
                 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
