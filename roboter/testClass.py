@@ -268,12 +268,29 @@ class TestClass:
         ----------
         None
         """
-        for i in range(30):
+        thankYouKitchen = False
+        thankYouCounter = False
+        for i in range(20):
             self.com.receiveMessage()
             print(self.sharedData.getData(0))
             print(self.sharedData.getData(1))
             print(self.sharedData.getData(2))
             print("")
+
+            dataKitchen = self.sharedData.getData(0)
+            dataCounter = self.sharedData.getData(1)
+            if dataKitchen != thankYouKitchen:
+                thankYouKitchen = dataKitchen
+                if thankYouKitchen == True:
+                    self.audio.setVolume(25)
+                    self.audio.playAudioClip(1, 4)
+                    time.sleep(3)
+            if dataCounter != thankYouCounter:
+                thankYouCounter = dataCounter
+                if thankYouCounter == True:
+                    self.audio.setVolume(25)
+                    self.audio.playAudioClip(1, 5)
+                    time.sleep(3)
 
             time.sleep(1)
 
