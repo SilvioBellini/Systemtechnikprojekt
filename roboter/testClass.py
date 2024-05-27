@@ -160,8 +160,7 @@ class TestClass:
         ----------
         None
         """
-        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
-        print("Servo on position: 0°")
+        self.api.rotateServo(self.api.pwmChFill, 50, 0) # Set the servo in 0° (horizontal) Position
 
         angleMultiplicator = 15         # Rotating in steps of 20°
         for i in range(7):
@@ -185,19 +184,17 @@ class TestClass:
 
         # Grabbing object
         self.api.rotateServo(self.api.pwmChGrip, 1, 0)
-        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(2)
         self.api.rotateServo(self.api.pwmChGrip, 100, 25)
         time.sleep(1)
 
         # Filling
-        self.api.rotateServo(self.api.pwmChFill, 200, 85)
+        self.api.rotateServo(self.api.pwmChFill, 100, 85)
         time.sleep(5)
-        self.api.rotateServo(self.api.pwmChFill, 200, 0)
+        self.api.rotateServo(self.api.pwmChFill, 100, 0)
         time.sleep(1)
 
         # Releasing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(1)
 

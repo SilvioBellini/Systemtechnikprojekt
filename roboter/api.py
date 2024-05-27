@@ -13,20 +13,19 @@ class API:
     #region Classattributes
 
     # PWM Channels
-    pwmChLeftA = 2  # 
-    pwmChLeftB = 0  # 
-    pwmChRightA = 6 # 
-    pwmChRightB = 4 # 
+    pwmChLeftA = 14  # 2
+    pwmChLeftB = 16  # 0
+    pwmChRightA = 18 # 6
+    pwmChRightB = 20 # 4
     pwmChFill = 10
     pwmChGrip = 12
-    activateServoCh = 18
 
     # FQD Channels
-    fqdLeft = 0
-    fqdRight = 1
+    fqdLeft = 5     # 0
+    fqdRight = 6    # 1
 
     # GPIO Channels
-    enableServo = 18
+    activateServoCh = 18
     sensorChBottle = 21
     sensorChGlas = 23
     modeCh1 = 4
