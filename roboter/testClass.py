@@ -64,7 +64,7 @@ class TestClass:
         """
         
         print("Starting to drive")
-        speedMultiplicator = 0.05
+        speedMultiplicator = 0.04
         for i in range(4):
             print("Driving with: ", i * speedMultiplicator)
             self.api.drive(i * speedMultiplicator)
@@ -160,12 +160,13 @@ class TestClass:
         ----------
         None
         """
-        self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
+        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
         print("Servo on position: 0°")
 
-        angleMultiplicator = 20         # Rotating in steps of 20°
-        for i in range(10):
+        angleMultiplicator = 15         # Rotating in steps of 20°
+        for i in range(7):
             self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
+            print(i * angleMultiplicator)
             time.sleep(1)
 
         self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
@@ -183,9 +184,9 @@ class TestClass:
         time.sleep(1)
 
         # Grabbing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(2)
-        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 100, 25)
         time.sleep(1)
 
         # Filling
@@ -195,11 +196,7 @@ class TestClass:
         time.sleep(1)
 
         # Releasing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
-        time.sleep(1)
-
-        # Returning to default position
-        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(1)
 
 
@@ -327,11 +324,11 @@ class TestClass:
         None
         """
         #self.audio.selectDevice()
-        self.audio.setVolume(50)
-        self.audio.playAudioClip(1, 3)
-        #time.sleep(15)
-        #self.audio.pause()
-        #time.sleep(3)
-        #self.audio.playAudioClip(1, 6)
+        self.audio.setVolume(25)
+        self.audio.playAudioClip(1, 2)
+        time.sleep(15)
+        self.audio.pause()
+        time.sleep(3)
+        self.audio.playAudioClip(1, 6)
 
     #endregion
