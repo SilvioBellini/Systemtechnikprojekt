@@ -42,6 +42,8 @@ if(__name__ == "__main__"):
     try:
         audio.setVolume(30)
         audio.playAudioClip(1, 3)
+        audio.setVolume(30)
+        audio.playAudioClip(1, 3)
         
         # Running different programs with hex-switch for once after each switch 
         while True:
@@ -58,6 +60,8 @@ if(__name__ == "__main__"):
                     case 6: test.testGetMode()
                     case 7: test.testSendMessage()
                     case 8: test.testSaveData()
+                    case 9: test.testLed()
+                    case 10: test.testAudio()
                     case 9: test.testLed()
                     case 10: test.testAudio()
                     case _: break

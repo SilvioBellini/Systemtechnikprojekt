@@ -136,13 +136,13 @@ class TestClass:
         angle = 25 # the angle for gripping, tested
         print("Starting")
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         time.sleep(3)
         print(f"Rotating to {angle}°")
-        self.api.rotateServo(self.api.pwmChGrip, 20, angle)
+        self.api.rotateServo(self.api.pwmChGrip, 50, angle)
         time.sleep(3)
         print("Rotating back")
-        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         
 
     def testFillServo(self) -> None:
@@ -169,7 +169,7 @@ class TestClass:
             print(i * angleMultiplicator)
             time.sleep(1)
 
-        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
+        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo to 0° (horizontal) Position
 
     def testGripper(self) -> None:
         """
@@ -185,6 +185,7 @@ class TestClass:
 
         # Grabbing object
         self.api.rotateServo(self.api.pwmChGrip, 1, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(2)
         self.api.rotateServo(self.api.pwmChGrip, 100, 25)
         time.sleep(1)
@@ -197,8 +198,8 @@ class TestClass:
 
         # Releasing object
         self.api.rotateServo(self.api.pwmChGrip, 1, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(1)
-
 
     def testGetMode(self) -> None:
         """
