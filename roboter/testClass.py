@@ -160,9 +160,7 @@ class TestClass:
         ----------
         None
         """
-        self.api.rotateServo(self.api.pwmChFill, 1, 0) # Set the servo in 0° (horizontal) Position
-        print("Servo on position: 0°")
-
+        
         angleMultiplicator = 20         # Rotating in steps of 20°
         for i in range(10):
             self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
@@ -328,10 +326,10 @@ class TestClass:
         """
         #self.audio.selectDevice()
         self.audio.setVolume(50)
-        self.audio.playAudioClip(1, 3)
-        #time.sleep(15)
-        #self.audio.pause()
-        #time.sleep(3)
-        #self.audio.playAudioClip(1, 6)
+        self.audio.playAudioClip(1, 2)
+        time.sleep(15)
+        self.audio.pause()
+        time.sleep(3)
+        self.audio.playAudioClip(1, 6)
 
     #endregion

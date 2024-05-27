@@ -37,13 +37,11 @@ if(__name__ == "__main__"):
     statusLed = StatusDisplay()
     mode = ginTronic.getMode()
     task = Task(mode, ginTronic, sharedData, com, audio, statusLed, watch)
-    test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
+    testClass = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
         # Running main python code in here
-        # test.testGripServo()
-        test.testGripServo()
-        # ginTronic.rotateServo(ginTronic.pwmChGrip, 20, 0)
+        pass
                 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
