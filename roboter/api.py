@@ -13,10 +13,10 @@ class API:
     #region Classattributes
 
     # PWM Channels
-    pwmChLeftA = 2  # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
-    pwmChLeftB = 0  # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
-    pwmChRightA = 6 # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
-    pwmChRightB = 4 # Chanel vertauscht mit Herrn Graf - Motoren funktionieren
+    pwmChLeftA = 2  # 
+    pwmChLeftB = 0  # 
+    pwmChRightA = 6 # 
+    pwmChRightB = 4 # 
     pwmChFill = 10
     pwmChGrip = 12
     activateServoCh = 18

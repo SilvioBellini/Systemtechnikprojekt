@@ -40,13 +40,12 @@ if(__name__ == "__main__"):
     test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
-        #audio.setVolume(50)
-        #audio.playAudioClip(1, 3)
+        audio.setVolume(30)
+        audio.playAudioClip(1, 3)
         
         # Running different programs with hex-switch for once after each switch 
         while True:
-            # Waiting for start input
-            if(ginTronic.gpio.getValue(2)):
+            if(ginTronic.gpio.getValue(2)):     # Waiting for start input
                 mode = ginTronic.getMode()
                 time.sleep(3)
                 match mode:
@@ -59,8 +58,8 @@ if(__name__ == "__main__"):
                     case 6: test.testGetMode()
                     case 7: test.testSendMessage()
                     case 8: test.testSaveData()
-                    case 10: test.testLed()
-                    case 9: test.testAudio()
+                    case 9: test.testLed()
+                    case 10: test.testAudio()
                     case _: break
                 while mode == ginTronic.getMode():
                     time.sleep(1)

@@ -136,13 +136,13 @@ class TestClass:
         angle = 25 # the angle for gripping, tested
         print("Starting")
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         time.sleep(3)
         print(f"Rotating to {angle}°")
-        self.api.rotateServo(self.api.pwmChGrip, 20, angle)
+        self.api.rotateServo(self.api.pwmChGrip, 50, angle)
         time.sleep(3)
         print("Rotating back")
-        self.api.rotateServo(self.api.pwmChGrip, 20, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         
 
     def testFillServo(self) -> None:
@@ -161,12 +161,14 @@ class TestClass:
         None
         """
         
-        angleMultiplicator = 20         # Rotating in steps of 20°
-        for i in range(10):
-            self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
-            time.sleep(1)
+        angleMultiplicator = 15         # Rotating in steps of 20°        
+        self.api.rotateServo(self.api.pwmChFill, 200, 0)
 
-        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo in 0° (horizontal) Position
+        for i in range(5):
+            self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
+            time.sleep(0.5)
+
+        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo to 0° (horizontal) Position
 
     def testGripper(self) -> None:
         """
@@ -181,9 +183,9 @@ class TestClass:
         time.sleep(1)
 
         # Grabbing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(2)
-        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 25)
         time.sleep(1)
 
         # Filling
@@ -193,13 +195,8 @@ class TestClass:
         time.sleep(1)
 
         # Releasing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 20)
+        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
         time.sleep(1)
-
-        # Returning to default position
-        self.api.rotateServo(self.api.pwmChGrip, 100, 0)
-        time.sleep(1)
-
 
     def testGetMode(self) -> None:
         """
@@ -325,7 +322,7 @@ class TestClass:
         None
         """
         #self.audio.selectDevice()
-        self.audio.setVolume(50)
+        self.audio.setVolume(30)
         self.audio.playAudioClip(1, 2)
         time.sleep(15)
         self.audio.pause()
