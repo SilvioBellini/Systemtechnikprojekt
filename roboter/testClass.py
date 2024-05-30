@@ -110,13 +110,13 @@ class TestClass:
         None
         """
 
-        self.watch.start(20)
+        self.watch.start(60)
         while not self.watch.isFinished():
-            for sensor in range(self.api.amountOfSensors):
+            for sensor in range(self.api.amountOfSensors + 2):
                 print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
             
             print("")
-            time.sleep(1)
+            time.sleep(3)
 
     def testGripServo(self) -> None:
         """
@@ -183,9 +183,9 @@ class TestClass:
         time.sleep(1)
 
         # Grabbing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         time.sleep(2)
-        self.api.rotateServo(self.api.pwmChGrip, 100, 25)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 25)
         time.sleep(1)
 
         # Filling

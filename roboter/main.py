@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        testClass.testDrive()
+        testClass.testReadSensorValues()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
