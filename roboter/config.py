@@ -1,6 +1,9 @@
 from enum import Enum
 
 class Config:
+    """
+    Class to store globally used values.
+    """
     def __init__(self):
         # Network
         self.username = "team2"
@@ -68,3 +71,18 @@ class Config:
         
         # Enums
         self.Directions = Enum("Directions", ["Perpendicular", "Parallel"])
+        self.BGMs = Enum("BGM", ["RANDOM_BEAT"])
+        self.SFXs = Enum("SFX", ["IGNITION", "APPROVAL_KITCHEN", "APPROVAL_COUNTER", "GOODBYE"])
+
+        # Call by: self.bgm[self.BGMs.RANDOM_BEAT]
+        self.bgm = {
+            self.BGMs.RANDOM_BEAT: 1
+        }
+
+        # Call by: self.sfx[self.SFXs.STARTUP]
+        self.sfx = {
+            self.SFXs.IGNITION: 1,
+            self.SFXs.APPROVAL_KITCHEN: 2,
+            self.SFXs.APPROVAL_COUNTER: 3,
+            self.SFXs.GOODBYE: 4
+        }

@@ -14,6 +14,7 @@ class AudioManager:
         """
         self.uart = flink.FlinkUART(self.uartCh)
         self.uart.start(9600)
+        self.selectDevice()
 
     def sendByte(self, byteMessage : bytes) -> None:
         """
@@ -55,6 +56,8 @@ class AudioManager:
         Parameter
         ----------
         folder: Number of the folder the audio clip is in (Starting with 1)
+            1: BGMs
+            2: SFXs
         index: Number of the audio clip that should get played (Starting with 1)
         
         Returns

@@ -110,9 +110,9 @@ class TestClass:
         None
         """
 
-        self.watch.start(60)
-        while not self.watch.isFinished():
-            for sensor in range(self.api.amountOfSensors + 2):
+        self.watch.start(20)
+        while True: #not self.watch.isFinished()
+            for sensor in range(self.api.amountOfSensors):
                 print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
             
             print("")
@@ -280,13 +280,13 @@ class TestClass:
                 thankYouKitchen = dataKitchen
                 if thankYouKitchen == True:
                     self.audio.setVolume(25)
-                    self.audio.playAudioClip(1, 4)
+                    self.audio.playAudioClip(2, 2)
                     time.sleep(3)
             if dataCounter != thankYouCounter:
                 thankYouCounter = dataCounter
                 if thankYouCounter == True:
                     self.audio.setVolume(25)
-                    self.audio.playAudioClip(1, 5)
+                    self.audio.playAudioClip(2, 3)
                     time.sleep(3)
 
             time.sleep(1)
@@ -340,10 +340,10 @@ class TestClass:
         """
         #self.audio.selectDevice()
         self.audio.setVolume(25)
-        self.audio.playAudioClip(1, 2)
+        self.audio.playAudioClip(1, 1)
         time.sleep(15)
         self.audio.pause()
         time.sleep(3)
-        self.audio.playAudioClip(1, 6)
+        self.audio.playAudioClip(2, 4)
 
     #endregion

@@ -65,6 +65,7 @@ class Task:
 
         # Aligning if one sensor is on the mark, setting the flag
         if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not self.lineDetected):
+            #self.api.stop()
             self.api.align(self.api.Directions.Perpendicular)
             self.slotCounter -= calcFactor * 1
             self.lineDetected = True

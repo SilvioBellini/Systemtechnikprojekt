@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        testClass.testReadSensorValues()
+        task.findObject(1)
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

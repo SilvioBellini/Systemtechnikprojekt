@@ -38,9 +38,9 @@ class API:
     # Configuration motors
     ts = 0.01
     kp = 0.1
-    tn = 0.1                  # 0.011   # 0.1
-    ticksPerRotation = 100      # 256     # 100
-    gearRatio = 16/1            # 152/1   # 16/1
+    tn = 0.011                  # 0.011   # 0.1
+    ticksPerRotation = 256      # 256     # 100
+    gearRatio = 152/1            # 152/1   # 16/1
     motorVoltage = 5
     pwmFreq = 50
 

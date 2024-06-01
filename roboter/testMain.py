@@ -41,7 +41,7 @@ if(__name__ == "__main__"):
 
     try:
         audio.setVolume(30)
-        audio.playAudioClip(1, 3)
+        audio.playAudioClip(2, 1)
         
         # Running different programs with hex-switch for once after each switch 
         while True:
