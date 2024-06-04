@@ -111,12 +111,12 @@ class TestClass:
         """
 
         self.watch.start(20)
-        while not self.watch.isFinished():
+        while True: #not self.watch.isFinished()
             for sensor in range(self.api.amountOfSensors):
                 print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
             
             print("")
-            time.sleep(1)
+            time.sleep(3)
 
     def testLimitSwitch(self):
         self.watch.start(20)
@@ -192,9 +192,9 @@ class TestClass:
         time.sleep(1)
 
         # Grabbing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         time.sleep(2)
-        self.api.rotateServo(self.api.pwmChGrip, 100, 25)
+        self.api.rotateServo(self.api.pwmChGrip, 50, 25)
         time.sleep(1)
 
         # Filling
@@ -289,13 +289,13 @@ class TestClass:
                 thankYouKitchen = dataKitchen
                 if thankYouKitchen == True:
                     self.audio.setVolume(25)
-                    self.audio.playAudioClip(1, 4)
+                    self.audio.playAudioClip(2, 2)
                     time.sleep(3)
             if dataCounter != thankYouCounter:
                 thankYouCounter = dataCounter
                 if thankYouCounter == True:
                     self.audio.setVolume(25)
-                    self.audio.playAudioClip(1, 5)
+                    self.audio.playAudioClip(2, 3)
                     time.sleep(3)
 
             time.sleep(1)
@@ -349,10 +349,10 @@ class TestClass:
         """
         #self.audio.selectDevice()
         self.audio.setVolume(25)
-        self.audio.playAudioClip(1, 2)
+        self.audio.playAudioClip(1, 1)
         time.sleep(15)
         self.audio.pause()
         time.sleep(3)
-        self.audio.playAudioClip(1, 6)
+        self.audio.playAudioClip(2, 4)
 
     #endregion

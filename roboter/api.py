@@ -13,16 +13,16 @@ class API:
     #region Classattributes
 
     # PWM Channels
-    pwmChLeftA = 14  # 2
-    pwmChLeftB = 16  # 0
-    pwmChRightA = 18 # 6
-    pwmChRightB = 20 # 4
+    pwmChLeftA = 2  # 2
+    pwmChLeftB = 0  # 0
+    pwmChRightA = 6 # 6
+    pwmChRightB = 4 # 4
     pwmChFill = 10
     pwmChGrip = 12
 
     # FQD Channels
-    fqdLeft = 5     # 0
-    fqdRight = 6    # 1
+    fqdLeft = 0     # 0
+    fqdRight = 1    # 1
 
     # GPIO Channels
     activateServoCh = 18
@@ -47,7 +47,7 @@ class API:
     # Globally used values    
     defaultSpeed = 0.03
     Directions = Enum("Directions", ["Perpendicular", "Parallel"])
-    amountOfSensors = 4 # 7
+    amountOfSensors = 7
 
     valueWhite = 1000
     valueGrey = 600
@@ -153,7 +153,13 @@ class API:
         """
 
         self.irSensors = flink.FlinkReflectiveSensor()
-        self.sensorValues = [self.irSensors.getValue(i) for i in range(self.amountOfSensors)]
+        
+        self.sensorValues : List[int] = []
+
+        for i in range(self.amountOfSensors):
+            self.sensorValues.append(self.irSensors.getValue(i))
+        
+        #self.sensorValues = [self.irSensors.getValue(i) for i in range(self.amountOfSensors)]
 
         self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
         self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
