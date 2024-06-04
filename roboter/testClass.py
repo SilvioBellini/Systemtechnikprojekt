@@ -114,6 +114,15 @@ class TestClass:
             print("")
             time.sleep(3)
 
+    def testLimitSwitch(self):
+        self.watch.start(20)
+        while not self.watch.isFinished():
+            print("Limit Switch front side: {}".format(self.api.readSensorValue(9)))
+            print("Limit switch back side:  {}".format(self.api.readSensorValue(10)))
+            
+            print("")
+            time.sleep(1)
+
     def testGripServo(self) -> None:
         """
         Testing the functionality of the servomotor that grips the object. Opening and closing the gripper.
