@@ -66,6 +66,8 @@ class API:
         self.gpio.setDir(self.sensorChBottle, False)
         self.gpio.setDir(self.sensorChGlas, False)
         self.gpio.setDir(self.activateServoCh, True)
+        self.gpio.setDir(self.limitSwitchHopper, False)
+        self.gpio.setDir(self.limitSwitchGripper, False)
 
         self.gpio.setDir(self.modeCh1, False)
         self.gpio.setDir(self.modeCh2, False)
@@ -155,6 +157,9 @@ class API:
 
         self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
         self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
+
+        self.sensorValues.append(self.gpio.getValue(self.limitSwitchGripper))
+        self.sensorValues.append(self.gpio.getValue(self.limitSwitchHopper))
  
     def readSensorValue(self, index : int) -> int:
         """

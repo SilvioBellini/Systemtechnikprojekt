@@ -62,8 +62,6 @@ if(__name__ == "__main__"):
                     case 8: test.testSaveData()
                     case 9: test.testLed()
                     case 10: test.testAudio()
-                    case 9: test.testLed()
-                    case 10: test.testAudio()
                     case _: break
                 while mode == ginTronic.getMode():
                     time.sleep(1)
