@@ -63,35 +63,30 @@ class TestClass:
         None
         """
         
-        print("Starting to drive")
+        print("Starting TestDrive")
         speedMultiplicator = 0.04
         for i in range(4):
             print("Driving with: ", i * speedMultiplicator)
             self.api.drive(i * speedMultiplicator)
             time.sleep(2)
 
-        print("Stopping 1")
         self.api.stop()
         time.sleep(3)
 
-        print("Driving backwards")
         for i in range(4):
             print("Driving with: ", i * -speedMultiplicator)
             self.api.drive(i * -speedMultiplicator)
             time.sleep(2)
 
-        print("Stopping 2")
         self.api.stop()
         time.sleep(3)
 
-        print("Turning")
         for i in range(4):
             print("Turning with: ", i * speedMultiplicator) 
             self.api.turn(i * speedMultiplicator, 3600)
             time.sleep(2)
 
         self.api.stop()
-        print("Finished")
 
     def testReadSensorValues(self) -> None:
         """
@@ -110,6 +105,7 @@ class TestClass:
         None
         """
 
+        print("Starting TestReadSensorValues")
         self.watch.start(20)
         while True: #not self.watch.isFinished()
             for sensor in range(self.api.amountOfSensors):
@@ -133,15 +129,14 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestGripServo")
         angle = 25 # the angle for gripping, tested
-        print("Starting")
         time.sleep(3)
         self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         time.sleep(3)
-        print(f"Rotating to {angle}°")
         self.api.rotateServo(self.api.pwmChGrip, 50, angle)
         time.sleep(3)
-        print("Rotating back")
         self.api.rotateServo(self.api.pwmChGrip, 50, 0)
         
 
@@ -160,9 +155,11 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestFillServo")
         self.api.rotateServo(self.api.pwmChFill, 50, 0) # Set the servo in 0° (horizontal) Position
 
-        angleMultiplicator = 15         # Rotating in steps of 20°
+        angleMultiplicator = 15         # Rotating in steps of 15°
         for i in range(7):
             self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
             print(i * angleMultiplicator)
@@ -178,6 +175,8 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestGripper")
         # Moving to start position
         self.api.rotateServo(self.api.pwmChFill, 100, 0)
         time.sleep(1)
@@ -215,6 +214,8 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestGetMode")
         for i in range(15):
             print(self.api.getMode())
             time.sleep(3)
@@ -235,6 +236,8 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestSendMessage")
         flipFlop = False
 
         for i in range(10):
@@ -265,6 +268,8 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestSaveData")
         thankYouKitchen = False
         thankYouCounter = False
         for i in range(20):
@@ -312,6 +317,8 @@ class TestClass:
         ----------
         None
         """
+
+        print("Starting TestLed")
         self.statusLed.setColor(255, 255, 255)
         time.sleep(2)
         self.statusLed.setColor(255, 0, 0)
@@ -338,7 +345,8 @@ class TestClass:
         ----------
         None
         """
-        #self.audio.selectDevice()
+
+        print("Starting TestAudio")
         self.audio.setVolume(25)
         self.audio.playAudioClip(1, 1)
         time.sleep(15)

@@ -29,7 +29,7 @@ class Task:
     slotCounter = 6
     lineDetected = False    # Flag to save that both sensors are one the mark
 
-    def __init__(self, mode : int, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
+    def __init__(self, mode : int, api, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
         """
         Initializes the Task object with default values.
         """
@@ -65,7 +65,11 @@ class Task:
 
         # Aligning if one sensor is on the mark, setting the flag
         if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not self.lineDetected):
-            #self.api.stop()
+            print("Found line")
+            print("Sensor 0: {}".format(self.api.readSensorValue(0)))
+            print("Sensor 2: {}".format(self.api.readSensorValue(2)))
+            print("")
+
             self.api.align(self.api.Directions.Perpendicular)
             self.slotCounter -= calcFactor * 1
             self.lineDetected = True

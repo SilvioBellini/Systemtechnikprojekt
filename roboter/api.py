@@ -88,7 +88,7 @@ class API:
         """
 
         wheelRadius = 0.03265 # meters
-        self.m1.setSpeed(leftSpeed / wheelRadius)
+        self.m1.setSpeed(-leftSpeed / wheelRadius)
         self.m2.setSpeed(rightSpeed / wheelRadius)        
 
     def drive(self, speed : float) -> None:
@@ -107,7 +107,7 @@ class API:
         None
         """
         
-        self.setMotorSpeeds(speed, -speed)
+        self.setMotorSpeeds(speed, speed)
 
     def turn(self, speed : float, angle : float) -> None:
         """
@@ -117,8 +117,8 @@ class API:
         Parameters
         ----------
         speed: Speed with which the wheels turn in m/s
-            > 0: Clockwise
-            < 0: Counterclockwise
+            > 0: Counterclockwise
+            < 0: Clockwise
         angle: Angle by which the robot should rotate
 
         Returns
@@ -127,7 +127,7 @@ class API:
         """
 
         # Setting the desired speed for both motors
-        self.setMotorSpeeds(speed, speed)
+        self.setMotorSpeeds(-speed, speed)
 
     def stop(self) -> None:
         """
@@ -156,8 +156,6 @@ class API:
 
         for i in range(self.amountOfSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
-        
-        #self.sensorValues = [self.irSensors.getValue(i) for i in range(self.amountOfSensors)]
 
         self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
         self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
@@ -200,15 +198,21 @@ class API:
                     # Updating sensor values
                     sensor0Value = self.readSensorValue(0)
                     sensor2Value = self.readSensorValue(2)
+
+                    print("Aligning")
+                    print("Sensor 0: {}".format(self.readSensorValue(0)))
+                    print("Sensor 2: {}".format(self.readSensorValue(2)))
                     
                     # Checking if both sensors are on the mark, correcting if not
                     if(sensor0Value > self.valueWhite and sensor2Value > self.valueWhite):
+                        time.sleep(0.5)
                         self.stop()
+                        time.sleep(3)
                         break
                     if(sensor0Value > self.valueWhite):
-                        self.setMotorSpeeds(0, -0.005)
+                        self.setMotorSpeeds(0.01, 0)
                     elif(sensor2Value > self.valueWhite):
-                        self.setMotorSpeeds(0.005, 0)
+                        self.setMotorSpeeds(0, 0.01)
 
                 case self.Directions.Parallel:
                     # Updating sensor values
@@ -218,7 +222,7 @@ class API:
                     # Stopping if both sensors are on the marks after moving a little futher
                     # Might need to get reworked if sensor 1 gets off the mark while rotating
                     if(sensor1Value > self.valueWhite and sensor3Value > self.valueWhite):
-                        time.sleep(0.05)
+                        time.sleep(0.5)
                         self.stop()
                         break
             

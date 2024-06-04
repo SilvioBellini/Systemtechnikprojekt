@@ -40,6 +40,7 @@ if(__name__ == "__main__"):
     test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
+        print("Booting complete")
         audio.setVolume(30)
         audio.playAudioClip(2, 1)
         

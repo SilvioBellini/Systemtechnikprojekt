@@ -7,6 +7,7 @@ try:
 except ModuleNotFoundError:
     pass
 
+from config import Config
 from api import API
 from sharedData import SharedData
 from communication import Communication
@@ -29,7 +30,8 @@ mode = None
 
 if(__name__ == "__main__"):
     # Initializing Objects
-    ginTronic = API()
+    config = Config()
+    ginTronic = API(config)
     sharedData = SharedData()
     com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
@@ -41,7 +43,8 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        task.findObject(1)
+        statusLed.setColor(0, 0, 0)
+        task.findObject(0)
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
