@@ -1,15 +1,17 @@
 import flink
 import driver
 
+from config import Config
 from api import API
 from testClass import TestClass
 
 pwmFreq = 50
-channel1 = 13
-channel2 = 14
+channel1 = 8
+channel2 = 22
 
-api = API()
-testclass = TestClass(api, None, None, None, None, None, None)
+config = Config()
+api = API(config)
+testclass = TestClass(config, api, None, None, None, None, None, None)
 pwm = flink.FlinkPWM()
 
 period = pwm.getBaseClock() / pwmFreq

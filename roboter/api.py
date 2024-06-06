@@ -58,7 +58,7 @@ class API:
         """
 
         wheelRadius = 0.03265 # meters
-        self.m1.setSpeed(leftSpeed / wheelRadius)
+        self.m1.setSpeed(-leftSpeed / wheelRadius)
         self.m2.setSpeed(rightSpeed / wheelRadius)        
 
     def drive(self, speed : float) -> None:
@@ -78,7 +78,7 @@ class API:
         """
         
         #self.gpio.setValue(self.config.gpioChSleepDrive, False)
-        self.setMotorSpeeds(speed, -speed)
+        self.setMotorSpeeds(speed, speed)
 
     def turn(self, speed : float, angle : float) -> None:
         """
@@ -99,7 +99,7 @@ class API:
 
         # Setting the desired speed for both motors
         #self.gpio.setValue(self.config.gpioChSleepDrive, False)
-        self.setMotorSpeeds(speed, speed)
+        self.setMotorSpeeds(-speed, speed)
 
     def stop(self) -> None:
         """
@@ -129,11 +129,11 @@ class API:
         for i in range(self.config.amountOfIRSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
 
-        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorGlass))
-        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorBottle))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorGlass))             # Normally False
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorBottle))            # Normally False
 
-        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchGripper))
-        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchHopper))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchGripper))      # Normally True
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchHopper))       # Normally True
  
     def readSensorValue(self, index : int) -> int:
         """

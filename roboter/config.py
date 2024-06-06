@@ -51,9 +51,9 @@ class Config:
         # Motor config
         self.ts = 0.01
         self.kp = 0.1
-        self.tn = 0.011                  # 0.011   # 0.1
-        self.ticksPerRotation = 256      # 256     # 100
-        self.gearRatio = 152/1            # 152/1   # 16/1
+        self.tn = 0.01                  # 0.011   # 0.1
+        self.ticksPerRotation = 100      # 256     # 100
+        self.gearRatio = 16/1            # 152/1   # 16/1
         self.motorVoltage = 5
         self.pwmMotorFreq = 50
 

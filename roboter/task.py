@@ -142,7 +142,7 @@ class Task:
         while True:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
-            if(limitSwitchState):
+            if(not limitSwitchState):
                 time.sleep(2)
                 self.api.stop()
                 break
@@ -294,7 +294,7 @@ class Task:
         while True:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
-            if(limitSwitchState):
+            if(not limitSwitchState):   # Normally True
                 time.sleep(2)
                 self.api.stop()
                 break
@@ -320,7 +320,7 @@ class Task:
         while True:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchHopper)
 
-            if(limitSwitchState):
+            if(not limitSwitchState):   # Normally True
                 time.sleep(2)
                 self.api.stop()
                 break
@@ -397,7 +397,7 @@ class Task:
                 while True:
                     limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
-                    if(limitSwitchState):
+                    if(not limitSwitchState):   # Normally True
                         time.sleep(2)
                         self.api.stop()
                         break
