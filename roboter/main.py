@@ -31,15 +31,21 @@ mode = None
 if(__name__ == "__main__"):
     # Initializing Objects
     config = Config()
-    ginTronic = API(config)
-    sharedData = SharedData()
-    com = Communication(username, password, topic, sharedData)
     watch = StopWatch()
-    audio = AudioManager()
-    statusLed = StatusDisplay()
-    mode = ginTronic.getMode()
-    task = Task(mode, ginTronic, sharedData, com, audio, statusLed, watch)
-    testClass = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
+
+    # Communication
+    sharedData = SharedData()
+    com = Communication(config, sharedData)
+
+    # Status
+    audio = AudioManager(config)
+    statusLed = StatusDisplay(config)
+
+    # Tasks
+    api = API(config)
+    mode = api.getMode()
+    task = Task(mode, config, api, sharedData, com, audio, statusLed, watch)
+    testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
         # Running main python code in here

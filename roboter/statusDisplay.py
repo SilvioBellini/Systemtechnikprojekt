@@ -1,21 +1,15 @@
 import flink
 import time
 
+from config import Config
+
 class StatusDisplay:
     """
     Class for displaying different status with a RGB-LED
     """
-    #region Classattributes
 
-    pwmChRed = 1
-    pwmChGreen = 3
-    pwmChBlue = 5
-    pwmFreq = 10000
-
-    #endregion
-
-    def __init__(self):
-        pass
+    def __init__(self, config : Config):
+        self.config = config
 
     def setColor(self, red : int, green : int, blue : int) -> None:
         """
@@ -37,7 +31,7 @@ class StatusDisplay:
         pwmGreen = flink.FlinkPWM()
         pwmBlue = flink.FlinkPWM()
 
-        period = pwmRed.getBaseClock() / StatusDisplay.pwmFreq
+        period = pwmRed.getBaseClock() / self.config.pwmLedFreq
 
         # Calculating the highTimes as a factor of the color
         redHighTime = red / 255
@@ -45,10 +39,10 @@ class StatusDisplay:
         blueHighTime = blue / 255
 
         # Setting period and highTime according to the calculated factor
-        pwmRed.setPeriod(StatusDisplay.pwmChRed, int(period))
-        pwmGreen.setPeriod(StatusDisplay.pwmChGreen, int(period))
-        pwmBlue.setPeriod(StatusDisplay.pwmChBlue, int(period))
+        pwmRed.setPeriod(self.config.pwmChRed, int(period))
+        pwmGreen.setPeriod(self.config.pwmChGreen, int(period))
+        pwmBlue.setPeriod(self.config.pwmChBlue, int(period))
     
-        pwmRed.setHighTime(StatusDisplay.pwmChRed, int(period * redHighTime))
-        pwmGreen.setHighTime(StatusDisplay.pwmChGreen, int(period * greenHighTime))
-        pwmBlue.setHighTime(StatusDisplay.pwmChBlue, int(period * blueHighTime))
+        pwmRed.setHighTime(self.config.pwmChRed, int(period * redHighTime))
+        pwmGreen.setHighTime(self.config.pwmChGreen, int(period * greenHighTime))
+        pwmBlue.setHighTime(self.config.pwmChBlue, int(period * blueHighTime))

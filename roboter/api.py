@@ -6,73 +6,41 @@ import flink
 import math
 import time
 
+from config import Config
+
 class API:
     """
     Class for basic functions of the robot (locomotion, sensors, etc.)
     """
-    #region Classattributes
-
-    # PWM Channels
-    pwmChLeftA = 2  # 2
-    pwmChLeftB = 0  # 0
-    pwmChRightA = 6 # 6
-    pwmChRightB = 4 # 4
-    pwmChFill = 10
-    pwmChGrip = 12
-
-    # FQD Channels
-    fqdLeft = 0     # 0
-    fqdRight = 1    # 1
-
-    # GPIO Channels
-    activateServoCh = 18
-    sensorChBottle = 21
-    sensorChGlas = 23
-    modeCh1 = 4
-    modeCh2 = 6
-    modeCh4 = 8
-    modeCh8 = 10
-    limitSwitchGripper = 13
-    limitSwitchHopper = 15
-
-    # Configuration motors
-    ts = 0.01
-    kp = 0.1
-    tn = 0.011                  # 0.011   # 0.1
-    ticksPerRotation = 256      # 256     # 100
-    gearRatio = 152/1            # 152/1   # 16/1
-    motorVoltage = 5
-    pwmFreq = 50
-
-    # Globally used values    
-    defaultSpeed = 0.03
-    Directions = Enum("Directions", ["Perpendicular", "Parallel"])
-    amountOfSensors = 7
-
-    valueWhite = 1000
-    valueGrey = 600
-
-    #endregion
-
-    def __init__(self):
+    
+    def __init__(self, config : Config):
         # Initializing instances
-        self.m1 = driver.SignMagnitude(self.ts, self.pwmChLeftA, self.pwmChLeftB, self.fqdLeft, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
-        self.m2 = driver.SignMagnitude(self.ts, self.pwmChRightA, self.pwmChRightB, self.fqdRight, self.ticksPerRotation, self.motorVoltage, self.gearRatio, self.kp, self.tn)
+        self.config = config
+        self.m1 = driver.SignMagnitude(self.config.ts, self.config.pwmChLeftA, self.config.pwmChLeftB, self.config.fqdChLeft, self.config.ticksPerRotation, self.config.motorVoltage, self.config.gearRatio, self.config.kp, self.config.tn)
+        self.m2 = driver.SignMagnitude(self.config.ts, self.config.pwmChRightA, self.config.pwmChRightB, self.config.fqdChRight, self.config.ticksPerRotation, self.config.motorVoltage, self.config.gearRatio, self.config.kp, self.config.tn)
         
         self.gpio = flink.FlinkGPIO()
         self.pwm = flink.FlinkPWM()
-
         self.sensorValues : List[int] = []
-        self.gpio.setDir(self.sensorChBottle, False)
-        self.gpio.setDir(self.sensorChGlas, False)
-        self.gpio.setDir(self.activateServoCh, True)
-        self.gpio.setDir(self.limitSwitchHopper, False)
-        self.gpio.setDir(self.limitSwitchGripper, False)
 
-        self.gpio.setDir(self.modeCh1, False)
-        self.gpio.setDir(self.modeCh2, False)
-        self.gpio.setDir(self.modeCh4, False)
-        self.gpio.setDir(self.modeCh8, False)
+        # Setting GPIO Directions
+        self.gpio.setDir(self.config.gpioChStart, False)
+        self.gpio.setDir(self.config.gpioChStop, False)
+
+        self.gpio.setDir(self.config.gpioChMode1, False)
+        self.gpio.setDir(self.config.gpioChMode2, False)
+        self.gpio.setDir(self.config.gpioChMode4, False)
+        self.gpio.setDir(self.config.gpioChMode8, False)
+
+        self.gpio.setDir(self.config.gpioChLimitSwitchGripper, False)
+        self.gpio.setDir(self.config.gpioChLimitSwitchHopper, False)
+
+        self.gpio.setDir(self.config.gpioChSleepDrive, True)
+        self.gpio.setDir(self.config.gpioChEnableServo, True)
+
+        self.gpio.setDir(self.config.gpioChSensorBottle, False)
+        self.gpio.setDir(self.config.gpioChSensorGlass, False)
+
 
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
@@ -90,7 +58,7 @@ class API:
         """
 
         wheelRadius = 0.03265 # meters
-        self.m1.setSpeed(-leftSpeed / wheelRadius)
+        self.m1.setSpeed(leftSpeed / wheelRadius)
         self.m2.setSpeed(rightSpeed / wheelRadius)        
 
     def drive(self, speed : float) -> None:
@@ -109,7 +77,8 @@ class API:
         None
         """
         
-        self.setMotorSpeeds(speed, speed)
+        #self.gpio.setValue(self.config.gpioChSleepDrive, False)
+        self.setMotorSpeeds(speed, -speed)
 
     def turn(self, speed : float, angle : float) -> None:
         """
@@ -129,7 +98,8 @@ class API:
         """
 
         # Setting the desired speed for both motors
-        self.setMotorSpeeds(-speed, speed)
+        #self.gpio.setValue(self.config.gpioChSleepDrive, False)
+        self.setMotorSpeeds(speed, speed)
 
     def stop(self) -> None:
         """
@@ -140,6 +110,7 @@ class API:
         None
         """
 
+        #self.gpio.setValue(self.config.gpioChSleepDrive, True)
         self.setMotorSpeeds(0.0, 0.0)
 
     def getSensorValues(self) -> None:
@@ -152,18 +123,17 @@ class API:
         None
         """
 
-        self.irSensors = flink.FlinkReflectiveSensor()
-        
+        self.irSensors = flink.FlinkReflectiveSensor()        
         self.sensorValues : List[int] = []
 
-        for i in range(self.amountOfSensors):
+        for i in range(self.config.amountOfIRSensors):
             self.sensorValues.append(self.irSensors.getValue(i))
 
-        self.sensorValues.append(self.gpio.getValue(self.sensorChGlas))
-        self.sensorValues.append(self.gpio.getValue(self.sensorChBottle))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorGlass))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChSensorBottle))
 
-        self.sensorValues.append(self.gpio.getValue(self.limitSwitchGripper))
-        self.sensorValues.append(self.gpio.getValue(self.limitSwitchHopper))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchGripper))
+        self.sensorValues.append(self.gpio.getValue(self.config.gpioChLimitSwitchHopper))
  
     def readSensorValue(self, index : int) -> int:
         """
@@ -183,7 +153,7 @@ class API:
         
         return self.sensorValues[index]
 
-    def align(self, direction : Directions) -> None:
+    def align(self, direction) -> None:
         """
         Aligning the robot to the marks on the floor depending on the direction the robot is currently moving
 
@@ -199,7 +169,7 @@ class API:
         """
         while True:
             match direction:
-                case self.Directions.Perpendicular:
+                case self.config.Directions.Perpendicular:
                     # Updating sensor values
                     sensor0Value = self.readSensorValue(0)
                     sensor2Value = self.readSensorValue(2)
@@ -209,24 +179,24 @@ class API:
                     print("Sensor 2: {}".format(self.readSensorValue(2)))
                     
                     # Checking if both sensors are on the mark, correcting if not
-                    if(sensor0Value > self.valueWhite and sensor2Value > self.valueWhite):
+                    if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                         time.sleep(0.5)
                         self.stop()
                         time.sleep(3)
                         break
-                    if(sensor0Value > self.valueWhite):
+                    if(sensor0Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0.01, 0)
-                    elif(sensor2Value > self.valueWhite):
+                    elif(sensor2Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0, 0.01)
 
-                case self.Directions.Parallel:
+                case self.config.Directions.Parallel:
                     # Updating sensor values
                     sensor1Value = self.readSensorValue(1)
                     sensor3Value = self.readSensorValue(3)
 
                     # Stopping if both sensors are on the marks after moving a little futher
                     # Might need to get reworked if sensor 1 gets off the mark while rotating
-                    if(sensor1Value > self.valueWhite and sensor3Value > self.valueWhite):
+                    if(sensor1Value > self.config.minValueWhite and sensor3Value > self.config.minValueWhite):
                         time.sleep(0.5)
                         self.stop()
                         break
@@ -251,7 +221,7 @@ class API:
         """
         
         # Enabling servo motors
-        self.gpio.setValue(self.activateServoCh, True)
+        self.gpio.setValue(self.config.gpioChEnableServo, True)
 
         # Limits
         minAngle = 0
@@ -264,10 +234,10 @@ class API:
 
         # Calculating highTime in milliseconds (0.5 - 2.5) and converting it to a factor of the frequency
         highTimeMs = minHighTimeMs + (angle / maxAngle) * (maxHighTimeMs - minHighTimeMs)
-        highTimeFactor = (highTimeMs * self.pwmFreq) / 1000
+        highTimeFactor = (highTimeMs * self.config.pwmMotorFreq) / 1000
    
         # Calculating current angle/highTime
-        period = self.pwm.getBaseClock() / self.pwmFreq
+        period = self.pwm.getBaseClock() / self.config.pwmMotorFreq
         currentHighTimeFactor = self.pwm.getHighTime(channel) / period
 
         # Cancelling method if target angle is current angle
@@ -287,7 +257,7 @@ class API:
             time.sleep(0.025)
         
         # Disabling servo motors
-        self.gpio.setValue(self.activateServoCh, False)
+        self.gpio.setValue(self.config.gpioChEnableServo, False)
 
     def getMode(self) -> int:
         """
@@ -301,7 +271,7 @@ class API:
         """
         
         # Reading each input signal and converting it to an integer from 0-15
-        inputValues = [self.gpio.getValue(self.modeCh1), self.gpio.getValue(self.modeCh2), self.gpio.getValue(self.modeCh4), self.gpio.getValue(self.modeCh8)]
+        inputValues = [self.gpio.getValue(self.config.gpioChMode1), self.gpio.getValue(self.config.gpioChMode2), self.gpio.getValue(self.config.gpioChMode4), self.gpio.getValue(self.config.gpioChMode8)]
         mode = 0
 
         for i in range(inputValues.__len__()):

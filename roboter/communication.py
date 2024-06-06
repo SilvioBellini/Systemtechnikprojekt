@@ -3,6 +3,9 @@ try:
 except ModuleNotFoundError:
     pass
 
+from config import Config
+from sharedData import SharedData
+
 class Communication:
     """
     Class for establishing a wireless connection to a MQTTX-Server and exchanging information.
@@ -14,21 +17,19 @@ class Communication:
     topic: Channel of connection
     """
 
-    def __init__(self, username : str, password : str, topic : str, sharedData):
+    def __init__(self, config : Config, sharedData : SharedData):
         # Initializing a client and establishing a connection to a specific topic
+        self.config = config
         self.sharedData = sharedData
-        self.username = username
-        self.password = password
-        self.topic = topic
 
         try:
-            self.client = driver.MessagingClient(username, password, topic)
+            self.client = driver.MessagingClient(self.config.username, self.config.password, self.config.topic)
             self.client.connect()
         except(NameError, AttributeError) as error:
             print("Connection failed - {}".format(error))
 
         if(self.client.is_connected()):
-            print("Connection established to: ", self.client.host, " with the topic ", self.topic)
+            print("Connection established to: ", self.client.host, " with the topic ", self.config.topic)
         else:
             print("No connection can be established!")
 

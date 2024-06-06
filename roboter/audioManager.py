@@ -1,18 +1,20 @@
 import flink
 import time
 
+from config import Config
+
 class AudioManager:
     """
     Class for controlling audio output
     """
 
-    uartCh = 0
-
-    def __init__(self):
+    def __init__(self, config : Config):
         """
         Initialize the Audiomanager        
         """
-        self.uart = flink.FlinkUART(self.uartCh)
+
+        self.config = config
+        self.uart = flink.FlinkUART(self.config.uartChAudio)
         self.uart.start(9600)
         self.selectDevice()
 

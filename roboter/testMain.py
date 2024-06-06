@@ -7,6 +7,7 @@ try:
 except ModuleNotFoundError:
     pass
 
+from config import Config
 from api import API
 from sharedData import SharedData
 from communication import Communication
@@ -29,20 +30,21 @@ mode = None
 
 if(__name__ == "__main__"):
     # Initializing Objects
-    ginTronic = API()
+    config = Config()
+    ginTronic = API(config)
     sharedData = SharedData()
-    com = Communication(username, password, topic, sharedData)
+    com = Communication(config, sharedData)
     watch = StopWatch()
-    audio = AudioManager()
-    statusLed = StatusDisplay()
+    audio = AudioManager(config)
+    statusLed = StatusDisplay(config)
     mode = ginTronic.getMode()
-    task = Task(mode, ginTronic, sharedData, com, audio, statusLed, watch)
-    test = TestClass(ginTronic, sharedData, com, watch, audio, statusLed, task)
+    task = Task(mode, config, ginTronic, sharedData, com, audio, statusLed, watch)
+    test = TestClass(config, ginTronic, sharedData, com, watch, audio, statusLed, task)
 
     try:
         print("Booting complete")
-        audio.setVolume(30)
-        audio.playAudioClip(2, 1)
+        audio.setVolume(config.defaultVolume)
+        audio.playAudioClip(2, config.SFXs.IGNITION.value)
         
         # Running different programs with hex-switch for once after each switch 
         while True:

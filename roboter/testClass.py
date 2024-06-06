@@ -2,6 +2,7 @@
 
 import time
 
+from config import Config
 from api import API
 from sharedData import SharedData
 from communication import Communication
@@ -27,10 +28,11 @@ class TestClass:
     taks:           Object of the TestClass class
     """
 
-    def __init__(self, api : API, sharedData : SharedData, communication : Communication, watch : StopWatch, audio : AudioManager, statusLed : StatusDisplay, task : Task):
+    def __init__(self, config : Config, api : API, sharedData : SharedData, communication : Communication, watch : StopWatch, audio : AudioManager, statusLed : StatusDisplay, task : Task):
         """
         Initializes the Test object with default values.
         """
+        self.config = config
         self.api = api
         self.sharedData = sharedData
         self.com = communication
@@ -108,7 +110,7 @@ class TestClass:
         print("Starting TestReadSensorValues")
         self.watch.start(20)
         while True: #not self.watch.isFinished()
-            for sensor in range(self.api.amountOfSensors):
+            for sensor in range(self.config.amountOfIRSensors):
                 print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
             
             print("")
@@ -142,11 +144,11 @@ class TestClass:
         print("Starting TestGripServo")
         angle = 25 # the angle for gripping, tested
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 0)
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 50, angle)
+        self.api.rotateServo(self.config.pwmChGrip, 50, angle)
         time.sleep(3)
-        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 0)
         
 
     def testFillServo(self) -> None:
@@ -166,15 +168,15 @@ class TestClass:
         """
 
         print("Starting TestFillServo")
-        self.api.rotateServo(self.api.pwmChFill, 50, 0) # Set the servo in 0° (horizontal) Position
+        self.api.rotateServo(self.config.pwmChFill, 50, 0) # Set the servo in 0° (horizontal) Position
 
         angleMultiplicator = 15         # Rotating in steps of 15°
         for i in range(7):
-            self.api.rotateServo(self.api.pwmChFill, 50, i * angleMultiplicator)
+            self.api.rotateServo(self.config.pwmChFill, 50, i * angleMultiplicator)
             print(i * angleMultiplicator)
             time.sleep(1)
 
-        self.api.rotateServo(self.api.pwmChFill, 100, 0) # Set the servo to 0° (horizontal) Position
+        self.api.rotateServo(self.config.pwmChFill, 100, 0) # Set the servo to 0° (horizontal) Position
 
     def testGripper(self) -> None:
         """
@@ -187,23 +189,23 @@ class TestClass:
 
         print("Starting TestGripper")
         # Moving to start position
-        self.api.rotateServo(self.api.pwmChFill, 100, 0)
+        self.api.rotateServo(self.config.pwmChFill, 100, 0)
         time.sleep(1)
 
         # Grabbing object
-        self.api.rotateServo(self.api.pwmChGrip, 50, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 0)
         time.sleep(2)
-        self.api.rotateServo(self.api.pwmChGrip, 50, 25)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 25)
         time.sleep(1)
 
         # Filling
-        self.api.rotateServo(self.api.pwmChFill, 100, 85)
+        self.api.rotateServo(self.config.pwmChFill, 100, 85)
         time.sleep(5)
-        self.api.rotateServo(self.api.pwmChFill, 100, 0)
+        self.api.rotateServo(self.config.pwmChFill, 100, 0)
         time.sleep(1)
 
         # Releasing object
-        self.api.rotateServo(self.api.pwmChGrip, 1, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 1, 0)
         time.sleep(1)
 
     def testGetMode(self) -> None:
@@ -281,6 +283,7 @@ class TestClass:
         print("Starting TestSaveData")
         thankYouKitchen = False
         thankYouCounter = False
+
         for i in range(20):
             self.com.receiveMessage()
             print(self.sharedData.getData(0))
@@ -290,17 +293,18 @@ class TestClass:
 
             dataKitchen = self.sharedData.getData(0)
             dataCounter = self.sharedData.getData(1)
+
             if dataKitchen != thankYouKitchen:
                 thankYouKitchen = dataKitchen
                 if thankYouKitchen == True:
-                    self.audio.setVolume(25)
-                    self.audio.playAudioClip(2, 2)
+                    self.audio.setVolume(self.config.defaultVolume)
+                    self.audio.playAudioClip(2, self.config.SFXs.APPROVAL_KITCHEN.value)
                     time.sleep(3)
             if dataCounter != thankYouCounter:
                 thankYouCounter = dataCounter
                 if thankYouCounter == True:
-                    self.audio.setVolume(25)
-                    self.audio.playAudioClip(2, 3)
+                    self.audio.setVolume(self.config.defaultVolume)
+                    self.audio.playAudioClip(2, self.config.SFXs.APPROVAL_COUNTER.value)
                     time.sleep(3)
 
             time.sleep(1)
@@ -356,11 +360,11 @@ class TestClass:
         """
 
         print("Starting TestAudio")
-        self.audio.setVolume(25)
-        self.audio.playAudioClip(1, 1)
+        self.audio.setVolume(self.config.defaultVolume)
+        self.audio.playAudioClip(1, self.config.BGMs.RANDOM_BEAT.value)
         time.sleep(15)
         self.audio.pause()
         time.sleep(3)
-        self.audio.playAudioClip(2, 4)
+        self.audio.playAudioClip(2, self.config.SFXs.GOODBYE.value)
 
     #endregion

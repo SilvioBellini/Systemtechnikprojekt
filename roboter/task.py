@@ -1,5 +1,6 @@
 #region Imports
 
+from config import Config
 from api import API
 from sharedData import SharedData
 from communication import Communication
@@ -29,11 +30,12 @@ class Task:
     slotCounter = 6
     lineDetected = False    # Flag to save that both sensors are one the mark
 
-    def __init__(self, mode : int, api, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
+    def __init__(self, mode : int, config : Config, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
         """
         Initializes the Task object with default values.
         """
         self.mode = mode
+        self.config = config
         self.api = api
         self.sharedData = sharedData
         self.com = communication
@@ -60,20 +62,20 @@ class Task:
         sensor2Value = self.api.readSensorValue(2)
 
         # Resetting flag if both sensors are off the mark
-        if(sensor0Value < self.api.valueWhite and sensor2Value < self.api.valueWhite):
+        if(sensor0Value < self.config.minValueWhite and sensor2Value < self.config.minValueWhite):
             self.lineDetected = False
 
         # Aligning if one sensor is on the mark, setting the flag
-        if((sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite) and not self.lineDetected):
+        if((sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite) and not self.lineDetected):
             print("Found line")
             print("Sensor 0: {}".format(self.api.readSensorValue(0)))
             print("Sensor 2: {}".format(self.api.readSensorValue(2)))
             print("")
 
-            self.api.align(self.api.Directions.Perpendicular)
+            self.api.align(self.config.Directions.Perpendicular)
             self.slotCounter -= calcFactor * 1
             self.lineDetected = True
-            self.api.drive(self.api.defaultSpeed)
+            self.api.drive(self.config.defaultSpeed)
 
     def findObject(self, mode : int) -> None:
         """
@@ -92,7 +94,7 @@ class Task:
         objectFound = False
         calcFactor = 1
 
-        self.api.drive(self.api.defaultSpeed)
+        self.api.drive(self.config.defaultSpeed)
 
         while not objectFound:
             self.movePerpendicular(calcFactor)
@@ -104,7 +106,7 @@ class Task:
             sensor8Value = self.api.readSensorValue(8)
 
             # Ensuring the robot is on the mark when stopping
-            if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
+            if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                 match mode:
                     case 0: # Glass
                         if(sensor7Value and not sensor8Value):
@@ -128,17 +130,17 @@ class Task:
         """
         # Turning 90° CCW and aligning
         self.api.turn(-0.02)
-        self.api.align(self.api.Directions.Parallel)
+        self.api.align(self.config.Directions.Parallel)
 
         # Lowering and opening the gripper
-        self.api.rotateServo(self.api.pwmChFill, 10, 0)
-        self.api.rotateServo(self.api.pwmChGrip, 10, 45)
+        self.api.rotateServo(self.config.pwmChFill, 10, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 10, 45)
 
-        self.api.drive(self.api.defaultSpeed)
+        self.api.drive(self.config.defaultSpeed)
 
         # Driving forward until limit switch turns on
         while True:
-            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
+            limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
             if(limitSwitchState):
                 time.sleep(2)
@@ -148,11 +150,11 @@ class Task:
             time.sleep(0.1)
 
         # Closing and lifting the gripper
-        self.api.rotateServo(self.api.pwmChGrip, 10, 0)
-        self.api.rotateServo(self.api.pwmChFill, 10, 5)
+        self.api.rotateServo(self.config.pwmChGrip, 10, 0)
+        self.api.rotateServo(self.config.pwmChFill, 10, 5)
 
         # Driving backwards for a specified duration
-        self.api.drive(-self.api.defaultSpeed)
+        self.api.drive(-self.config.defaultSpeed)
         self.watch.start(3)
         
         while True:
@@ -182,7 +184,7 @@ class Task:
 
             self.api.turn(-turnFactor)
             time.sleep(1)
-            self.api.align(self.api.Directions.Parallel)
+            self.api.align(self.config.Directions.Parallel)
 
     def moveToCounter(self) -> None:
         """
@@ -193,7 +195,7 @@ class Task:
         None
         """
         # Drive backwards
-        self.api.drive(-self.api.defaultSpeed)
+        self.api.drive(-self.config.defaultSpeed)
 
         # Drive to end Line
         while True:
@@ -202,7 +204,7 @@ class Task:
             sensor2Value = self.api.readSensorValue(2)
 
             # Switch Slot
-            if (sensor6Value > self.api.valueWhite): 
+            if (sensor6Value > self.config.minValueWhite): 
                 turnFactor = 1
                 self.api.stop()
                 self.switchSlot(2, turnFactor)
@@ -210,14 +212,14 @@ class Task:
                 # Turning to original orientation
                 self.api.turn(-turnFactor)
                 time.sleep(1)
-                self.api.align(self.api.Directions.Parallel)
+                self.api.align(self.config.Directions.Parallel)
 
-                self.api.drive(-self.api.defaultSpeed)  
+                self.api.drive(-self.config.defaultSpeed)  
             
             # Drive to end Line and align
-            if (sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite): 
+            if (sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite): 
                 self.api.stop()
-                self.api.align(self.api.Directions.Perpendicular)
+                self.api.align(self.config.Directions.Perpendicular)
                 break
             
             time.sleep(0.1)
@@ -249,7 +251,7 @@ class Task:
                 calcFactor = 1
 
             # Turning CW or CCW according to multiplicator
-            self.api.turn(turnFactor * self.api.defaultSpeed)
+            self.api.turn(turnFactor * self.config.defaultSpeed)
             time.sleep(1)
 
             # Turning until one sensor detects the mark and rotating a little further
@@ -257,13 +259,13 @@ class Task:
                 sensor0Value = self.api.readSensorValue(0)
                 sensor2Value = self.api.readSensorValue(2)
 
-                if(sensor0Value > self.api.valueWhite or sensor2Value > self.api.valueWhite):
+                if(sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite):
                     time.sleep(0.05)
                     self.api.stop()
                     break
             
             # Changing slot
-            self.api.drive(self.api.defaultSpeed)
+            self.api.drive(self.config.defaultSpeed)
             time.sleep(0.5)
             
             while self.slotCounter != targetSlot:            
@@ -282,15 +284,15 @@ class Task:
         self.com.sendMessage(2, self.slotCounter)
 
         # Rotating for 180°        
-        self.api.turn(self.api.defaultSpeed)
+        self.api.turn(self.config.defaultSpeed)
         time.sleep(1)
-        self.api.align(self.api.Directions.Parallel)
+        self.api.align(self.config.Directions.Parallel)
 
-        self.api.drive(self.api.defaultSpeed)
+        self.api.drive(self.config.defaultSpeed)
 
         # Driving forward until limit switch turns on
         while True:
-            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
+            limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
             if(limitSwitchState):
                 time.sleep(2)
@@ -300,8 +302,8 @@ class Task:
             time.sleep(0.1)
 
         # Lowering and opening the gripper
-        self.api.rotateServo(self.api.pwmChGrip, 10, 90)
-        self.api.rotateServo(self.api.pwmChGrip, 10, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 10, 90)
+        self.api.rotateServo(self.config.pwmChGrip, 10, 0)
         
     def fill(self) -> None:
         """
@@ -312,11 +314,11 @@ class Task:
         None
         """
 
-        self.api.drive(-self.api.defaultSpeed)
+        self.api.drive(-self.config.defaultSpeed)
 
         # Driving backward until limit switch turns on
         while True:
-            limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchHopper)
+            limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchHopper)
 
             if(limitSwitchState):
                 time.sleep(2)
@@ -326,11 +328,11 @@ class Task:
             time.sleep(0.1)
 
         # Lifting the gripper and waiting for the water to drain
-        self. api.rotateServo(self.api.pwmChFill, 10, 85)
+        self. api.rotateServo(self.config.pwmChFill, 10, 85)
         time.sleep(3)
 
         # Lowering the gripper
-        self.api.rotateServo(self.api.pwmChFill, 10, 5)
+        self.api.rotateServo(self.config.pwmChFill, 10, 5)
 
     def moveToEndPos(self) -> None:
         """
@@ -354,7 +356,7 @@ class Task:
                 modeFactor = 1
         
         # Driving backward and check for line
-        self.api.drive(modeFactor * self.api.defaultSpeed)
+        self.api.drive(modeFactor * self.config.defaultSpeed)
 
         while True:
             # Updating sensor values
@@ -362,13 +364,13 @@ class Task:
             sensor2Value = self.api.readSensorValue(2)
             
             # Checking if both sensors are on the mark, correcting if not
-            if(sensor0Value > self.api.valueWhite and sensor2Value > self.api.valueWhite):
+            if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                 self.api.stop()
                 break
             # Correction depending on mode (Either gripper or hopper in driving direction)
-            if(sensor0Value > self.api.valueWhite):
+            if(sensor0Value > self.config.minValueWhite):
                 self.api.setMotorSpeeds(0, -modeFactor * 0.005)
-            elif(sensor2Value > self.api.valueWhite):
+            elif(sensor2Value > self.config.minValueWhite):
                 self.api.setMotorSpeeds(modeFactor * 0.005, 0)
 
         match self.mode:
@@ -377,7 +379,7 @@ class Task:
                 self.switchSlot(1, -1)
             
                 # Driving a little further, then stopping and giving permission to partner robot
-                self.api.drive(self.api.defaultSpeed)
+                self.api.drive(self.config.defaultSpeed)
                 time.sleep(2)
                 self.api.stop()
                 self.com.sendMessage(1, True)
@@ -387,13 +389,13 @@ class Task:
                 self.switchSlot(4, 1)
 
                 # Turning 90°
-                self.api.turn(-self.api.defaultSpeed)
+                self.api.turn(-self.config.defaultSpeed)
                 time.sleep(1)
-                self.api.align(self.api.Directions.Parallel)
+                self.api.align(self.config.Directions.Parallel)
                 
                 # Driving forward until limit switch turns on
                 while True:
-                    limitSwitchState = self.api.gpio.getValue(self.api.limitSwitchGripper)
+                    limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
                     if(limitSwitchState):
                         time.sleep(2)
@@ -403,11 +405,11 @@ class Task:
                 time.sleep(0.1)
 
                 # Lowering and opening gripper
-                self.api.rotateServo(self.api.pwmChFill, 10, 0)
-                self.api.rotateServo(self.api.pwmChGrip, 10, 45)
+                self.api.rotateServo(self.config.pwmChFill, 10, 0)
+                self.api.rotateServo(self.config.pwmChGrip, 10, 45)
 
                 # Driving backward a little
-                self.api.drive(-self.api.defaultSpeed)
+                self.api.drive(-self.config.defaultSpeed)
                 time.sleep(2)
                 self.api.stop()
             
