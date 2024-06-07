@@ -19,6 +19,7 @@ class Task:
     Parameters
     ----------
     mode:           Specifying what object should be handeled
+    config:         Object of the Config class
     api:            Object of the API class
     sharedData:     Object of the SharedData class
     communication:  Object of the Communication class
@@ -31,9 +32,7 @@ class Task:
     lineDetected = False    # Flag to save that both sensors are one the mark
 
     def __init__(self, mode : int, config : Config, api : API, sharedData : SharedData, communication : Communication, audio : AudioManager, statusLed : StatusDisplay, watch : StopWatch):
-        """
-        Initializes the Task object with default values.
-        """
+        # Initializing instances
         self.mode = mode
         self.config = config
         self.api = api
@@ -57,6 +56,7 @@ class Task:
         ----------
         None
         """
+
         # Updating sensor values
         sensor0Value = self.api.readSensorValue(0)
         sensor2Value = self.api.readSensorValue(2)
@@ -89,6 +89,7 @@ class Task:
         ----------
         None
         """
+
         # Variables
         self.lineDetected = False  
         objectFound = False
@@ -128,6 +129,7 @@ class Task:
         ----------
         None
         """
+
         # Turning 90° CCW and aligning
         self.api.turn(-0.02)
         self.api.align(self.config.Directions.Parallel)
@@ -172,6 +174,7 @@ class Task:
             ----------
             None
             """
+
             # Current slot > mid slot
             if(self.slotCounter > 3):
                 turnFactor = 1
@@ -194,6 +197,7 @@ class Task:
         ----------
         None
         """
+
         # Drive backwards
         self.api.drive(-self.config.defaultSpeed)
 
@@ -348,6 +352,7 @@ class Task:
         ----------
         None
         """
+        
         # Setting a factor to define movement direction of robot based on mode
         match self.mode:
             case 0:

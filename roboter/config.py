@@ -4,6 +4,7 @@ class Config:
     """
     Class to store globally used values.
     """
+    
     def __init__(self):
         # Network
         self.username = "team2"

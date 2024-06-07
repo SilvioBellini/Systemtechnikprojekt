@@ -6,13 +6,14 @@ from config import Config
 class AudioManager:
     """
     Class for controlling audio output
+
+    Parameters
+    ----------
+    config: Object of the Config class
     """
 
     def __init__(self, config : Config):
-        """
-        Initialize the Audiomanager        
-        """
-
+        # Initializing instances
         self.config = config
         self.uart = flink.FlinkUART(self.config.uartChAudio)
         self.uart.start(9600)
@@ -75,7 +76,7 @@ class AudioManager:
 
     def pause(self) -> None:
         """
-        Pause the currently playing Audio.
+        Pause the currently playing audio.
         If no audio is playing, doesn't do anything.
 
         Returns
@@ -90,7 +91,7 @@ class AudioManager:
         
     def resume(self) -> None:
         """
-        Continues the currently paused Audio.
+        Continues the currently paused audio.
         If no audio is currently paused, doens't do anything
 
         Returns

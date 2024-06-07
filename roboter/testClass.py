@@ -19,6 +19,7 @@ class TestClass:
     
     Parameters
     ----------
+    config:         Object of the Config class
     api:            Object of the API class
     sharedData:     Object of the SharedData class
     communication:  Object of the Communication class
@@ -29,9 +30,7 @@ class TestClass:
     """
 
     def __init__(self, config : Config, api : API, sharedData : SharedData, communication : Communication, watch : StopWatch, audio : AudioManager, statusLed : StatusDisplay, task : Task):
-        """
-        Initializes the Test object with default values.
-        """
+        # Initializing instances
         self.config = config
         self.api = api
         self.sharedData = sharedData
@@ -85,7 +84,7 @@ class TestClass:
 
         for i in range(4):
             print("Turning with: ", i * speedMultiplicator) 
-            self.api.turn(i * speedMultiplicator, 3600)
+            self.api.turn(i * speedMultiplicator)
             time.sleep(2)
 
         self.api.stop()
@@ -117,6 +116,15 @@ class TestClass:
             time.sleep(3)
 
     def testLimitSwitch(self):
+        """
+        Testing the functionality of the limit switch sensors. Reading and printing each value multiple times.
+        Tested (06.06.2024)
+
+        Returns
+        ----------
+        None
+        """
+
         self.watch.start(20)
         while not self.watch.isFinished():
             print("Limit Switch front side: {}".format(self.api.readSensorValue(9)))

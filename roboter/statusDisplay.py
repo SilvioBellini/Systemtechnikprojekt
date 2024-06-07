@@ -6,9 +6,14 @@ from config import Config
 class StatusDisplay:
     """
     Class for displaying different status with a RGB-LED
+
+    Parameters
+    ----------
+    config: Object of the Config class
     """
 
     def __init__(self, config : Config):
+        # Initializing instances
         self.config = config
 
     def setColor(self, red : int, green : int, blue : int) -> None:

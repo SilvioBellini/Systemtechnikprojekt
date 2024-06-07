@@ -11,6 +11,10 @@ from config import Config
 class API:
     """
     Class for basic functions of the robot (locomotion, sensors, etc.)
+
+    Parameters
+    ----------
+    config: Object of the Config class
     """
     
     def __init__(self, config : Config):
@@ -44,7 +48,8 @@ class API:
 
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
         """
-        Helper method to set the speed for both motors individually.
+        Helper method to set the speed for both motors individually. Setting to opposite speeds
+        because the motors face opposite ways.
         Turns the input from m/s in rad/s. w = v / r
 
         Parameters
@@ -59,12 +64,11 @@ class API:
 
         wheelRadius = 0.03265 # meters
         self.m1.setSpeed(-leftSpeed / wheelRadius)
-        self.m2.setSpeed(rightSpeed / wheelRadius)        
+        self.m2.setSpeed(rightSpeed / wheelRadius)
 
     def drive(self, speed : float) -> None:
         """
-        Letting both of the robot's wheels move with the same speed and direction by setting to opposite speeds
-        because the motors face opposite ways.
+        Letting both of the robot's wheels move with the same speed and direction.
 
         Parameters
         ----------
@@ -80,17 +84,15 @@ class API:
         #self.gpio.setValue(self.config.gpioChSleepDrive, False)
         self.setMotorSpeeds(speed, speed)
 
-    def turn(self, speed : float, angle : float) -> None:
+    def turn(self, speed : float) -> None:
         """
-        Letting both of the robot's wheels move with the same speed but with opposite direction by setting to the same
-        speeds because the motors face opposite ways, resulting in a rotation of the robot for a specified angle.
+        Letting both of the robot's wheels move with the same speed but with opposite directions.
 
         Parameters
         ----------
         speed: Speed with which the wheels turn in m/s
             > 0: Counterclockwise
             < 0: Clockwise
-        angle: Angle by which the robot should rotate
 
         Returns
         ----------
@@ -110,8 +112,8 @@ class API:
         None
         """
 
-        #self.gpio.setValue(self.config.gpioChSleepDrive, True)
         self.setMotorSpeeds(0.0, 0.0)
+        #self.gpio.setValue(self.config.gpioChSleepDrive, True)
 
     def getSensorValues(self) -> None:
         """
@@ -167,6 +169,7 @@ class API:
         ----------
         None
         """
+
         while True:
             match direction:
                 case self.config.Directions.Perpendicular:
@@ -182,7 +185,7 @@ class API:
                     if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                         time.sleep(0.5)
                         self.stop()
-                        time.sleep(3)
+                        time.sleep(1)
                         break
                     if(sensor0Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0.01, 0)
@@ -210,9 +213,9 @@ class API:
         Parameters
         ----------
         channel: Channel of the motor that should rotate
-        stepCount: Number of steps to reach final Angle
+        stepCount: Number of steps to reach final angle
         angle: Angle by which the gripper should rotate
-                    Grip: 0° = Closed
+                    Grip: 0° = Open
                     Fill: 0° = Horizontal front
 
         Returns
@@ -248,6 +251,7 @@ class API:
         # Rotating servo in steps
         currentStep = 1
 
+        # Calculating the highTime of the current step and converting it to a factor. Adding factor to current highTime
         while currentStep <= stepCount:
             highTimeFactorStep = (highTimeFactor - currentHighTimeFactor) * (currentStep / stepCount)
             self.pwm.setPeriod(channel, int(period))

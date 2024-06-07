@@ -6,7 +6,7 @@ from api import API
 from testClass import TestClass
 
 pwmFreq = 50
-channel1 = 8
+channel1 = 0
 channel2 = 22
 
 config = Config()

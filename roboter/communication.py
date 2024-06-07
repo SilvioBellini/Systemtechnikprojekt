@@ -12,9 +12,8 @@ class Communication:
 
     Parameters
     ----------
-    username: Name used for connection
-    password: Password used for connection
-    topic: Channel of connection
+    config: Object of the Config class
+    sharedData: Object of the SharedData class
     """
 
     def __init__(self, config : Config, sharedData : SharedData):
