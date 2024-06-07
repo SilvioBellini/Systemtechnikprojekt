@@ -67,11 +67,6 @@ class Task:
 
         # Aligning if one sensor is on the mark, setting the flag
         if((sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite) and not self.lineDetected):
-            print("Found line")
-            print("Sensor 0: {}".format(self.api.readSensorValue(0)))
-            print("Sensor 2: {}".format(self.api.readSensorValue(2)))
-            print("")
-
             self.api.align(self.config.Directions.Perpendicular)
             self.slotCounter -= calcFactor * 1
             self.lineDetected = True
@@ -96,7 +91,7 @@ class Task:
         calcFactor = 1
 
         self.api.drive(self.config.defaultSpeed)
-
+        
         while not objectFound:
             self.movePerpendicular(calcFactor)
 
@@ -131,20 +126,22 @@ class Task:
         """
 
         # Turning 90° CCW and aligning
-        self.api.turn(-0.02)
+        self.api.turn(0.02)
         self.api.align(self.config.Directions.Parallel)
 
         # Lowering and opening the gripper
-        self.api.rotateServo(self.config.pwmChFill, 10, 0)
-        self.api.rotateServo(self.config.pwmChGrip, 10, 45)
+        time.sleep(0.5)
+        self.api.rotateServo(self.config.pwmChFill, 50, 0)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 0)
 
+        time.sleep(0.5)
         self.api.drive(self.config.defaultSpeed)
 
         # Driving forward until limit switch turns on
         while True:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
-            if(not limitSwitchState):
+            if(not limitSwitchState):       # Normally True
                 time.sleep(2)
                 self.api.stop()
                 break
@@ -152,12 +149,14 @@ class Task:
             time.sleep(0.1)
 
         # Closing and lifting the gripper
-        self.api.rotateServo(self.config.pwmChGrip, 10, 0)
+        time.sleep(0.5)
+        self.api.rotateServo(self.config.pwmChGrip, 10, 25)
+        time.sleep(0.5)
         self.api.rotateServo(self.config.pwmChFill, 10, 5)
 
         # Driving backwards for a specified duration
         self.api.drive(-self.config.defaultSpeed)
-        self.watch.start(3)
+        self.watch.start(1.5)
         
         while True:
             if(self.watch.isFinished()):
@@ -177,12 +176,12 @@ class Task:
 
             # Current slot > mid slot
             if(self.slotCounter > 3):
-                turnFactor = 1
+                turnFactor = -1
                 self.switchSlot(3, turnFactor)
 
             # Current slot < mid slot
             else:
-                turnFactor = -1
+                turnFactor = 1
                 self.switchSlot(3, turnFactor)
 
             self.api.turn(-turnFactor)

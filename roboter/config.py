@@ -36,8 +36,8 @@ class Config:
         self.pwmChRightB = 4
 
         self.pwmChRed = 1
-        self.pwmChGreen = 3
-        self.pwmChBlue = 5
+        self.pwmChGreen = 5
+        self.pwmChBlue = 3
 
         self.pwmChFill = 10
         self.pwmChGrip = 12
@@ -52,9 +52,9 @@ class Config:
         # Motor config
         self.ts = 0.01
         self.kp = 0.1
-        self.tn = 0.01                  # 0.011   # 0.1
-        self.ticksPerRotation = 100      # 256     # 100
-        self.gearRatio = 16/1            # 152/1   # 16/1
+        self.tn = 0.011                  # 0.011   # 0.1
+        self.ticksPerRotation = 256      # 256     # 100
+        self.gearRatio = 152/1            # 152/1   # 16/1
         self.motorVoltage = 5
         self.pwmMotorFreq = 50
 
@@ -67,7 +67,7 @@ class Config:
         self.minValueGrey = 600
 
         # Default Values
-        self.defaultSpeed = 0.03
+        self.defaultSpeed = 0.05
         self.defaultVolume = 25
         
         # Enums

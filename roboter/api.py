@@ -25,6 +25,7 @@ class API:
         
         self.gpio = flink.FlinkGPIO()
         self.pwm = flink.FlinkPWM()
+        self.irSensors = flink.FlinkReflectiveSensor()  
         self.sensorValues : List[int] = []
 
         # Setting GPIO Directions
@@ -124,8 +125,7 @@ class API:
         ----------
         None
         """
-
-        self.irSensors = flink.FlinkReflectiveSensor()        
+      
         self.sensorValues : List[int] = []
 
         for i in range(self.config.amountOfIRSensors):
@@ -176,16 +176,10 @@ class API:
                     # Updating sensor values
                     sensor0Value = self.readSensorValue(0)
                     sensor2Value = self.readSensorValue(2)
-
-                    print("Aligning")
-                    print("Sensor 0: {}".format(self.readSensorValue(0)))
-                    print("Sensor 2: {}".format(self.readSensorValue(2)))
                     
                     # Checking if both sensors are on the mark, correcting if not
                     if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
-                        time.sleep(0.5)
                         self.stop()
-                        time.sleep(1)
                         break
                     if(sensor0Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0.01, 0)

@@ -14,7 +14,7 @@ class StopWatch:
 
         Parameters
         ----------
-        durationMs: Specified duration in seconds the stopwatch should run
+        durationS: Specified duration in seconds the stopwatch should run
 
         Returns
         ----------

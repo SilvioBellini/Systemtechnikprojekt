@@ -45,12 +45,13 @@ if(__name__ == "__main__"):
     api = API(config)
     mode = api.getMode()
     task = Task(mode, config, api, sharedData, com, audio, statusLed, watch)
-    testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
+    #testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
         # Running main python code in here
-        statusLed.setColor(0, 0, 0)
-        task.findObject(0)
+        task.findObject(1)
+        task.grabObject()
+        task.moveToMid()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

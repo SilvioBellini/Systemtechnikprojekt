@@ -65,6 +65,7 @@ class TestClass:
         """
         
         print("Starting TestDrive")
+
         speedMultiplicator = 0.04
         for i in range(4):
             print("Driving with: ", i * speedMultiplicator)
@@ -89,6 +90,9 @@ class TestClass:
 
         self.api.stop()
 
+        print("Finished TestDrive")
+        print("")
+
     def testReadSensorValues(self) -> None:
         """
         Testing the functionality of the sensors. Reading and printing each value multiple times.
@@ -107,13 +111,17 @@ class TestClass:
         """
 
         print("Starting TestReadSensorValues")
+
         self.watch.start(20)
-        while True: #not self.watch.isFinished()
+        while not self.watch.isFinished():
             for sensor in range(self.config.amountOfIRSensors):
                 print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
             
             print("")
             time.sleep(3)
+
+        print("Finished TestReadSensorValues")
+        print("")
 
     def testLimitSwitch(self):
         """
@@ -125,6 +133,8 @@ class TestClass:
         None
         """
 
+        print("Starting TestLimitSwitch")
+
         self.watch.start(20)
         while not self.watch.isFinished():
             print("Limit Switch front side: {}".format(self.api.readSensorValue(9)))
@@ -132,6 +142,9 @@ class TestClass:
             
             print("")
             time.sleep(1)
+
+        print("Finished TestLimitSwitch")
+        print("")
 
     def testGripServo(self) -> None:
         """
@@ -150,6 +163,7 @@ class TestClass:
         """
 
         print("Starting TestGripServo")
+
         angle = 25 # the angle for gripping, tested
         time.sleep(3)
         self.api.rotateServo(self.config.pwmChGrip, 50, 0)
@@ -157,7 +171,9 @@ class TestClass:
         self.api.rotateServo(self.config.pwmChGrip, 50, angle)
         time.sleep(3)
         self.api.rotateServo(self.config.pwmChGrip, 50, 0)
-        
+
+        print("Finished TestGripServo")
+        print("")
 
     def testFillServo(self) -> None:
         """
@@ -176,6 +192,7 @@ class TestClass:
         """
 
         print("Starting TestFillServo")
+
         self.api.rotateServo(self.config.pwmChFill, 50, 0) # Set the servo in 0° (horizontal) Position
 
         angleMultiplicator = 15         # Rotating in steps of 15°
@@ -185,6 +202,9 @@ class TestClass:
             time.sleep(1)
 
         self.api.rotateServo(self.config.pwmChFill, 100, 0) # Set the servo to 0° (horizontal) Position
+
+        print("Finished TestFillServo")
+        print("")
 
     def testGripper(self) -> None:
         """
@@ -196,6 +216,7 @@ class TestClass:
         """
 
         print("Starting TestGripper")
+
         # Moving to start position
         self.api.rotateServo(self.config.pwmChFill, 100, 0)
         time.sleep(1)
@@ -216,6 +237,9 @@ class TestClass:
         self.api.rotateServo(self.config.pwmChGrip, 1, 0)
         time.sleep(1)
 
+        print("Finished TestGripper")
+        print("")
+
     def testGetMode(self) -> None:
         """
         Testing the functionality of the Hex-Switch to set the mode.
@@ -235,9 +259,13 @@ class TestClass:
         """
 
         print("Starting TestGetMode")
+
         for i in range(15):
             print(self.api.getMode())
             time.sleep(3)
+
+        print("Finished TestGetMode")
+        print("")
     
     #endregion
 
@@ -257,6 +285,7 @@ class TestClass:
         """
 
         print("Starting TestSendMessage")
+
         flipFlop = False
 
         for i in range(10):
@@ -275,6 +304,9 @@ class TestClass:
             self.com.sendMessage(1, flipFlop)
             time.sleep(1)
 
+        print("Finished TestSendMessage")
+        print("")
+
     def testSaveData(self) -> None:
         """
         Testing the functionality of receiving messages from the partner team and saving them
@@ -289,6 +321,7 @@ class TestClass:
         """
 
         print("Starting TestSaveData")
+
         thankYouKitchen = False
         thankYouCounter = False
 
@@ -317,6 +350,9 @@ class TestClass:
 
             time.sleep(1)
 
+        print("Finished TestSaveData")
+        print("")
+
     #endregion
 
     #region Status
@@ -340,6 +376,7 @@ class TestClass:
         """
 
         print("Starting TestLed")
+
         self.statusLed.setColor(255, 255, 255)
         time.sleep(2)
         self.statusLed.setColor(255, 0, 0)
@@ -349,6 +386,9 @@ class TestClass:
         self.statusLed.setColor(0, 0, 255)
         time.sleep(2)
         self.statusLed.setColor(0, 0, 0)
+
+        print("Finished TestLed")
+        print("")
 
     def testAudio(self) -> None:
         """
@@ -368,11 +408,15 @@ class TestClass:
         """
 
         print("Starting TestAudio")
+
         self.audio.setVolume(self.config.defaultVolume)
         self.audio.playAudioClip(1, self.config.BGMs.RANDOM_BEAT.value)
         time.sleep(15)
         self.audio.pause()
         time.sleep(3)
         self.audio.playAudioClip(2, self.config.SFXs.GOODBYE.value)
+
+        print("Finished TestAudio")
+        print("")
 
     #endregion
