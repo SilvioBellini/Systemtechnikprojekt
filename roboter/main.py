@@ -49,9 +49,10 @@ if(__name__ == "__main__"):
 
     try:
         # Running main python code in here
-        task.findObject(1)
-        task.grabObject()
-        task.moveToMid()
+        api.drive(config.defaultSpeed)
+        #task.findObject(1)
+        #task.grabObject()
+        #task.moveToMid()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

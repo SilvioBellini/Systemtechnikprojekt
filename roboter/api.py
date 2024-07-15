@@ -45,6 +45,8 @@ class API:
 
         self.gpio.setDir(self.config.gpioChSensorBottle, False)
         self.gpio.setDir(self.config.gpioChSensorGlass, False)
+        
+        self.gpio.setValue(self.config.gpioChSleepDrive, True)
 
 
     def setMotorSpeeds(self, leftSpeed : float, rightSpeed : float) -> None:
@@ -82,7 +84,6 @@ class API:
         None
         """
         
-        #self.gpio.setValue(self.config.gpioChSleepDrive, False)
         self.setMotorSpeeds(speed, speed)
 
     def turn(self, speed : float) -> None:
