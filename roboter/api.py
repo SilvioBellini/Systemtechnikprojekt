@@ -84,6 +84,7 @@ class API:
         None
         """
         
+        # Setting the desired speed for both motors
         self.setMotorSpeeds(speed, speed)
 
     def turn(self, speed : float) -> None:
@@ -102,7 +103,6 @@ class API:
         """
 
         # Setting the desired speed for both motors
-        #self.gpio.setValue(self.config.gpioChSleepDrive, False)
         self.setMotorSpeeds(-speed, speed)
 
     def stop(self) -> None:
@@ -114,8 +114,8 @@ class API:
         None
         """
 
+        # Setting the desired speed for both motors
         self.setMotorSpeeds(0.0, 0.0)
-        #self.gpio.setValue(self.config.gpioChSleepDrive, True)
 
     def getSensorValues(self) -> None:
         """
@@ -181,6 +181,7 @@ class API:
                     # Checking if both sensors are on the mark, correcting if not
                     if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                         self.stop()
+                        time.sleep(0.5)
                         break
                     if(sensor0Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0.01, 0)
@@ -195,8 +196,9 @@ class API:
                     # Stopping if both sensors are on the marks after moving a little futher
                     # Might need to get reworked if sensor 1 gets off the mark while rotating
                     if(sensor1Value > self.config.minValueWhite and sensor3Value > self.config.minValueWhite):
-                        time.sleep(0.5)
+                        time.sleep(0.2)
                         self.stop()
+                        time.sleep(0.5)
                         break
             
             time.sleep(0.1)

@@ -78,7 +78,9 @@ class Task:
 
         Parameters
         ----------
-        mode: Specifying what object should be found
+        mode: Specifying what object should be 
+            0 = Glass\n
+            1 = Bottle
 
         Returns
         ----------
@@ -142,21 +144,26 @@ class Task:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
             if(not limitSwitchState):       # Normally True
-                time.sleep(2)
+                time.sleep(1)
                 self.api.stop()
                 break
 
             time.sleep(0.1)
 
-        # Closing and lifting the gripper
+        # Closing and lifting the gripper, driving back a little in between to prevent displacement of robot
         time.sleep(0.5)
         self.api.rotateServo(self.config.pwmChGrip, 10, 25)
+
         time.sleep(0.5)
+        self.api.drive(-self.config.defaultSpeed)
+
+        time.sleep(0.3)
+        self.api.stop()
         self.api.rotateServo(self.config.pwmChFill, 10, 5)
 
-        # Driving backwards for a specified duration
+        # Driving backwards for a specified distance (0.1 m)
         self.api.drive(-self.config.defaultSpeed)
-        self.watch.start(1.5)
+        self.watch.start(0.1 / self.config.defaultSpeed)
         
         while True:
             if(self.watch.isFinished()):
@@ -174,19 +181,20 @@ class Task:
             None
             """
 
-            # Current slot > mid slot
-            if(self.slotCounter > 3):
-                turnFactor = -1
-                self.switchSlot(3, turnFactor)
+            if(self.slotCounter != 3):
+                # Current slot > mid slot
+                if(self.slotCounter > 3):
+                    turnFactor = -1
+                    self.switchSlot(3, turnFactor)
 
-            # Current slot < mid slot
-            else:
-                turnFactor = 1
-                self.switchSlot(3, turnFactor)
-
-            self.api.turn(-turnFactor)
-            time.sleep(1)
-            self.api.align(self.config.Directions.Parallel)
+                # Current slot < mid slot
+                else:
+                    turnFactor = 1
+                    self.switchSlot(3, turnFactor)
+                
+                self.api.turn(-turnFactor * self.config.defaultSpeed)
+                time.sleep(1)
+                self.api.align(self.config.Directions.Parallel)
 
     def moveToCounter(self) -> None:
         """
@@ -197,33 +205,67 @@ class Task:
         None
         """
 
+        # Granting approval for the kitchen to the partner robot
+        self.com.sendMessage(0, True)
+
         # Drive backwards
         self.api.drive(-self.config.defaultSpeed)
 
         # Drive to end Line
         while True:
-            sensor6Value = self.api.readSensorValue(6)
             sensor0Value = self.api.readSensorValue(0)
             sensor2Value = self.api.readSensorValue(2)
+            sensor4Value = self.api.readSensorValue(4)
+            sensor5Value = self.api.readSensorValue(5)
+            sensor6Value = self.api.readSensorValue(6)
+
+            print("Sensor 0: ", sensor0Value)
+            print("Sensor 2: ", sensor2Value)
+            print("")
+
+            # Drive to end Line and align
+            if(sensor0Value > self.config.minValueWhite and sensor0Value < self.config.minValueGrey):
+                if((sensor2Value > self.config.minValueWhite and sensor2Value < self.config.minValueGrey)):
+                    print("Stopping")
+                    self.api.stop()
+                    time.sleep(3)
+                    self.api.align(self.config.Directions.Perpendicular)
+                    break
 
             # Switch Slot
             if (sensor6Value > self.config.minValueWhite): 
-                turnFactor = 1
+                turnFactor = -1
                 self.api.stop()
                 self.switchSlot(2, turnFactor)
 
                 # Turning to original orientation
-                self.api.turn(-turnFactor)
+                self.api.turn(-turnFactor * self.config.defaultSpeed)
                 time.sleep(1)
                 self.api.align(self.config.Directions.Parallel)
 
-                self.api.drive(-self.config.defaultSpeed)  
-            
-            # Drive to end Line and align
-            if (sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite): 
-                self.api.stop()
-                self.api.align(self.config.Directions.Perpendicular)
-                break
+                self.api.drive(-self.config.defaultSpeed)
+
+            # Checking if sensor 4 or 5 is on the line, correcting if so
+            if(self.watch.isFinished()):
+                if(sensor4Value > self.config.minValueWhite and sensor5Value < self.config.minValueGrey):
+                    print("Correcting to the right")
+                    self.api.stop()
+                    self.api.setMotorSpeeds(-0.01, 0)
+                    time.sleep(0.2)
+
+                    self.api.stop()
+                    self.api.drive(-self.config.defaultSpeed)
+                    self.watch.start(1)
+
+                if(sensor5Value > self.config.minValueWhite and sensor5Value < self.config.minValueGrey):
+                    print("Correcting to the left")
+                    self.api.stop()
+                    self.api.setMotorSpeeds(0, -0.01)
+                    time.sleep(0.2)
+
+                    self.api.stop()
+                    self.api.drive(-self.config.defaultSpeed)
+                    self.watch.start(1)
             
             time.sleep(0.1)
         
@@ -235,13 +277,15 @@ class Task:
         ----------
         targetSlot: Slot the robot should move to
         turnFactor: Factor used to differentiate rotating directions
-            = 1  -> Rotate CW\n
-            = -1 -> Rotate CCW
+            = 1  -> Rotate CCW\n
+            = -1 -> Rotate CW
 
         Returns
         ----------
         None
         """ 
+        
+        print("Switching slot initiated")
 
         # Doing nothing if the current slot already is the target slot
         if(self.slotCounter != targetSlot):
@@ -256,14 +300,16 @@ class Task:
             # Turning CW or CCW according to multiplicator
             self.api.turn(turnFactor * self.config.defaultSpeed)
             time.sleep(1)
+            print("Looking for line, turnFactor = ", turnFactor)
 
-            # Turning until one sensor detects the mark and rotating a little further
+            # Turning until sensors detect the mark and rotating a little further
             while True:
                 sensor0Value = self.api.readSensorValue(0)
                 sensor2Value = self.api.readSensorValue(2)
 
-                if(sensor0Value > self.config.minValueWhite or sensor2Value > self.config.minValueWhite):
-                    time.sleep(0.05)
+                if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
+                    print("Found line")
+                    time.sleep(0.1)
                     self.api.stop()
                     break
             
@@ -298,7 +344,7 @@ class Task:
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchGripper)
 
             if(not limitSwitchState):   # Normally True
-                time.sleep(2)
+                time.sleep(1)
                 self.api.stop()
                 break
 

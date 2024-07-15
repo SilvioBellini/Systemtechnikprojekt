@@ -48,11 +48,11 @@ if(__name__ == "__main__"):
     #testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
-        # Running main python code in here
-        api.drive(config.defaultSpeed)
-        #task.findObject(1)
-        #task.grabObject()
-        #task.moveToMid()
+        # Running main python code in here        
+        task.findObject(1)
+        task.grabObject()
+        task.moveToMid()
+        task.moveToCounter()
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
