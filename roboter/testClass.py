@@ -111,14 +111,17 @@ class TestClass:
         """
 
         print("Starting TestReadSensorValues")
-
-        self.watch.start(20)
-        while not self.watch.isFinished():
-            for sensor in range(self.config.amountOfIRSensors):
-                print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
-            
-            print("")
-            time.sleep(3)
+        self.watch.start(60)
+        try:
+            while not self.watch.isFinished():
+                for sensor in range(self.config.amountOfIRSensors + 2):
+                    print("Sensor {}: {}".format(sensor, self.api.readSensorValue(sensor)))
+                
+                print("")
+                time.sleep(3)
+        except Exception as error:
+            # Setting the statusLed to red and displaying an error message
+            print("An error has occured: ", repr(error))
 
         print("Finished TestReadSensorValues")
         print("")

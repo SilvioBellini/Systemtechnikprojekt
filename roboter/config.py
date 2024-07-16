@@ -63,11 +63,11 @@ class Config:
 
         # Sensor values
         self.amountOfIRSensors = 7 
-        self.minValueWhite = 800
-        self.minValueGrey = 2000
+        self.minValueWhite = 1000
+        self.minValueGrey = 1900
 
         # Default Values
-        self.defaultSpeed = 0.02
+        self.defaultSpeed = 0.03
         self.defaultVolume = 25
         
         # Enums

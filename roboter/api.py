@@ -194,9 +194,8 @@ class API:
                     sensor3Value = self.readSensorValue(3)
 
                     # Stopping if both sensors are on the marks after moving a little futher
-                    # Might need to get reworked if sensor 1 gets off the mark while rotating
                     if(sensor1Value > self.config.minValueWhite and sensor3Value > self.config.minValueWhite):
-                        time.sleep(0.2)
+                        time.sleep(0.3)
                         self.stop()
                         time.sleep(0.5)
                         break

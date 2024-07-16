@@ -44,15 +44,59 @@ if(__name__ == "__main__"):
     # Tasks
     api = API(config)
     mode = api.getMode()
-    task = Task(mode, config, api, sharedData, com, audio, statusLed, watch)
-    #testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
+    task = Task(config, api, sharedData, com, audio, statusLed, watch)
+    testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
-        # Running main python code in here        
-        task.findObject(1)
-        task.grabObject()
-        task.moveToMid()
-        task.moveToCounter()
+        # Waiting for Start-Input
+        while True:
+            if(api.gpio.getValue(2)):
+                print("Start-Button pressed")
+                break
+
+            time.sleep(0.1)
+
+        time.sleep(2)
+
+        # Getting operation mode
+        mode = api.getMode()
+        #statusLed.setColor(0, 255, 0)
+        print("Mode: ", mode)
+        
+        # Process
+        match mode:
+            case 0:     # Glass
+                task.findObject(mode)
+                task.grabObject()
+                task.moveToMid()
+                task.moveToCounter()
+                task.place()
+                task.moveToEndPos(mode)
+
+            case 1:     # Bottle
+                # Waiting for approval from partner robot for the kitchen
+                while True:
+                    com.receiveMessage()
+                    if(sharedData.approvalKitchen):
+                        break
+
+                    time.sleep(0.1)
+                
+                task.findObject(mode)
+                task.grabObject()
+                task.moveToMid()
+
+                # Waiting for approval from partner robot for the counter
+                while True:
+                    com.receiveMessage()
+                    if(sharedData.approvalCounter):
+                        break
+
+                    time.sleep(0.1)
+
+                task.moveToCounter()
+                task.fill()
+                task.moveToEndPos(mode)
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message

@@ -31,15 +31,21 @@ mode = None
 if(__name__ == "__main__"):
     # Initializing Objects
     config = Config()
-    ginTronic = API(config)
+    watch = StopWatch()
+
+    # Communication
     sharedData = SharedData()
     com = Communication(config, sharedData)
-    watch = StopWatch()
+
+    # Status
     audio = AudioManager(config)
     statusLed = StatusDisplay(config)
-    mode = ginTronic.getMode()
-    task = Task(mode, config, ginTronic, sharedData, com, audio, statusLed, watch)
-    test = TestClass(config, ginTronic, sharedData, com, watch, audio, statusLed, task)
+
+    # Tasks
+    api = API(config)
+    mode = api.getMode()
+    task = Task(config, api, sharedData, com, audio, statusLed, watch)
+    testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
         print("Booting complete")
@@ -48,24 +54,24 @@ if(__name__ == "__main__"):
         
         # Running different programs with hex-switch for once after each switch 
         while True:
-            if(ginTronic.gpio.getValue(2)): # Waiting for start input
-                mode = ginTronic.getMode()
+            if(api.gpio.getValue(2)): # Waiting for start input
+                mode = api.getMode()
                 time.sleep(3)
                 match mode:
                     case 0: time.sleep(1)
-                    case 1: test.testDrive()
-                    case 2: test.testReadSensorValues()
-                    case 3: test.testLimitSwitch()
-                    case 4: test.testGripServo()
-                    case 5: test.testFillServo()
-                    case 6: test.testGripper()
-                    case 7: test.testGetMode()
-                    case 8: test.testSendMessage()
-                    case 9: test.testSaveData()
-                    case 10: test.testLed()
-                    case 11: test.testAudio()
+                    case 1: testClass.testDrive()
+                    case 2: testClass.testReadSensorValues()
+                    case 3: testClass.testLimitSwitch()
+                    case 4: testClass.testGripServo()
+                    case 5: testClass.testFillServo()
+                    case 6: testClass.testGripper()
+                    case 7: testClass.testGetMode()
+                    case 8: testClass.testSendMessage()
+                    case 9: testClass.testSaveData()
+                    case 10: testClass.testLed()
+                    case 11: testClass.testAudio()
                     case _: break
-                while mode == ginTronic.getMode():
+                while mode == api.getMode():
                     time.sleep(1)
             
             time.sleep(0.1)
