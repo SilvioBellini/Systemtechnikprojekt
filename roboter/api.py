@@ -180,8 +180,9 @@ class API:
                     
                     # Checking if both sensors are on the mark, correcting if not
                     if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
+                        time.sleep(0.1)
                         self.stop()
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         break
                     if(sensor0Value > self.config.minValueWhite):
                         self.setMotorSpeeds(0.01, 0)
@@ -195,9 +196,9 @@ class API:
 
                     # Stopping if both sensors are on the marks after moving a little futher
                     if(sensor1Value > self.config.minValueWhite and sensor3Value > self.config.minValueWhite):
-                        time.sleep(0.3)
+                        time.sleep(0.1)
                         self.stop()
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         break
             
             time.sleep(0.1)

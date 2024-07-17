@@ -65,9 +65,12 @@ class Config:
         self.amountOfIRSensors = 7 
         self.minValueWhite = 1000
         self.minValueGrey = 1900
+        self.minValueObstacle = 2000
 
         # Default Values
-        self.defaultSpeed = 0.03
+        self.defaultSpeedSlow = 0.04
+        self.defaultSpeed = 0.05
+        self.defaultSpeedFast = 0.05
         self.defaultVolume = 25
         
         # Enums
@@ -80,7 +83,7 @@ class Config:
             self.BGMs.RANDOM_BEAT: 1
         }
 
-        # Call by: self.sfx[self.SFXs.STARTUP]
+        # Call by: self.sfx[self.SFXs.IGNITION]
         self.sfx = {
             self.SFXs.IGNITION: 1,
             self.SFXs.APPROVAL_KITCHEN: 2,

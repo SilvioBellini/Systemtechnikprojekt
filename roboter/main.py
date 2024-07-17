@@ -48,6 +48,15 @@ if(__name__ == "__main__"):
     testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
     try:
+        print("Starting")
+        task.findObject(0)
+        task.grabObject()
+        """   
+        # Startup
+        print("Startup complete: Waiting for Input")
+        audio.setVolume(config.defaultVolume)
+        audio.playAudioClip(2, config.sfx[config.SFXs.IGNITION])
+
         # Waiting for Start-Input
         while True:
             if(api.gpio.getValue(2)):
@@ -56,24 +65,27 @@ if(__name__ == "__main__"):
 
             time.sleep(0.1)
 
-        time.sleep(2)
+        time.sleep(0.5)
 
         # Getting operation mode
         mode = api.getMode()
-        #statusLed.setColor(0, 255, 0)
-        print("Mode: ", mode)
         
         # Process
         match mode:
             case 0:     # Glass
+                print("Mode 0: Glass")
+
                 task.findObject(mode)
                 task.grabObject()
-                task.moveToMid()
-                task.moveToCounter()
-                task.place()
-                task.moveToEndPos(mode)
+                #task.moveToMid()
+                #task.moveToCounter()
+                #task.place()
+                #task.moveToEndPos(mode)
 
             case 1:     # Bottle
+                print("Mode 1: Bottle")
+                print("Waiting for approval Kitchen")
+
                 # Waiting for approval from partner robot for the kitchen
                 while True:
                     com.receiveMessage()
@@ -81,10 +93,13 @@ if(__name__ == "__main__"):
                         break
 
                     time.sleep(0.1)
+                audio.playAudioClip(2, config.sfx[config.SFXs.APPROVAL_KITCHEN])
                 
                 task.findObject(mode)
                 task.grabObject()
                 task.moveToMid()
+
+                print("Waiting for approval Counter")
 
                 # Waiting for approval from partner robot for the counter
                 while True:
@@ -93,10 +108,13 @@ if(__name__ == "__main__"):
                         break
 
                     time.sleep(0.1)
+                #statusLed.setColor(0, 255, 0)
+                audio.playAudioClip(2, config.sfx[config.SFXs.APPROVAL_COUNTER])
 
                 task.moveToCounter()
                 task.fill()
                 task.moveToEndPos(mode)
+    """
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
