@@ -40,7 +40,8 @@ class Task:
         self.audio = audio
         self.statusLed = statusLed
         self.watch = watch
-        self.delayWatch = StopWatch()
+        self.sillWatch = StopWatch()
+        self.backwardsWatch = StopWatch()
 
     def movePerpendicular(self, calcFactor : int) -> None:
         """
@@ -170,10 +171,13 @@ class Task:
 
         # Driving backwards for a specified distance (0.1 m)
         self.api.drive(-self.config.defaultSpeed)
-        self.watch.start(0.1 / self.config.defaultSpeed)
+        self.backwardsWatch.start(0.1 / self.config.defaultSpeed)
+        self.watch.start(0.1)
         
         while True:
-            if(self.watch.isFinished()):
+            self.followLine(0.2)
+
+            if(self.backwardsWatch.isFinished()):
                 self.api.stop()
                 break
             
@@ -221,18 +225,16 @@ class Task:
 
         # Drive backwards
         self.api.drive(-self.config.defaultSpeedFast)
-        self.delayWatch.start(10)
+        self.sillWatch.start(10)
 
         # Drive to end Line
         while True:
             sensor0Value = self.api.readSensorValue(0)
             sensor2Value = self.api.readSensorValue(2)
-            sensor4Value = self.api.readSensorValue(4)
-            sensor5Value = self.api.readSensorValue(5)
             sensor6Value = self.api.readSensorValue(6)
 
             # Drive to end line and align
-            if(self.delayWatch.isFinished()):
+            if(self.sillWatch.isFinished()):
                 if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
                     print("Stopping")
                     self.api.stop()
@@ -254,7 +256,14 @@ class Task:
 
                 self.api.drive(-self.config.defaultSpeedFast)
 
-            if(self.watch.isFinished()):
+            self.followLine(0.5)
+            time.sleep(0.1)
+
+    def followLine(self, delayTime):
+        sensor4Value = self.api.readSensorValue(4)
+        sensor5Value = self.api.readSensorValue(5)
+        
+        if(self.watch.isFinished()):
                 # Checking if sensor 4 or 5 is on the line, correcting if so
                 if((sensor4Value > self.config.minValueWhite and sensor4Value < self.config.minValueGrey) and not sensor5Value > self.config.minValueWhite):
                     self.api.stop()
@@ -263,7 +272,7 @@ class Task:
 
                     self.api.stop()
                     self.api.drive(-self.config.defaultSpeedFast)
-                    self.watch.start(0.5)
+                    self.watch.start(delayTime)
 
                 elif((sensor5Value > self.config.minValueWhite and sensor5Value < self.config.minValueGrey) and not sensor4Value > self.config.minValueWhite):
                     self.api.stop()
@@ -272,9 +281,7 @@ class Task:
 
                     self.api.stop()
                     self.api.drive(-self.config.defaultSpeedFast)
-                    self.watch.start(0.5)
-
-            time.sleep(0.1)
+                    self.watch.start(delayTime)
         
     def switchSlot(self, targetSlot : int, turnFactor : int) -> None:
         """
@@ -378,6 +385,7 @@ class Task:
 
         # Driving backward until limit switch turns on
         while True:
+            self.followLine(0.2)
             limitSwitchState = self.api.gpio.getValue(self.config.gpioChLimitSwitchHopper)
 
             if(not limitSwitchState):   # Normally True
@@ -389,7 +397,7 @@ class Task:
 
         # Lifting the gripper and waiting for the water to drain
         self. api.rotateServo(self.config.pwmChFill, 100, 85)
-        time.sleep(5)
+        time.sleep(7)
 
         # Lowering the gripper
         self.api.rotateServo(self.config.pwmChFill, 100, 5)
@@ -422,20 +430,22 @@ class Task:
         self.api.drive(modeFactor * self.config.defaultSpeed)
 
         while True:
-                    # Updating sensor values
-                    sensor0Value = self.api.readSensorValue(0)
-                    sensor2Value = self.api.readSensorValue(2)
+            # Updating sensor values
+            sensor0Value = self.api.readSensorValue(0)
+            sensor2Value = self.api.readSensorValue(2)
 
-                    # Checking if both sensors are on the mark, correcting if not
-                    if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
-                        self.api.stop()
-                        time.sleep(0.1)
-                        break
-                    # Correction depending on mode (Either gripper or hopper in driving direction)
-                    if(sensor0Value > self.config.minValueWhite):
-                        self.api.setMotorSpeeds(modeFactor * 0.01, 0)
-                    elif(sensor2Value > self.config.minValueWhite):
-                        self.api.setMotorSpeeds(0, modeFactor * 0.01)
+            # Checking if both sensors are on the mark, correcting if not
+            if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
+                self.api.stop()
+                time.sleep(0.1)
+                break
+            # Correction depending on mode (Either gripper or hopper in driving direction)
+            if(sensor0Value > self.config.minValueWhite):
+                self.api.setMotorSpeeds(modeFactor * 0.01, 0)
+            elif(sensor2Value > self.config.minValueWhite):
+                self.api.setMotorSpeeds(0, modeFactor * 0.01)
+            
+            time.sleep(0.05)
 
         match mode:
             case 0:
@@ -454,7 +464,7 @@ class Task:
 
                 # Turning 90°
                 self.api.turn(self.config.defaultSpeed)
-                time.sleep(1)
+                time.sleep(2)
                 self.api.align(self.config.Directions.Parallel)
 
                 time.sleep(0.5)

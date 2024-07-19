@@ -47,11 +47,7 @@ if(__name__ == "__main__"):
     task = Task(config, api, sharedData, com, audio, statusLed, watch)
     testClass = TestClass(config, api, sharedData, com, watch, audio, statusLed, task)
 
-    try:
-        print("Starting")
-        task.findObject(0)
-        task.grabObject()
-        """   
+    try:   
         # Startup
         print("Startup complete: Waiting for Input")
         audio.setVolume(config.defaultVolume)
@@ -77,10 +73,10 @@ if(__name__ == "__main__"):
 
                 task.findObject(mode)
                 task.grabObject()
-                #task.moveToMid()
-                #task.moveToCounter()
-                #task.place()
-                #task.moveToEndPos(mode)
+                task.moveToMid()
+                task.moveToCounter()
+                task.place()
+                task.moveToEndPos(mode)
 
             case 1:     # Bottle
                 print("Mode 1: Bottle")
@@ -114,7 +110,6 @@ if(__name__ == "__main__"):
                 task.moveToCounter()
                 task.fill()
                 task.moveToEndPos(mode)
-    """
 
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
