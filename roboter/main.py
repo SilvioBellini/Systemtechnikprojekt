@@ -50,7 +50,7 @@ if(__name__ == "__main__"):
     try:   
         # Startup
         print("Startup complete: Waiting for Input")
-        audio.setVolume(config.defaultVolume)
+        audio.setVolume(15)
         audio.playAudioClip(2, config.sfx[config.SFXs.IGNITION])
 
         # Waiting for Start-Input
@@ -111,6 +111,9 @@ if(__name__ == "__main__"):
                 task.fill()
                 task.moveToEndPos(mode)
 
+    except KeyboardInterrupt:
+        api.stop()
+        print("Ctrl + C")
     except Exception as error:
         # Setting the statusLed to red and displaying an error message
         statusLed.setColor(255, 0, 0)

@@ -9,7 +9,7 @@ class Config:
         # Network
         self.username = "team2"
         self.password = "rHGpIGxo0o1k"
-        self.topic = "team1_2/test"
+        self.topic = "team2_4/test"
 
         # GPIO Channels
         self.gpioChStop = 0
@@ -63,7 +63,20 @@ class Config:
 
         # Sensor values
         self.amountOfIRSensors = 7 
-        self.minValueWhite = 1000
+
+        self.valueBlack0 = 200
+        self.valueBlack1 = 200
+        self.valueBlack2 = 200
+        self.valueBlack3 = 200
+        self.valueBlack4 = 200
+        self.valueBlack5 = 200
+
+        self.minValueWhite0 = 1000
+        self.minValueWhite1 = 1000
+        self.minValueWhite2 = 1000
+        self.minValueWhite3 = 1000
+        self.minValueWhite4 = 1000
+        self.minValueWhite5 = 1000
         self.minValueGrey = 1900
         self.minValueObstacle = 2000
 
@@ -90,3 +103,27 @@ class Config:
             self.SFXs.APPROVAL_COUNTER: 3,
             self.SFXs.GOODBYE: 4
         }
+
+    def setValueWhite0(self, valueBlack, valueWhite):
+        self.valueBlack0 = valueBlack
+        self.minValueWhite0 = valueWhite
+
+    def setValueWhite1(self, valueBlack, valueWhite):
+        self.valueBlack1 = valueBlack
+        self.minValueWhite1 = valueWhite
+    
+    def setValueWhite2(self, valueBlack, valueWhite):
+        self.valueBlack2 = valueBlack
+        self.minValueWhite2 = valueWhite
+
+    def setValueWhite3(self, valueBlack, valueWhite):
+        self.valueBlack3 = valueBlack
+        self.minValueWhite3 = valueWhite
+
+    def setValueWhite4(self, valueBlack, valueWhite):
+        self.valueBlack4 = valueBlack
+        self.minValueWhite4 = valueWhite
+
+    def setValueWhite5(self, valueBlack, valueWhite):
+        self.valueBlack5 = valueBlack
+        self.minValueWhite5 = valueWhite

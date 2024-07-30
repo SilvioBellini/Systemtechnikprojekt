@@ -64,7 +64,7 @@ class API:
         ----------
         None
         """
-
+    
         wheelRadius = 0.03265 # meters
         self.m1.setSpeed(-leftSpeed / wheelRadius)
         self.m2.setSpeed(rightSpeed / wheelRadius)
@@ -171,6 +171,8 @@ class API:
         None
         """
 
+        neededCorrection = False
+
         while True:
             match direction:
                 case self.config.Directions.Perpendicular:
@@ -179,15 +181,33 @@ class API:
                     sensor2Value = self.readSensorValue(2)
                     
                     # Checking if both sensors are on the mark, correcting if not
-                    if(sensor0Value > self.config.minValueWhite and sensor2Value > self.config.minValueWhite):
-                        time.sleep(0.1)
+                    if(sensor0Value > self.config.minValueWhite0 and sensor2Value > self.config.minValueWhite2):
+                        #if(neededCorrection):
+                        #    time.sleep(0.1)
+
                         self.stop()
                         time.sleep(0.1)
                         break
-                    if(sensor0Value > self.config.minValueWhite):
-                        self.setMotorSpeeds(0.01, 0)
-                    elif(sensor2Value > self.config.minValueWhite):
-                        self.setMotorSpeeds(0, 0.01)
+                    if(sensor0Value > self.config.minValueWhite0):
+                        #neededCorrection = True
+                        diff = sensor0Value - self.config.valueBlack0
+                        #self.config.minValueWhite2 = self.config.valueBlack2 + diff
+
+                        #print("Difference: ", diff)
+                        #print("Value black: ", self.config.valueBlack2)
+                        #print("Calculated value wihte: ", self.config.minValueWhite2)
+
+                        self.setMotorSpeeds(self.config.defaultSpeed, 0)
+                    elif(sensor2Value > self.config.minValueWhite2):
+                        #neededCorrection = True
+                        diff = sensor2Value - self.config.valueBlack2
+                        #self.config.minValueWhite0 = self.config.valueBlack0 + diff
+
+                        #print("Difference: ", diff)
+                        #print("Value black: ", self.config.valueBlack0)
+                        #print("Calculated value wihte: ", self.config.minValueWhite0)
+
+                        self.setMotorSpeeds(0, self.config.defaultSpeed)
 
                 case self.config.Directions.Parallel:
                     # Updating sensor values
@@ -195,13 +215,13 @@ class API:
                     sensor3Value = self.readSensorValue(3)
 
                     # Stopping if both sensors are on the marks after moving a little futher
-                    if(sensor1Value > self.config.minValueWhite and sensor3Value > self.config.minValueWhite):
-                        time.sleep(0.1)
+                    if(sensor1Value > self.config.minValueWhite1 and sensor3Value > self.config.minValueWhite3):
+                        time.sleep(0.05)
                         self.stop()
                         time.sleep(0.1)
                         break
             
-            time.sleep(0.1)
+            time.sleep(0.01)
 
     def rotateServo(self, channel : int, stepCount : int, angle : float) -> None:
         """

@@ -67,12 +67,26 @@ class Communication:
 
         # Decoding message if possible
         try:
-            if(message is not None):
-                decodedMessage = eval(message)
-                id = decodedMessage[0]
-                data = decodedMessage[1]
-                self.sharedData.setData(id, data)
-                
-                print("Received Message: {} \n".format(message))
-        except:
-            print("Can't evaluate message! \n")
+            if message is not None:
+                try:
+                    decodedMessage = eval(message)
+                    id = decodedMessage[0]
+                    data = decodedMessage[1]
+                    self.sharedData.setData(id, data)
+
+                    print("Received Message: {} \n".format(message))
+                except (SyntaxError, NameError, TypeError, IndexError) as e:
+                    print(f"Can't evaluate message! Error: {e}\n")
+        except Exception as e:
+            print(f"Unexpected error: {e}\n")
+
+        #try:
+        #    if(message is not None):
+        #        decodedMessage = eval(message)
+        #        id = decodedMessage[0]
+        #        data = decodedMessage[1]
+        #        self.sharedData.setData(id, data)
+        #        
+        #        print("Received Message: {} \n".format(message))
+        #except:
+        #    print("Can't evaluate message! \n")
