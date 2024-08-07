@@ -405,6 +405,9 @@ class Task:
         # Lowering and opening the gripper
         self.api.rotateServo(self.config.pwmChFill, 20, 0)
         self.api.rotateServo(self.config.pwmChGrip, 50, 0)
+
+        # Transmitting approval for the counter
+        self.com.sendMessage(1, True)
         
     def fill(self) -> None:
         """
@@ -495,7 +498,6 @@ class Task:
                 self.api.drive(self.config.defaultSpeed)
                 time.sleep(0.15 / self.config.defaultSpeed)
                 self.api.stop()
-                self.com.sendMessage(1, True)
 
             case 1:
                 # Switching slot
