@@ -50,7 +50,7 @@ if(__name__ == "__main__"):
     try:   
         # Startup
         print("Startup complete: Waiting for Input")
-        audio.setVolume(15)
+        audio.setVolume(25)
         audio.playAudioClip(2, config.sfx[config.SFXs.IGNITION])
 
         # Waiting for Start-Input
@@ -72,7 +72,7 @@ if(__name__ == "__main__"):
                 print("Mode 0: Glass")
 
                 task.findObject(mode)
-                task.grabObject()
+                task.grabObject(mode)
                 task.moveToMid()
                 task.moveToCounter()
                 task.place()
@@ -92,7 +92,7 @@ if(__name__ == "__main__"):
                 audio.playAudioClip(2, config.sfx[config.SFXs.APPROVAL_KITCHEN])
                 
                 task.findObject(mode)
-                task.grabObject()
+                task.grabObject(mode)
                 task.moveToMid()
 
                 print("Waiting for approval Counter")

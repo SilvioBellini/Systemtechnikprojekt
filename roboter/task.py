@@ -43,6 +43,8 @@ class Task:
         self.sillWatch = StopWatch()
         self.backwardsWatch = StopWatch()
 
+        self.worstCase = False
+
     # region Helpermethods
 
     def teachValues(self):
@@ -227,7 +229,7 @@ class Task:
                 
             time.sleep(0.05)
 
-    def grabObject(self) -> None:
+    def grabObject(self, mode : int) -> None:
         """
         Grabbing the currently detected object.
 
@@ -245,7 +247,7 @@ class Task:
 
         # Lowering and opening the gripper
         time.sleep(0.1)
-        self.api.rotateServo(self.config.pwmChFill, 50, 0)
+        self.api.rotateServo(self.config.pwmChFill, 100, 0)
         self.api.rotateServo(self.config.pwmChGrip, 50, 0)
 
         time.sleep(0.1)
@@ -273,9 +275,14 @@ class Task:
         self.api.stop()
         self.api.rotateServo(self.config.pwmChFill, 10, 5)
 
-        # Driving backwards for a specified distance (0.1 m)
+        # Driving backwards for a specified distance (0.1m or 0.4m)
         self.api.drive(-self.config.defaultSpeed)
-        self.backwardsWatch.start(0.1 / self.config.defaultSpeed)
+        if(mode == 0 and self.slotCounter == 1):
+            self.backwardsWatch.start(0.45 / self.config.defaultSpeed)
+            self.worstCase = True
+        else:
+            self.backwardsWatch.start(0.1 / self.config.defaultSpeed)
+
         self.watch.start(0.1)
         
         while True:
@@ -334,7 +341,11 @@ class Task:
 
         # Drive backwards
         self.api.drive(-self.config.defaultSpeedFast)
-        self.sillWatch.start(10)
+
+        if(self.worstCase):
+            self.sillWatch.start(1)
+        else:
+            self.sillWatch.start(10)
 
         # Drive to end Line
         while True:
@@ -379,8 +390,9 @@ class Task:
 
         print("Placing glass")
 
-        # Transmitting the current slot to the partner robot
+        # Transmitting the current slot and approval for the counter to the partner robot
         self.com.sendMessage(2, self.slotCounter)
+        self.com.sendMessage(1, True)
 
         # Rotating for 180°
         for i in range(2):
@@ -405,9 +417,6 @@ class Task:
         # Lowering and opening the gripper
         self.api.rotateServo(self.config.pwmChFill, 20, 0)
         self.api.rotateServo(self.config.pwmChGrip, 50, 0)
-
-        # Transmitting approval for the counter
-        self.com.sendMessage(1, True)
         
     def fill(self) -> None:
         """

@@ -414,10 +414,23 @@ class TestClass:
 
         self.audio.setVolume(self.config.defaultVolume)
         self.audio.playAudioClip(1, self.config.BGMs.RANDOM_BEAT.value)
-        time.sleep(15)
-        self.audio.pause()
-        time.sleep(3)
+        self.watch.start(5)
+
+        self.api.rotateServo(self.config.pwmChFill, 100, 45)
+        time.sleep(0.1)
+        self.api.rotateServo(self.config.pwmChFill, 100, 90)
+        time.sleep(0.1)
+        self.api.rotateServo(self.config.pwmChFill, 100, 0)
+
+        while True:
+            if(self.watch.isFinished()):
+                self.audio.pause()
+                break
+
+        time.sleep(0.5)
         self.audio.playAudioClip(2, self.config.SFXs.GOODBYE.value)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 20)
+        self.api.rotateServo(self.config.pwmChGrip, 50, 0)
 
         print("Finished TestAudio")
         print("")
