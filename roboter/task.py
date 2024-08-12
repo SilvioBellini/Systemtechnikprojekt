@@ -42,8 +42,10 @@ class Task:
         self.watch = watch
         self.sillWatch = StopWatch()
         self.backwardsWatch = StopWatch()
+        self.additionalWatch = StopWatch()
 
         self.worstCase = False
+        self.additionalTime = 0
 
     # region Helpermethods
 
@@ -108,6 +110,7 @@ class Task:
                     self.api.stop()
                     self.api.drive(-self.config.defaultSpeedFast)
                     self.watch.start(delayTime)
+                    self.additionalTime += 0.3
 
                 elif((sensor5Value > self.config.minValueWhite5 and sensor5Value < self.config.minValueGrey) and not sensor4Value > self.config.minValueWhite4):
                     self.api.stop()
@@ -117,6 +120,7 @@ class Task:
                     self.api.stop()
                     self.api.drive(-self.config.defaultSpeedFast)
                     self.watch.start(delayTime)
+                    self.additionalTime += 0.3
 
     def switchSlot(self, targetSlot : int, turnFactor : int) -> None:
         """
@@ -278,7 +282,7 @@ class Task:
         # Driving backwards for a specified distance (0.1m or 0.4m)
         self.api.drive(-self.config.defaultSpeed)
         if(mode == 0 and self.slotCounter == 1):
-            self.backwardsWatch.start(0.45 / self.config.defaultSpeed)
+            self.backwardsWatch.start(0.38 / self.config.defaultSpeed)
             self.worstCase = True
         else:
             self.backwardsWatch.start(0.1 / self.config.defaultSpeed)
@@ -288,7 +292,7 @@ class Task:
         while True:
             self.followLine(0.1)
 
-            if(self.backwardsWatch.isFinished()):
+            if(self.backwardsWatch.additionalTimeFinished(self.additionalTime)):
                 self.api.stop()
                 break
             
@@ -345,7 +349,7 @@ class Task:
         if(self.worstCase):
             self.sillWatch.start(1)
         else:
-            self.sillWatch.start(10)
+            self.sillWatch.start(8)
 
         # Drive to end Line
         while True:
@@ -508,6 +512,14 @@ class Task:
                 time.sleep(0.15 / self.config.defaultSpeed)
                 self.api.stop()
 
+                self.audio.setVolume(15)
+                self.audio.playAudioClip(2, self.config.SFXs.CROWD.value)
+                self.watch.start(10)
+                while True:
+                    if(self.watch.isFinished()):
+                        self.audio.pause()
+                        break
+
             case 1:
                 # Switching slot
                 self.switchSlot(4, 1)
@@ -542,5 +554,13 @@ class Task:
             
             case _:
                 print("Unknown mode!")
+        
+        self.audio.setVolume(10)
+        self.audio.playAudioClip(1, self.config.BGMs.DUBSTEP.value)
+        self.watch.start(10)
+        while True:
+            if(self.watch.isFinished()):
+                self.audio.pause()
+                break
 
     # endregion

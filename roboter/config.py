@@ -88,12 +88,13 @@ class Config:
         
         # Enums
         self.Directions = Enum("Directions", ["Perpendicular", "Parallel"])
-        self.BGMs = Enum("BGM", ["RANDOM_BEAT"])
-        self.SFXs = Enum("SFX", ["IGNITION", "APPROVAL_KITCHEN", "APPROVAL_COUNTER", "GOODBYE"])
+        self.BGMs = Enum("BGM", ["RANDOM_BEAT", "DUBSTEP"])
+        self.SFXs = Enum("SFX", ["IGNITION", "APPROVAL_KITCHEN", "APPROVAL_COUNTER", "GOODBYE", "VROOM", "CROWD"])
 
         # Call by: self.bgm[self.BGMs.RANDOM_BEAT]
         self.bgm = {
-            self.BGMs.RANDOM_BEAT: 1
+            self.BGMs.RANDOM_BEAT: 1,
+            self.BGMs.DUBSTEP: 2
         }
 
         # Call by: self.sfx[self.SFXs.IGNITION]
@@ -101,7 +102,9 @@ class Config:
             self.SFXs.IGNITION: 1,
             self.SFXs.APPROVAL_KITCHEN: 2,
             self.SFXs.APPROVAL_COUNTER: 3,
-            self.SFXs.GOODBYE: 4
+            self.SFXs.GOODBYE: 4,
+            self.SFXs.VROOM: 5,
+            self.SFXs.CROWD: 6
         }
 
     def setValueWhite0(self, valueBlack, valueWhite):

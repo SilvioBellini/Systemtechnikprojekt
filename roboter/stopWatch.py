@@ -34,3 +34,8 @@ class StopWatch:
         """
         
         return datetime.now() >= self.startTime + timedelta(milliseconds=self.duration)
+    
+    def additionalTimeFinished(self, additionalTime) -> bool:
+        
+        addTimeMs = additionalTime * 1000
+        return datetime.now() >= self.startTime + timedelta(milliseconds=self.duration + addTimeMs)
