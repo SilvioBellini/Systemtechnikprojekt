@@ -512,14 +512,6 @@ class Task:
                 time.sleep(0.15 / self.config.defaultSpeed)
                 self.api.stop()
 
-                self.audio.setVolume(15)
-                self.audio.playAudioClip(2, self.config.SFXs.CROWD.value)
-                self.watch.start(10)
-                while True:
-                    if(self.watch.isFinished()):
-                        self.audio.pause()
-                        break
-
             case 1:
                 # Switching slot
                 self.switchSlot(4, 1)
@@ -554,13 +546,5 @@ class Task:
             
             case _:
                 print("Unknown mode!")
-        
-        self.audio.setVolume(10)
-        self.audio.playAudioClip(1, self.config.BGMs.DUBSTEP.value)
-        self.watch.start(10)
-        while True:
-            if(self.watch.isFinished()):
-                self.audio.pause()
-                break
 
     # endregion

@@ -88,13 +88,14 @@ class Config:
         
         # Enums
         self.Directions = Enum("Directions", ["Perpendicular", "Parallel"])
-        self.BGMs = Enum("BGM", ["RANDOM_BEAT", "DUBSTEP"])
+        self.BGMs = Enum("BGM", ["RANDOM_BEAT", "DUBSTEP", "GINTRONIC"])
         self.SFXs = Enum("SFX", ["IGNITION", "APPROVAL_KITCHEN", "APPROVAL_COUNTER", "GOODBYE", "VROOM", "CROWD"])
 
         # Call by: self.bgm[self.BGMs.RANDOM_BEAT]
         self.bgm = {
             self.BGMs.RANDOM_BEAT: 1,
-            self.BGMs.DUBSTEP: 2
+            self.BGMs.DUBSTEP: 2,
+            self.BGMs.GINTRONIC : 3
         }
 
         # Call by: self.sfx[self.SFXs.IGNITION]

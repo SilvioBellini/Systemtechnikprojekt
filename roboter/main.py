@@ -50,7 +50,7 @@ if(__name__ == "__main__"):
     try:   
         # Startup
         print("Startup complete: Waiting for Input")
-        audio.setVolume(25)
+        audio.setVolume(30)
         audio.playAudioClip(2, config.sfx[config.SFXs.IGNITION])
 
         # Waiting for Start-Input
@@ -71,6 +71,8 @@ if(__name__ == "__main__"):
             case 0:     # Glass
                 print("Mode 0: Glass")
 
+                audio.playAudioClip(1, config.bgm[config.BGMs.GINTRONIC])
+                
                 task.findObject(mode)
                 task.grabObject(mode)
                 task.moveToMid()
